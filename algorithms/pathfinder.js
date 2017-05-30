@@ -61,14 +61,6 @@ Map.prototype._distance = function(x2, y2) {
     }
 };
 
-Map.prototype.cellIsEmpty = function(x, y) {
-    if (this.grid[x][y] == '_') {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 // Outer function to provide scope
 Map.prototype.calculatePath = function() {
     var arr = [];
@@ -194,6 +186,7 @@ Map.prototype.drawPath = function() {
     return this.grid;
 }
 
+
 /* 
     Refresh grid each step
     Shows live action movement from start to destination
@@ -202,7 +195,7 @@ Map.prototype.drawPath = function() {
 Map.prototype.drawSequentialPath = function(pathArray) {
     var i = 0;
     var that = this;
-    function drawStep1() {
+    function drawStep() {
         console.log('Hi...')
         i++;
         var x = that.path[i][0];
@@ -212,11 +205,15 @@ Map.prototype.drawSequentialPath = function(pathArray) {
         console.log(that.grid)
         if (i == that.path.length - 1) {
             clearInterval(startInterval)
-    
         }
-        
     }
-    var startInterval = setInterval(drawStep1, 500)
+    var startInterval = setInterval(drawStep, 500)
+}
+/*
+    Renders critter movement toward destination
+*/
+Map.prototype.drawMove = function(pathArray) {
+    
 }
 
 /* RANDOM DUNGEON GENERATOR */
@@ -275,56 +272,6 @@ Map.prototype.generateRooms = function() {
 
 
 var map1 = new Map(10, 10);
-// Obstacle Insertion
-// map1.grid[0][1] = 'X';
-// map1.grid[1][1] = 'X';
-// map1.grid[2][1] = 'X';
-// map1.grid[3][1] = 'X';
-// map1.grid[4][1] = 'X';
-// map1.grid[5][1] = 'X';
-// map1.grid[6][1] = 'X';
-// map1.grid[7][1] = 'X';
-// map1.grid[8][1] = 'X';
-
-// map1.grid[1][3] = 'X';
-// map1.grid[2][3] = 'X';
-// map1.grid[3][3] = 'X';
-// map1.grid[4][3] = 'X';
-// map1.grid[5][3] = 'X';
-// map1.grid[6][3] = 'X';
-// map1.grid[7][3] = 'X';
-// map1.grid[8][3] = 'X';
-// map1.grid[9][3] = 'X';
-
-// map1.grid[0][5] = 'X';
-// map1.grid[1][5] = 'X';
-// map1.grid[2][5] = 'X';
-// map1.grid[3][5] = 'X';
-// map1.grid[4][5] = 'X';
-// map1.grid[5][5] = 'X';
-// map1.grid[6][5] = 'X';
-// map1.grid[7][5] = 'X';
-// map1.grid[8][5] = 'X';
-
-// map1.grid[1][7] = 'X';
-// map1.grid[2][7] = 'X';
-// map1.grid[3][7] = 'X';
-// map1.grid[4][7] = 'X';
-// map1.grid[5][7] = 'X';
-// map1.grid[6][7] = 'X';
-// map1.grid[7][7] = 'X';
-// map1.grid[8][7] = 'X';
-// map1.grid[9][7] = 'X';
-
-// map1.grid[1][8] = 'X';
-// map1.grid[3][9] = 'X';
-// map1.grid[5][8] = 'X';
-// map1.grid[7][9] = 'X';
-// map1.grid[5][3] = 'X';
-// map1.grid[6][3] = 'X';
-// map1.grid[7][3] = 'X';
-// map1.grid[8][3] = 'X';
-// map1.grid[9][3] = 'X';
 
 
 map1.start(0, 0);

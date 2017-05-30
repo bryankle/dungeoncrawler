@@ -68,6 +68,10 @@ class Dungeon extends Component {
         console.log(gridClone);
     }
 
+    generateRooms() {
+        
+    }
+
     render() {
         console.log('Creating dungeon...')
         console.log(this.state.grid)

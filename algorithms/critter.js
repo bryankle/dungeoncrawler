@@ -149,8 +149,8 @@ Critter.prototype.comeAlive = function() {
             var x = that.x;
             var y = that.y;
             _moveCritter(random);
-            
-             that.map.grid[x][y] = '_';
+            // Returns tile to previous condition after critter steps off
+            that.map.grid[x][y] = '_';
         }
        
     }

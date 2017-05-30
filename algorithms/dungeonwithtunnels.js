@@ -63,14 +63,6 @@ Map.prototype._distance = function(x2, y2) {
     }
 };
 
-Map.prototype.cellIsEmpty = function(x, y) {
-    if (this.grid[x][y] == '_') {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 // Outer function to provide scope
 Map.prototype.calculatePath = function(x0, y0, x1, y1) {
     var arr = [];

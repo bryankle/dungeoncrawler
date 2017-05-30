@@ -85,6 +85,7 @@ class Grid extends Component {
 	// Create entire grid (whole map) --> determine character camera view of grid --> render view into UI
 
 	_moveCharPosition(direction) {
+		// Create copy of map position and char position before manipulating and updating back into state
 		let cloneMapPosition = Array.prototype.slice.call(this.state.mapPosition);
 		let cloneCharPosition = Array.prototype.slice.call(this.state.charPosition);
 		let X = cloneCharPosition[0];
@@ -144,17 +145,8 @@ class Grid extends Component {
 			charPosition: cloneCharPosition
 		})
 	}
-	// No longer need this
-	// _handleIncomingObject(nextPosition) {
-	// 	let _charPosition = Array.prototype.slice.call(this.state.mapPosition);
-	// 	switch(direction) {
-	// 		case 'up':
-	// 			_charPosition[1]--;
-	// 		//	if (this.state.entireGrid[])
-	// 		//if (_charPosition) // Must move grid into state to allow access to compare
-	// 	}
-	// }
 
+	// Creates initial grid - initiated during componentWillMount
 	_createGrid (type, cols, rows) {
 		let grid = [],
 			tile;
@@ -162,39 +154,29 @@ class Grid extends Component {
 			let row = [];
 			for (let j = 0; j < rows; j++) {
 				let random = Math.random();
+				// Creates border around map
 				if (i < 7 || j < 7 || i > this.state.mapSize - 7 || j > this.state.mapSize - 8) {
 					tile = 'ROCK';
 				}
 				else {
+					// Randomly generate grass or rock on tile
 					tile = random > 0.4 ? 'GRASS' : 'ROCK';
-					//tile = 'GRASS'
 				}
-				//let tile = random > 0.3 ? 'GRASS' : 'ROCK';
 				row.push(tile)
-				//row.push(type)
 			}
 			grid.push(row);
 		}
 		
-		 console.log('createGrid...');
-		 console.log(grid);
-		 console.log(this.helperTranspose(grid))
-		//return this.helperTranspose(grid);
 		return grid
 	}
-
+	// Transpose array to convert grid to true [x][y]
 	helperTranspose(a) {
 		return Object.keys(a[0]).map(function(c) {
 			return a.map(function(r) { return r[c]; });
 		})
 	}
 
-	updateStateGrid(grid) {
-		this.setState({
-			entireGrid: grid
-		})
-	}
-
+	// cameraGrid accepts an array (this.state.grid) and translates into player's camera screen
 	cameraGrid (grid) {
 		// get camera position from state
 		const position = this.state.mapPosition; // Adjust everything to mapPosition later on
@@ -213,13 +195,12 @@ class Grid extends Component {
 		gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT';
 		console.log(Math.floor(center));
 		console.log(this.state.charPosition[0])
-		//gridView[this.state.charPosition[0]][this.state.charPosition[1]] = 'KNIGHT';
 		return gridView;
 	}
-
+	
+	// renderGrid accepts an array (cameraGrid) and translates into tile sprites
 	renderGrid(grid) {
 		let renderGrid = [];
-
 		
 		grid.forEach(function(row) {
 			let renderRow = [];
