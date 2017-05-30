@@ -236,25 +236,25 @@ var firstCritter = new Critter(9, 2, 'firstCritter');
 firstCritter.comeAlive();
 map.addCrittersToMap(firstCritter);
 
-var secondCritter = new Critter(1, 1, 'secondCritter');
-secondCritter.comeAlive();
-map.addCrittersToMap(secondCritter);
+// var secondCritter = new Critter(1, 1, 'secondCritter');
+// secondCritter.comeAlive();
+// map.addCrittersToMap(secondCritter);
 
-var thirdCritter = new Critter(1, 9, 'thirdCritter');
-thirdCritter.comeAlive();
-map.addCrittersToMap(thirdCritter);
+// var thirdCritter = new Critter(1, 9, 'thirdCritter');
+// thirdCritter.comeAlive();
+// map.addCrittersToMap(thirdCritter);
 
-var fourthCritter = new Critter(9, 1, 'fourthCritter');
-fourthCritter.comeAlive();
-map.addCrittersToMap(fourthCritter);
+// var fourthCritter = new Critter(9, 1, 'fourthCritter');
+// fourthCritter.comeAlive();
+// map.addCrittersToMap(fourthCritter);
 
-var fifthCritter = new Critter(9, 4, 'fifthCritter');
-fifthCritter.comeAlive();
-map.addCrittersToMap(fifthCritter);
+// var fifthCritter = new Critter(9, 4, 'fifthCritter');
+// fifthCritter.comeAlive();
+// map.addCrittersToMap(fifthCritter);
 
-var sixthCritter = new Critter(9, 3, 'sixthCritter');
-sixthCritter.comeAlive();
-map.addCrittersToMap(sixthCritter);
+// var sixthCritter = new Critter(9, 3, 'sixthCritter');
+// sixthCritter.comeAlive();
+// map.addCrittersToMap(sixthCritter);
 
 map.updateGrid();
 
