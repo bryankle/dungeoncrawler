@@ -69,7 +69,7 @@ class Dungeon extends Component {
             }
         }
         
-        console.log(gridClone);
+//        console.log(gridClone);
     }
 
     generateRooms() {
@@ -77,8 +77,8 @@ class Dungeon extends Component {
     }
 
     render() {
+        //this.props.updateGrid([1,2,3]);
         console.log('Creating dungeon...')
-        console.log(this.state.grid)
         this.createRoom();
         //this._getSecondPoint.apply(this, this._getFirstPoint())
         return (

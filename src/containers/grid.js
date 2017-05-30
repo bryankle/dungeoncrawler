@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 //import Hero from '../img/Hero';
-//import Dungeon from '../containers/generateDungeon';
+import Dungeon from './generateDungeon';
 
 import Grass from '../../img/grass.jpg';
 import whiteKnight from '../../img/knight-front.png';
@@ -230,16 +231,23 @@ class Grid extends Component {
 			console.log(this.state.mapPosition)
 			console.log(this.state.charPosition)
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
+			console.log('From Redux...');
+			console.log(this.props)
 			
-
 		return(
-			<div>	
+			<div>
+				<Dungeon />	
 				{this.renderGrid(this.cameraGrid(this.state.entireGrid))}
 			</div>
 		)
 	}
 }
+function mapStateToProps(state) {
+    return {
+        grid: state.grid
+    }
+}
 
-export default Grid;
+export default connect(mapStateToProps)(Grid);
 
 //	{this.renderGrid(this.cameraGrid(this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)))}

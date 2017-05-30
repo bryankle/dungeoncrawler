@@ -1,7 +1,9 @@
 export default function(state = {}, action) {
     switch(action.type) {
         case "UPDATE_GRID":
-            return 
+            return {
+                ...state
+            }
         default:
             return state;
     }
