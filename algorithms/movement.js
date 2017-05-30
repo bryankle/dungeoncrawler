@@ -69,56 +69,6 @@ Map.prototype.checkOverlap = function(x, y, width, height) {
 
 
 
-Map.prototype.critter = function(x, y) {
-    var that = this;
-    
-    var currX = x,
-        currY = y
- 
-    // Outputs random coordinates
-    function nextPosition(x, y) {
-        var direction = [
-                    [currX, currY + 1],
-                    [currX + 1, currY],
-                    [currX, currY - 1],
-                    [currX - 1, currY]
-                ];
-            var random = direction[Math.floor(Math.random() * 4)];
-        // currX = random[0]
-        // currY = random[1]
-        //console.log(position.x, position.y);
-       // console.log(currX, currY)
-      // console.log(randomDirection)
-      return random;
-    }
-   
-    /* 
-        Updates next location of critter
-        Runs recursively until critter dies
-    */
-    function moveCritter(x0, y0) {
-        console.log('Coming alive....')
-        var renderNextPosition = nextPosition();
-        var x1 = renderNextPosition[0];
-        var y1 = renderNextPosition[1];
-        if (x1 < 0 || x1 > 10 || y1 < 0 || y1 > 10) {
-            renderNextPosition
-        }
-        
-
-        //randomDirection = direction[Math.floor(Math.random() * 4)];
-        // position.x = randomDirection[0];
-        // position.y = randomDirection[1];
-        var memory = that.grid[x0][y0];
-        that.grid[x0][y0] = 'O';
-    }
-
-    moveCritter(x, y);
-    // End if HP goes to 0
-   //moveCritter.call(this, position.x, position.y)
-   //setInterval(moveCritter(position.x, position.y), 1000)
- //  setInterval(nextPosition, 1000);
-}
 
 
 
@@ -201,7 +151,7 @@ Critter.prototype.comeAlive = function() {
         map.updateGrid()
     }
 
-    moves[1]
+    //moves[1] // Temporarily removed; probably for testing
     console.log('Current position - x: ' + this.x + ' y: ' + this.y)
 }
 
@@ -217,6 +167,7 @@ Map.prototype.addCrittersToMap = function(critter) {
     this.critters[critter.type] = critter;
 }
 
+// Refreshes grid to reflect new location of critter
 Map.prototype.updateGrid = function() {
     console.log(this.grid);
     var critters = this.critters;
@@ -256,8 +207,9 @@ map.addCrittersToMap(firstCritter);
 // sixthCritter.comeAlive();
 // map.addCrittersToMap(sixthCritter);
 
-map.updateGrid();
+map.updateGrid(); // Places critter on map before spawning obstacles
 
+// Spawns obstacles/rooms
 map.generateRooms();
 map.generateRooms();
 map.generateRooms();
@@ -267,5 +219,6 @@ map.generateRooms();
 //console.log(firstCritter.comeAlive());
 
 // Update map every second
+// Initial render of all critters and obstacles before setInterval is responsible for updating grid
 map.updateGrid();
 
