@@ -83,6 +83,7 @@ function Critter(x, y, type, map) {
     this.x = x;
     this.y = y;
     this.symbol = 'O';
+
 }
 /*  Critter movement
     Reference: Right is +; Down is +
@@ -116,16 +117,16 @@ Critter.prototype.comeAlive = function() {
 
         var random = Math.floor(Math.random() * 4);
 
-        if ((that.x == 0 && random == 1) || (random == 1 && map.grid[that.x - 1][that.y] !== '_')) {
+        if ((that.x == 0 && random == 1) || (random == 1 && that.map.grid[that.x - 1][that.y] !== '_')) {
             generateCoordinateInBound();
         }
-        else if ((that.x == 9 && random == 0) || (random == 0 && map.grid[that.x + 1][that.y] !== '_')) { //  Set random to adjust with map width using Redux and state when transferring to React
+        else if ((that.x == 9 && random == 0) || (random == 0 && that.map.grid[that.x + 1][that.y] !== '_')) { //  Set random to adjust with map width using Redux and state when transferring to React
             generateCoordinateInBound();
         }
-        else if ((that.y == 0 && random  == 2) || (random == 2 && map.grid[that.x][that.y - 1] !== '_')) {
+        else if ((that.y == 0 && random  == 2) || (random == 2 && that.map.grid[that.x][that.y - 1] !== '_')) {
             generateCoordinateInBound();
         }
-        else if ((that.y == 9 && random  == 3) || (random == 3 && map.grid[that.x][that.y + 1] !== '_')) {
+        else if ((that.y == 9 && random  == 3) || (random == 3 && that.map.grid[that.x][that.y + 1] !== '_')) {
             generateCoordinateInBound();
         }
         else {
@@ -133,7 +134,7 @@ Critter.prototype.comeAlive = function() {
             var y = that.y;
             moveCritter(random);
             
-             map.grid[x][y] = '_';
+             that.map.grid[x][y] = '_';
             //console.log('after moveCritter')
         }
        //console.log(that.x, that.y);
@@ -148,7 +149,7 @@ Critter.prototype.comeAlive = function() {
 
         moves[func]();
         console.log('MAP');
-        map.updateGrid()
+        that.map.updateGrid()
     }
 
     //moves[1] // Temporarily removed; probably for testing
@@ -163,6 +164,7 @@ Map.prototype.critterLocation = function(type, x, y) {
 }
 
 // Run every time new critter is added to map
+// Try to implement this into Critter constructor
 Map.prototype.addCrittersToMap = function(critter) {
     this.critters[critter.type] = critter;
 }
@@ -182,10 +184,10 @@ Map.prototype.updateGrid = function() {
     //console.log(this)
 }
 
-var map = new Map(10, 10);
-var firstCritter = new Critter(9, 2, 'firstCritter');
+var map1 = new Map(10, 10);
+var firstCritter = new Critter(9, 2, 'firstCritter', map1);
 firstCritter.comeAlive();
-map.addCrittersToMap(firstCritter);
+map1.addCrittersToMap(firstCritter);
 
 // var secondCritter = new Critter(1, 1, 'secondCritter');
 // secondCritter.comeAlive();
@@ -207,12 +209,12 @@ map.addCrittersToMap(firstCritter);
 // sixthCritter.comeAlive();
 // map.addCrittersToMap(sixthCritter);
 
-map.updateGrid(); // Places critter on map before spawning obstacles
+map1.updateGrid(); // Places critter on map before spawning obstacles
 
 // Spawns obstacles/rooms
-map.generateRooms();
-map.generateRooms();
-map.generateRooms();
+map1.generateRooms();
+map1.generateRooms();
+map1.generateRooms();
 //map.critter(5,5); // Places an 'O' on coordinate [5, 5]
 //map.critterLocation('0', 2, 2) // Places 'O' on coordinate [2,2]
 
@@ -220,5 +222,5 @@ map.generateRooms();
 
 // Update map every second
 // Initial render of all critters and obstacles before setInterval is responsible for updating grid
-map.updateGrid();
+map1.updateGrid();
 
