@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Hero from './Hero';
-import Dungeon from '../containers/generateDungeon';
+//import Hero from '../img/Hero';
+//import Dungeon from '../containers/generateDungeon';
 
 import Grass from '../../img/grass.jpg';
 import whiteKnight from '../../img/knight-front.png';
@@ -234,7 +234,6 @@ class Grid extends Component {
 
 		return(
 			<div>	
-				<Dungeon />
 				{this.renderGrid(this.cameraGrid(this.state.entireGrid))}
 			</div>
 		)

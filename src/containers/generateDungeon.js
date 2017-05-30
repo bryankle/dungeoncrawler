@@ -1,3 +1,7 @@
+// Notes on how to implement dungeon generator
+// Redux will be used here to update the global state and feed the array into grid.js
+// Question: Will grid.js update grid using global state data before rendering?
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
