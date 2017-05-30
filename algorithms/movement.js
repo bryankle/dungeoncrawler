@@ -16,7 +16,7 @@ function Map(width, height) {
     this.gridReference = this.grid
 }
 
-Map.prototype.generateRooms = function() {
+Map.prototype.generateRooms = function(rooms) {
     var that = this;
     // var randomX = Math.floor(Math.random() * this.width);
     // var randomY = Math.floor(Math.random() * this.height);
@@ -50,7 +50,9 @@ Map.prototype.generateRooms = function() {
             }
         }
     }
-    generateRoom()
+    for (i = 0; i < rooms; i++) {
+        generateRoom()
+    }
 }
 
 Map.prototype.checkOverlap = function(x, y, width, height) {
@@ -222,9 +224,9 @@ critter2.comeAlive();
 // map1.updateGrid(); // Places critter on map before spawning obstacles
 
 // Spawns obstacles/rooms
-map1.generateRooms();
-map1.generateRooms();
-map1.generateRooms();
+map1.generateRooms(3);
+// map1.generateRooms();
+// map1.generateRooms();
 //map.critter(5,5); // Places an 'O' on coordinate [5, 5]
 //map.critterLocation('0', 2, 2) // Places 'O' on coordinate [2,2]
 
