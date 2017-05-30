@@ -16,6 +16,8 @@ function Map(width, height) {
     this.gridReference = this.grid
 }
 
+/* GENERATING RANDOM ROOMS/OBSTACLES(TESTING) */
+
 Map.prototype.generateRooms = function(rooms) {
     var that = this;
     // var randomX = Math.floor(Math.random() * this.width);
@@ -55,28 +57,35 @@ Map.prototype.generateRooms = function(rooms) {
     }
 }
 
-Map.prototype.checkOverlap = function(x, y, width, height) {
-    var that = this;
-    console.log('Check overlap');
+/* MAP METHODS USED BY CRITTER TO TRANSLATE CRITTERS ON MAP */
+// Not in use at the moment
+Map.prototype.critterLocation = function(type, x, y) {
+    console.log('Critter location working')
     console.log(this.grid)
-    for (var i = x; i < x + width; i++) {
-        for (var j = y; j < y + height; j++) {
-            if (that.grid[i][j] !== '_') {
-                return false
-            }
-            return true;
-        }
+    this.grid[x][y] = type;
+}
+
+// Run every time new critter is added to map
+// Try to implement this into Critter constructor
+// Creates an inventory of 'critters' in the Map instance 
+Map.prototype._addCrittersToMap = function(critter) {
+    this.critters[critter.type] = critter;
+}
+
+// Refreshes grid to reflect new location of critter
+Map.prototype._updateGrid = function() {
+    console.log(this.grid);
+    var critters = this.critters;
+    for (var critter in critters) {
+        //console.log(critters[critter])
+        var x = critters[critter].x;
+        var y = critters[critter].y;
+        
+        this.grid[x][y] = critters[critter].symbol;
     }
 }
 
-
-
-
-
-
-
-
-
+/* CREATE A CRITTER */
 // Use random coordinate generator to generate initial x and y coordinate for critter
 function Critter(x, y, type, map) {
     this.map = map;
@@ -109,7 +118,7 @@ Critter.prototype._moveDown = function() {
     Grid is updated with Map method _updateGrid after each move
 */
 Critter.prototype.comeAlive = function() {
-    console.log('Coming alive');
+    console.log(this.type + ' is coming alive');
 
     this.map._addCrittersToMap(this);
     var that = this;    
@@ -142,97 +151,71 @@ Critter.prototype.comeAlive = function() {
             _moveCritter(random);
             
              that.map.grid[x][y] = '_';
-            //console.log('after _moveCritter')
         }
-       //console.log(that.x, that.y);
        
     }
-   // _generateCoordinateInBound()
 
       setInterval(_generateCoordinateInBound, 1000);
 
     function _moveCritter(func) {
         console.log('from this');
-
         moves[func]();
-        console.log('MAP');
         that.map._updateGrid()
     }
-
-    //moves[1] // Temporarily removed; probably for testing
-    console.log('Current position - x: ' + this.x + ' y: ' + this.y)
 }
 
-// Find out how to place critter on grid of map instance
-// Not in use at the moment
-Map.prototype.critterLocation = function(type, x, y) {
-    console.log('Critter location working')
-    console.log(this.grid)
-    this.grid[x][y] = type;
-}
+// Create a function that accepts 2 parameters: type and number
+// Randomly spawn on an empty space on the map the given number of types of critter
 
-// Run every time new critter is added to map
-// Try to implement this into Critter constructor
-// Creates an inventory of 'critters' in the Map instance 
-Map.prototype._addCrittersToMap = function(critter) {
-    this.critters[critter.type] = critter;
-}
-
-// Refreshes grid to reflect new location of critter
-Map.prototype._updateGrid = function() {
-    console.log(this.grid);
-    var critters = this.critters;
-    for (var critter in critters) {
-        //console.log(critters[critter])
-        var x = critters[critter].x;
-        var y = critters[critter].y;
-        
-        this.grid[x][y] = critters[critter].symbol;
-
+Map.prototype.spawnCritters = function(type, number) {
+    var that = this;
+    var critter,
+        coordinates,
+        x = _getRandomLatitude(),
+        y = _getRandomLongitude()
+    
+    console.log(that)
+    function _getRandomLatitude() {
+        return Math.floor(Math.random() * that.width);
     }
-    //console.log(this)
+
+    function _getRandomLongitude() {
+        return Math.floor(Math.random() * that.height);
+    }
+    // while (this.grid[x][y] !== '_') {
+    //     console.log('running')
+    //     x = _getRandomLongitude();
+    //     y = _getRandomLatitude();
+    // }
+    function verifyCoordinates() {
+        console.log('verifying...')
+        var x = _getRandomLatitude();
+        var y = _getRandomLongitude();
+        console.log(x, y)
+        if (that.grid[x][y] !== '_') {
+            verifyCoordinates();
+        }
+        else {
+            return new Critter(x, y, type+i, that).comeAlive();
+        }
+    }
+
+    for (i = 0; i < number; i++) {
+        coordinates = verifyCoordinates();
+
+        //new Critter(coordinates[0], coordinates[1], type+i, this).comeAlive();
+    }
 }
 
 var map1 = new Map(10, 10);
-var firstCritter = new Critter(9, 2, 'firstCritter', map1);
-firstCritter.comeAlive();
+// var firstCritter = new Critter(9, 2, 'firstCritter', map1).comeAlive();
 
-var critter2 = new Critter(1,1, 'critter2', map1);
-critter2.comeAlive();
-//map1._addCrittersToMap(firstCritter);
+// var critter2 = new Critter(1,1, 'critter2', map1);
+// critter2.comeAlive();
+map1.generateRooms(5);
+map1.spawnCritters('rat', 1);
 
-// var secondCritter = new Critter(1, 1, 'secondCritter');
-// secondCritter.comeAlive();
-// map._addCrittersToMap(secondCritter);
-
-// var thirdCritter = new Critter(1, 9, 'thirdCritter');
-// thirdCritter.comeAlive();
-// map._addCrittersToMap(thirdCritter);
-
-// var fourthCritter = new Critter(9, 1, 'fourthCritter');
-// fourthCritter.comeAlive();
-// map._addCrittersToMap(fourthCritter);
-
-// var fifthCritter = new Critter(9, 4, 'fifthCritter');
-// fifthCritter.comeAlive();
-// map._addCrittersToMap(fifthCritter);
-
-// var sixthCritter = new Critter(9, 3, 'sixthCritter');
-// sixthCritter.comeAlive();
-// map._addCrittersToMap(sixthCritter);
-
-// map1.updateGrid(); // Places critter on map before spawning obstacles
 
 // Spawns obstacles/rooms
-map1.generateRooms(3);
-// map1.generateRooms();
-// map1.generateRooms();
-//map.critter(5,5); // Places an 'O' on coordinate [5, 5]
-//map.critterLocation('0', 2, 2) // Places 'O' on coordinate [2,2]
 
-//console.log(firstCritter.comeAlive());
-
-// Update map every second
-// Initial render of all critters and obstacles before setInterval is responsible for updating grid
-// map1.updateGrid();
 
