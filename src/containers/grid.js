@@ -43,7 +43,7 @@ class Grid extends Component {
 	componentWillMount() {
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
 		this.setState({
-			entireGrid: this._helperTranspose(this._createGrid('GRASS', this.state.mapSize, this.state.mapSize))
+			entireGrid: this._helperTranspose(this._createGrid('_', this.state.mapSize, this.state.mapSize))
 		})
 	}
 
@@ -160,7 +160,7 @@ class Grid extends Component {
 				let random = Math.random();
 				// Creates border around map
 				if (i < 7 || j < 7 || i > this.state.mapSize - 7 || j > this.state.mapSize - 8) {
-					tile = 'ROCK';
+					tile = 'R';
 				}
 				else {
 					// Randomly generate grass or rock on tile
@@ -173,11 +173,26 @@ class Grid extends Component {
 		}
 		return grid
 	}
+
+	_calculatePath(x0, y0, x1, y1) {
+		let arr = [];
+		let start = {
+			x: x0,
+			y: y0
+		}
+		let end = {
+			x: x1,
+			y: y1
+		}
+		
+		
+	}
 	
-	_createDungeonGrid(cols, rows) {
+	_generateRooms(cols, rows) {
 		function helperGeneratePosition() {
-			var randomX = Math.floor(Math.random() * cols);
-			var randomY = Math.floor(Math.random() * rows);
+			// cols & rows will temporarily be substituted for 150 
+			var randomX = Math.floor(Math.random() * 150);
+			var randomY = Math.floor(Math.random() * 150);
 			return [randomX, randomY]
 		}
 		function helperGenerateRoomSize() {
@@ -188,8 +203,17 @@ class Grid extends Component {
 		function helperFindCenterOfRoom(x, y, w, h) {
 			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
 		}
+		function generateRoom() {
+			console.log('Log generateRoom activity');
 
+			var randomPosition = helperGeneratePosition();
+			var randomSize = helperGenerateRoomSize();
+			console.log('randomPosition:' + randomPosition);
+			console.log('randomSize: ' + randomSize);
+		}
+		generateRoom()
 	}
+
 
 	// Transpose array to convert grid to true [x][y]
 	_helperTranspose(a) {
@@ -237,7 +261,7 @@ class Grid extends Component {
 					case 'KNIGHT':
 						renderRow.push(<img src={whiteKnight} />)
 						break;
-					case 'ROCK':
+					case 'R':
 						renderRow.push(<img src={Rock} />)
 						break;
 					default:
@@ -249,6 +273,22 @@ class Grid extends Component {
 		}) 
 		return renderGrid;
 	}
+	// FIX THIS
+	renderGridToString() {
+		console.log(this.state.entireGrid)
+		let gridString = 'test';
+		this.state.entireGrid.forEach(function(row) {
+			let str = row.join(', ');
+			console.log(row)
+			row.forEach(function(tile) {
+
+			})
+			console.log(str);
+			var gridString = gridString.concat('hello');
+		})
+		console.log('gridToString')
+		console.log(gridString)
+	}
 
 	render() {
 			// console.log(this.state.mapPosition)
@@ -256,10 +296,13 @@ class Grid extends Component {
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
 			console.log('From Redux...');
 			console.log(this.props)
+			console.log('_generateRooms');
+			this._generateRooms()
 			
 		return(
 			<div>
 				<Dungeon />	
+				{this.renderGridToString()}
 				{this.renderGrid(this.cameraGrid(this.state.entireGrid))}
 			</div>
 		)
