@@ -245,9 +245,8 @@ Map.prototype.generateRooms = function() {
         return [Math.floor(x + w / 2), Math.floor(y + h / 2)];
     }
 
-    function helperConnectRooms(room1, room2)
-
     function generateRoom() {
+        console.log('Log generateRoom activity')
         // Generates single random point in room
         /*
             Implement later: Avoid creating random point occupied cell
@@ -261,7 +260,10 @@ Map.prototype.generateRooms = function() {
         var width = randomSize[0];
         var height = randomSize[1];
         // If the room exceeds the bounds of the grid, generate room until room meets requirement
-        if (x + width > that.width || y + height > that.height) {
+        if ((x + width > that.width || y + height > that.height)
+            ||
+            (that.grid[x][y] !== '_' || that.grid[x][y + height] !== '_' || that.grid[x + width][y] !== '_' || that.grid[x + width][y + height] !== '_')
+            ) {
            generateRoom();
         }
         // Draw room onto grid if above conditions are met
@@ -275,6 +277,7 @@ Map.prototype.generateRooms = function() {
             }
         }
     }
+
     generateRoom()
 }
 
@@ -292,5 +295,10 @@ map1.end(9,9);
     //map1.drawSequentialPath(this.path);
 
 map1.generateRooms();
+console.log(map1.grid);
+map1.generateRooms();
+console.log(map1.grid);
+map1.generateRooms();
+
 console.log(map1.grid);
 // Focus on adapting the Map.prototype.calculatePath to accept 2 coordinates
