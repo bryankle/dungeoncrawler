@@ -20,6 +20,7 @@ function Map(width, height) {
             }
             return arr;
         }).apply(this);
+    this.roomCount = 0;
     this.rooms = {};
 }
 
@@ -94,8 +95,8 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
         }
     else {
         latest.push(item);
+        }
     }
-}
     // Inner recursive function
     function helper(x, y) {
         // Push definite coordinates into array located in outer function
@@ -158,20 +159,26 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
                     continue;
                 }
             }
-            // Proceed if grid cell is empty
-            if (that.grid[a][b] == '_') {
-                console.log('C')
-                latestQueue([a, b])
-                helper(a, b);
-                break;
-            }
-            // Return once destination has been reached
-            else if (that.grid[a][b] == 'B') {
+            // Obstacle avoidance - Proceed if grid cell is empty
+            // Not neccessary for obstacle avoidance in linking dungeons together
+
+            // if (that.grid[a][b] == '_') {
+            //     console.log('C')
+            //     latestQueue([a, b])
+            //    helper(a, b);
+            //     break; // Must include with recursion, otherwises causes maximum stack error
+            // }
+
+            //Return once destination has been reached
+            else if (a == end.x && b == end.y) {
                  //console.log('C')
                 return this.path = arr;
             }
-        }
 
+            // No obstacle avoidance
+            helper(a, b);
+            break; // Must include with recursion, otherwises causes maximum stack error
+        }
     }
     // Start inner recursive function
     helper(start.x, start.y);
@@ -188,7 +195,7 @@ Map.prototype.drawPath = function() {
         var x = coordinate[0];
         var y = coordinate[1];
         if (idx !== 0) {
-            this.grid[x][y] = 'O';
+            this.grid[x][y] = 'X'; // was O
         }
     }.bind(this))
     console.log(this.grid);
@@ -203,7 +210,7 @@ Map.prototype.drawPath = function() {
 Map.prototype.drawSequentialPath = function(pathArray) {
     var i = 0;
     var that = this;
-    function drawStep1() {
+    function drawStep() {
         console.log('Hi...')
         i++;
         var x = that.path[i][0];
@@ -217,7 +224,7 @@ Map.prototype.drawSequentialPath = function(pathArray) {
         }
         
     }
-    var startInterval = setInterval(drawStep1, 500)
+    var startInterval = setInterval(drawStep, 500)
 }
 
 /* RANDOM DUNGEON GENERATOR */
@@ -227,7 +234,6 @@ Map.prototype.drawSequentialPath = function(pathArray) {
 Map.prototype.generateRooms = function() {
     var that = this;
     // Used to create unique room objects this.rooms; increase by 1 each room created
-    var numberOfRooms = 0;
 
     function helperGeneratePosition() {
         var randomX = Math.floor(Math.random() * that.width);
@@ -260,15 +266,14 @@ Map.prototype.generateRooms = function() {
         var width = randomSize[0];
         var height = randomSize[1];
         // If the room exceeds the bounds of the grid, generate room until room meets requirement
-        if ((x + width > that.width || y + height > that.height)
-            ||
-            (that.grid[x][y] !== '_' || that.grid[x][y + height] !== '_' || that.grid[x + width][y] !== '_' || that.grid[x + width][y + height] !== '_')
-            ) {
+        if (x + width > that.width || y + height > that.height) {
            generateRoom();
         }
+
         // Draw room onto grid if above conditions are met
         else {
-            that.rooms[numberOfRooms] = helperFindCenterOfRoom(x, y, width, height);
+            that.rooms[that.roomCount] = helperFindCenterOfRoom(x, y, width, height);
+            that.roomCount++;
             console.log(that.rooms)
             for (var i = x; i < x + width; i++) {
                 for (var j = y; j < y + height; j++) {
@@ -276,9 +281,25 @@ Map.prototype.generateRooms = function() {
                 }
             }
         }
+
+
     }
 
     generateRoom()
+}
+
+Map.prototype.connectRooms = function() {
+    var x0, y0, x1, y1;
+    console.log(this.rooms)
+    // for (i = 0; i < this.path.length - 1; i++) {
+    //     x0 = this.path[i][0];
+    //     y0 = this.path[i][1];
+    //     x1 = this.path[i + 1][0];
+    //     y1 = this.path[i + 1][1];
+    //     console.log(x0, y0);
+    //     console.log(x1, y1)
+    //    // console.log(this.calculatePath(x0, y0, x1, y1))
+    // }
 }
 
 var map1 = new Map(10, 10);
@@ -294,11 +315,19 @@ map1.end(9,9);
     //map1.drawPath();
     //map1.drawSequentialPath(this.path);
 
+
 map1.generateRooms();
 console.log(map1.grid);
 map1.generateRooms();
+map1.calculatePath(map1.rooms[0][0], map1.rooms[0][1], map1.rooms[1][0], map1.rooms[1][1])
+//map1.drawSequentialPath(map1.calculatePath(map1.rooms[0][0], map1.rooms[0][1], map1.rooms[1][0], map1.rooms[1][1]))
 console.log(map1.grid);
+map1.generateRooms();
+map1.generateRooms();
 map1.generateRooms();
 
 console.log(map1.grid);
+console.log(map1);
+map1.connectRooms()
+
 // Focus on adapting the Map.prototype.calculatePath to accept 2 coordinates
