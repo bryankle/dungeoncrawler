@@ -21,7 +21,7 @@ function Map(width, height) {
             return arr;
         }).apply(this);
     this.roomCount = 0;
-    this.rooms = {};
+    this.rooms = [];
 }
 
 Map.prototype.start = function(x1, y1) {
@@ -136,7 +136,7 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
         directions.sort(function(a, b) {
             return a.distance > b.distance;
         })
-        console.log(directions)
+        //console.log(directions)
         // Loop through all 4 directions and subject to conditions before deciding on which direction to proceed
         for (var d = 0; d < directions.length; d++) {
             var dir = directions[d];
@@ -144,7 +144,7 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
             var a = dir.x;
             var b = dir.y;
 
-            console.log('curr: ' + a, b)
+            // /console.log('curr: ' + a, b)
 
             // Ensure projected coordinates stay on grid
             if (a >= that.width || b >= that.length) {
@@ -183,22 +183,22 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
     // Start inner recursive function
     helper(start.x, start.y);
     // Update 'path' property of map
-    console.log(arr);
+    //console.log(arr);
     return this.path = arr;
 }
 
 /* Render grid on console
     Draws grid with waypoints entirely mapped out
 */
-Map.prototype.drawPath = function() {
-    this.calculatePath().forEach(function(coordinate, idx) {
+Map.prototype.drawPath = function(x0, y0, x1, y1) {
+    this.calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
         var x = coordinate[0];
         var y = coordinate[1];
         if (idx !== 0) {
             this.grid[x][y] = 'X'; // was O
         }
     }.bind(this))
-    console.log(this.grid);
+    //console.log(this.grid);
     return this.grid;
 }
 
@@ -272,8 +272,9 @@ Map.prototype.generateRooms = function() {
 
         // Draw room onto grid if above conditions are met
         else {
-            that.rooms[that.roomCount] = helperFindCenterOfRoom(x, y, width, height);
-            that.roomCount++;
+            // that.rooms[that.roomCount] = helperFindCenterOfRoom(x, y, width, height);
+            // that.roomCount++;
+            that.rooms.push(helperFindCenterOfRoom(x, y, width, height))
             console.log(that.rooms)
             for (var i = x; i < x + width; i++) {
                 for (var j = y; j < y + height; j++) {
@@ -291,15 +292,14 @@ Map.prototype.generateRooms = function() {
 Map.prototype.connectRooms = function() {
     var x0, y0, x1, y1;
     console.log(this.rooms)
-    // for (i = 0; i < this.path.length - 1; i++) {
-    //     x0 = this.path[i][0];
-    //     y0 = this.path[i][1];
-    //     x1 = this.path[i + 1][0];
-    //     y1 = this.path[i + 1][1];
-    //     console.log(x0, y0);
-    //     console.log(x1, y1)
-    //    // console.log(this.calculatePath(x0, y0, x1, y1))
-    // }
+    for (i = 0; i < this.rooms.length - 1; i++) {
+       console.log(this.rooms[i] + ' and ' + this.rooms[i + 1])
+       x0 = this.rooms[i][0];
+       y0 = this.rooms[i][1];
+       x1 = this.rooms[i + 1][0];
+       y1 = this.rooms[i + 1][1];
+       this.drawPath(x0, y0, x1, y1)
+    }
 }
 
 var map1 = new Map(10, 10);
@@ -319,7 +319,7 @@ map1.end(9,9);
 map1.generateRooms();
 console.log(map1.grid);
 map1.generateRooms();
-map1.calculatePath(map1.rooms[0][0], map1.rooms[0][1], map1.rooms[1][0], map1.rooms[1][1])
+//map1.calculatePath(map1.rooms[0][0], map1.rooms[0][1], map1.rooms[1][0], map1.rooms[1][1])
 //map1.drawSequentialPath(map1.calculatePath(map1.rooms[0][0], map1.rooms[0][1], map1.rooms[1][0], map1.rooms[1][1]))
 console.log(map1.grid);
 map1.generateRooms();
@@ -329,5 +329,5 @@ map1.generateRooms();
 console.log(map1.grid);
 console.log(map1);
 map1.connectRooms()
-
+console.log(map1);
 // Focus on adapting the Map.prototype.calculatePath to accept 2 coordinates
