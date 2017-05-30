@@ -27,6 +27,9 @@ class Grid extends Component {
 				whiteKnight: {
 					solid: true
 				},
+				_: {
+					solid: false
+				},
 				GRASS: {
 					solid: false
 				},
@@ -40,7 +43,7 @@ class Grid extends Component {
 	componentWillMount() {
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
 		this.setState({
-			entireGrid: this.helperTranspose(this._createGrid('GRASS', this.state.mapSize, this.state.mapSize))
+			entireGrid: this._helperTranspose(this._createGrid('GRASS', this.state.mapSize, this.state.mapSize))
 		})
 	}
 
@@ -161,17 +164,35 @@ class Grid extends Component {
 				}
 				else {
 					// Randomly generate grass or rock on tile
-					tile = random > 0.4 ? 'GRASS' : 'ROCK';
+					//tile = random > 0.4 ? 'GRASS' : 'ROCK';
+					tile = '_'
 				}
 				row.push(tile)
 			}
 			grid.push(row);
 		}
-		
 		return grid
 	}
+	
+	_createDungeonGrid(cols, rows) {
+		function helperGeneratePosition() {
+			var randomX = Math.floor(Math.random() * cols);
+			var randomY = Math.floor(Math.random() * rows);
+			return [randomX, randomY]
+		}
+		function helperGenerateRoomSize() {
+			var randomWidth = Math.floor(Math.random() * 10) + 2;
+			var randomHeight = Math.floor(Math.random() * 10) + 2;
+			return [randomWidth, randomHeight];
+		}
+		function helperFindCenterOfRoom(x, y, w, h) {
+			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
+		}
+
+	}
+
 	// Transpose array to convert grid to true [x][y]
-	helperTranspose(a) {
+	_helperTranspose(a) {
 		return Object.keys(a[0]).map(function(c) {
 			return a.map(function(r) { return r[c]; });
 		})
@@ -207,6 +228,9 @@ class Grid extends Component {
 			let renderRow = [];
 			row.forEach(function(tile) {
 				switch(tile) {
+					case '_':
+						renderRow.push(<img src={Grass} />)
+						break;
 					case 'GRASS':
 						renderRow.push(<img src={Grass} />)
 						break;
@@ -227,9 +251,8 @@ class Grid extends Component {
 	}
 
 	render() {
-		//this._moveCharPosition();
-			console.log(this.state.mapPosition)
-			console.log(this.state.charPosition)
+			// console.log(this.state.mapPosition)
+			// console.log(this.state.charPosition)
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
 			console.log('From Redux...');
 			console.log(this.props)

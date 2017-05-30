@@ -1,6 +1,7 @@
 // Notes on how to implement dungeon generator
 // Redux will be used here to update the global state and feed the array into grid.js
 // Question: Will grid.js update grid using global state data before rendering?
+    // Move to componentWillMount
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -18,6 +19,8 @@ class Dungeon extends Component {
     }
 
    componentWillMount() {
+       this.props.updateGrid([1,2,3]);
+       console.log('componentWillMount')
        this.setState({
         grid: this.createDungeon()
        })
@@ -82,7 +85,7 @@ class Dungeon extends Component {
         this.createRoom();
         //this._getSecondPoint.apply(this, this._getFirstPoint())
         return (
-            <div>Hello from generate Dungeon</div>
+            <div></div>
         )
     }
  }
