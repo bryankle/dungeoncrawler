@@ -22,6 +22,8 @@ class Grid extends Component {
 			entireGrid: [], // Can be as large as neccessary
 			visibleGrid: [], // Only 15 x 15 is visible in camera view
 			mapSize: 150,
+			height: 150,
+			width: 150,
 			cameraSize: 15,
 			objectInformation: {
 				whiteKnight: {
@@ -183,21 +185,19 @@ class Grid extends Component {
 		let end = {
 			x: x1,
 			y: y1
-		}
-		
-		
+		}		
 	}
 	
 	_generateRooms(cols, rows) {
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
-			var randomX = Math.floor(Math.random() * 150);
-			var randomY = Math.floor(Math.random() * 150);
+			let randomX = Math.floor(Math.random() * 150);
+			let randomY = Math.floor(Math.random() * 150);
 			return [randomX, randomY]
 		}
 		function helperGenerateRoomSize() {
-			var randomWidth = Math.floor(Math.random() * 10) + 2;
-			var randomHeight = Math.floor(Math.random() * 10) + 2;
+			let randomWidth = Math.floor(Math.random() * 10) + 2;
+			let randomHeight = Math.floor(Math.random() * 10) + 2;
 			return [randomWidth, randomHeight];
 		}
 		function helperFindCenterOfRoom(x, y, w, h) {
@@ -206,10 +206,14 @@ class Grid extends Component {
 		function generateRoom() {
 			console.log('Log generateRoom activity');
 
-			var randomPosition = helperGeneratePosition();
-			var randomSize = helperGenerateRoomSize();
+			let randomPosition = helperGeneratePosition();
+			let randomSize = helperGenerateRoomSize();
 			console.log('randomPosition:' + randomPosition);
 			console.log('randomSize: ' + randomSize);
+			let width = randomSize[0];
+			let height = randomSize[1];
+			
+			if (x + width > this.state.width || y + height > this.state.height)
 		}
 		generateRoom()
 	}
@@ -273,10 +277,10 @@ class Grid extends Component {
 		}) 
 		return renderGrid;
 	}
-	// FIX THIS
+	// Render entire grid into string for viewing/testing
 	renderGridToString() {
 		console.log(this.state.entireGrid)
-		let gridString = 'test';
+		let gridString = '';
 		this.state.entireGrid.forEach(function(row) {
 			let str = row.join(', ');
 			console.log(row)
@@ -284,10 +288,11 @@ class Grid extends Component {
 
 			})
 			console.log(str);
-			var gridString = gridString.concat('hello');
+			gridString = gridString.concat(str).concat('\n');
 		})
 		console.log('gridToString')
 		console.log(gridString)
+		return gridString;
 	}
 
 	render() {
@@ -302,7 +307,6 @@ class Grid extends Component {
 		return(
 			<div>
 				<Dungeon />	
-				{this.renderGridToString()}
 				{this.renderGrid(this.cameraGrid(this.state.entireGrid))}
 			</div>
 		)
