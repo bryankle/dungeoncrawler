@@ -301,6 +301,8 @@ class Grid extends Component {
 			let y = randomPosition[1];
 			let width = randomSize[0];
 			let height = randomSize[1];
+
+			let rooms = Array.prototype.slice.call(that.state.rooms);
 			
 			if (x + width > that.state.width || y + height > that.state.height) {
 				generateRoom();
@@ -308,6 +310,7 @@ class Grid extends Component {
 			else {
 				let rooms = Array.prototype.slice.call(that.state.rooms);
 				rooms.push(helperFindCenterOfRoom(x, y, width, height))
+				console.log(helperFindCenterOfRoom(x, y, width, height))
 				for (let i = x; i < x + width; i++) {
 					for (let j = y; j < y + height; j++) {
 						grid[i][j] = 'R';
@@ -315,6 +318,9 @@ class Grid extends Component {
 				}
 				console.log('rooms')
 				console.log(rooms)
+				that.setState({
+					rooms: rooms
+				})
 			}
 		}
 		for (let i = 0; i < rooms; i++) {
@@ -326,7 +332,7 @@ class Grid extends Component {
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		let connectPath = this._drawPath(grid);
 		//return connectPath(10, 10, 105, 105);
-		return this._generateRooms(grid, 2)
+		return this._generateRooms(grid, 10)
 	}
 
 	// Transpose array to convert grid to true [x][y]
@@ -410,11 +416,13 @@ class Grid extends Component {
 			// console.log(this.state.charPosition)
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
 			console.log('Testing');
+			console.log('Rooms')
+			console.log(this.state.rooms)
 			this._drawPath(5,5,10,10);
 			//console.log(this._calculatePath(0, 0, 10, 10)) // Working
 			//this._drawPath(5,5,10,10)
-			console.log('From Redux...');
-			console.log(this.props)
+			// console.log('From Redux...');
+			// console.log(this.props)
 			console.log('_generateRooms');
 		//	this._generateRooms(5)
 			
