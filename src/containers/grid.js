@@ -38,7 +38,7 @@ class Grid extends Component {
 					solid: false
 				},
 				R: { // Rock
-					solid: true
+					solid: false
 				}
 			}
 		}
@@ -247,20 +247,14 @@ class Grid extends Component {
 			}
 		}
 		helper(start.x, start.y);
-		// this.setState = {
-		// 	path: arr
-		// }
-		// Unneccessary to update state of path, return arr for drawPath instead
+		
+		
 		return arr;
 	}
-	// CONTINUE HERE
-	// SET UP DRAW PATH TO INTEGRATE WITH GRID IN STATE INSTEAD OF OBJECT PROPERTY
-	// Ran from _connectRooms
+	
 	_drawPath(grid) {
 		var that = this;
-		//let gridClone = Array.prototype.slice.call(this.state.entireGrid);
-		// console.log('gridClone');
-		// console.log(gridClone)
+		
 		return function(x0, y0, x1, y1) {
 			that._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
 				let x = coordinate[0];
@@ -318,8 +312,7 @@ class Grid extends Component {
 						grid[i][j] = 'R';
 					}
 				}
-				// console.log('rooms')
-				// console.log(rooms)
+			
 				// Build tunnels here in same step as dungeon generation
 				let curriedDrawPath = that._drawPath(grid);
 				for (let i = 0; i < roomCenterPoints.length - 1; i++) {
@@ -350,23 +343,7 @@ class Grid extends Component {
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
-		//this._generateRooms(this._createGrid('_', this.state.mapSize, this.state.mapSize), 10)
-		// Curried function for testing
-		// let connectPath = this._drawPath(grid);
-		//return connectPath(10, 10, 105, 105);
-		grid = this._generateRooms(grid, 5)
-// 		const linkRooms = function(grid) {
-// 			let x0, y0, x1, y1;
-// 			console.log('Connect rooms running')
-// 			console.log(that.state.rooms)
-// 			for (let i = 0; i < that.state.rooms - 1; i++) {
-// 				console.log(that.state.rooms[i] + ' and ' + that.state.rooms[i + 1])
-// 				grid = this._drawPath(grid, x0, y0, x1, y1)
-// 			}
-// 			return grid;
-// 		}
-		
-// linkRooms();
+		grid = this._generateRooms(grid, 10)
 		return grid;
 	}
 
