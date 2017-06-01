@@ -270,31 +270,8 @@ class Grid extends Component {
 			})
 			return grid;
 		}
-		// this.setState({
-		// 	entireGrid: gridClone
-		// })
 		
 	}
-
-	// _drawPath(grid, x0, y0, x1, y1) {
-	// 	let gridClone = Array.prototype.slice.call(this.state.entireGrid);
-	// 	console.log('gridClone');
-	// 	console.log(gridClone)
-	// 	return function(x0, y0, x1, y1) {
-			
-	// 	}
-	// 	// this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
-	// 	// 	let x = coordinate[0];
-	// 	// 	let y = coordinate[1];
-	// 	// 	if (idx !== 0) {
-	// 	// 		gridClone[x][y] = 'R' // Changed from X to R for testing
-	// 	// 	}
-	// 	// })
-	// 	// this.setState({
-	// 	// 	entireGrid: gridClone
-	// 	// })
-	// 	return;
-	// }
 	
 	_generateRooms(cols, rows) {
 		const that = this;
