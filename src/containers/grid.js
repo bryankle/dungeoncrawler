@@ -165,7 +165,8 @@ class Grid extends Component {
 			for (let j = 0; j < rows; j++) {
 				let random = Math.random();
 				// Creates border around map
-				if (i < 7 || j < 7 || i > this.state.mapSize - 7 || j > this.state.mapSize - 8) {
+				// i controls height and j controls width; below set to 8 because glitch if set to 7
+				if (i < 7 || j < 7 || i > this.state.mapSize - 8 || j > this.state.mapSize - 7) {
 					tile = 'R';
 				}
 				else {
@@ -329,11 +330,25 @@ class Grid extends Component {
 		}
 		return grid;
 	}
+
+
+
 	buildMap() {
+		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		let connectPath = this._drawPath(grid);
 		//return connectPath(10, 10, 105, 105);
-		return this._generateRooms(grid, 10)
+		function connectRooms() {
+			let x0, y0, x1, y1;
+			for (let i = 0; i < that.state.rooms - 1; i++) {
+				console.log(that.state.rooms[i] + ' and ' + that.state.rooms[i + 1])
+
+			}
+		}
+		
+		grid = this._generateRooms(grid, 10)
+		connectRooms();
+		return grid;
 	}
 
 	// Transpose array to convert grid to true [x][y]
