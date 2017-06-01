@@ -45,10 +45,12 @@ class Grid extends Component {
 	}
 
 	componentWillMount() {
+		// Listen to arrow keys for character movement
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
-		this.setState({
-			entireGrid: this._helperTranspose(this._createGrid('_', this.state.mapSize, this.state.mapSize))
+		this.setState({ // Removed this._helperTranspose; add in later if needed
+			entireGrid: this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
+		this._drawPath(10,10,15,15);
 	}
 
 	_handleKeydown(e) {
@@ -167,9 +169,10 @@ class Grid extends Component {
 					tile = 'R';
 				}
 				else {
+					// Adjust to generate random obstacles for testing
 					// Randomly generate grass or rock on tile
-				tile = random > 0.4 ? '_' : 'R';
-				//	tile = '_'
+				//tile = random > 0.4 ? '_' : 'R';
+					tile = '_'
 				}
 				row.push(tile)
 			}
@@ -253,14 +256,20 @@ class Grid extends Component {
 	// SET UP DRAW PATH TO INTEGRATE WITH GRID IN STATE INSTEAD OF OBJECT PROPERTY
 	// Ran from _connectRooms
 	_drawPath(x0, y0, x1, y1) {
-		this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
-			let x = coordinate[0];
-			let y = coordinate[1];
-			if (idx !== 0) {
-				this.state.grid[x][y] = 'X'
-			}
-		}.bind(this))
-		return this.grid;
+		let gridClone = Array.prototype.slice.call(this.state.entireGrid);
+		console.log('gridClone');
+		console.log(gridClone)
+		// this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
+		// 	let x = coordinate[0];
+		// 	let y = coordinate[1];
+		// 	if (idx !== 0) {
+		// 		gridClone[x][y] = 'R' // Changed from X to R for testing
+		// 	}
+		// })
+		// this.setState({
+		// 	entireGrid: gridClone
+		// })
+		return;
 	}
 	
 	_generateRooms(cols, rows) {
@@ -385,7 +394,9 @@ class Grid extends Component {
 			// console.log(this.state.charPosition)
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
 			console.log('Testing');
-			console.log(this._calculatePath(0, 0, 10, 10))
+			this._drawPath(5,5,10,10);
+			//console.log(this._calculatePath(0, 0, 10, 10)) // Working
+			//this._drawPath(5,5,10,10)
 			console.log('From Redux...');
 			console.log(this.props)
 			console.log('_generateRooms');
