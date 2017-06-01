@@ -48,7 +48,7 @@ class Grid extends Component {
 		// Listen to arrow keys for character movement
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
 		this.setState({ // Removed this._helperTranspose; add in later if needed
-			entireGrid: this._createGrid('_', this.state.mapSize, this.state.mapSize)
+			entireGrid: this.buildMap() //this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
 		this._drawPath(10,10,15,15);
 	}
@@ -255,22 +255,46 @@ class Grid extends Component {
 	// CONTINUE HERE
 	// SET UP DRAW PATH TO INTEGRATE WITH GRID IN STATE INSTEAD OF OBJECT PROPERTY
 	// Ran from _connectRooms
-	_drawPath(x0, y0, x1, y1) {
-		let gridClone = Array.prototype.slice.call(this.state.entireGrid);
-		console.log('gridClone');
-		console.log(gridClone)
-		// this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
-		// 	let x = coordinate[0];
-		// 	let y = coordinate[1];
-		// 	if (idx !== 0) {
-		// 		gridClone[x][y] = 'R' // Changed from X to R for testing
-		// 	}
-		// })
+	_drawPath(grid) {
+		var that = this;
+		//let gridClone = Array.prototype.slice.call(this.state.entireGrid);
+		// console.log('gridClone');
+		// console.log(gridClone)
+		return function(x0, y0, x1, y1) {
+			that._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
+				let x = coordinate[0];
+				let y = coordinate[1];
+				if (idx !== 0) {
+					grid[x][y] = 'R' // Changed from X to R for testing
+				}
+			})
+			return grid;
+		}
 		// this.setState({
 		// 	entireGrid: gridClone
 		// })
-		return;
+		
 	}
+
+	// _drawPath(grid, x0, y0, x1, y1) {
+	// 	let gridClone = Array.prototype.slice.call(this.state.entireGrid);
+	// 	console.log('gridClone');
+	// 	console.log(gridClone)
+	// 	return function(x0, y0, x1, y1) {
+			
+	// 	}
+	// 	// this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
+	// 	// 	let x = coordinate[0];
+	// 	// 	let y = coordinate[1];
+	// 	// 	if (idx !== 0) {
+	// 	// 		gridClone[x][y] = 'R' // Changed from X to R for testing
+	// 	// 	}
+	// 	// })
+	// 	// this.setState({
+	// 	// 	entireGrid: gridClone
+	// 	// })
+	// 	return;
+	// }
 	
 	_generateRooms(cols, rows) {
 		const that = this;
@@ -311,7 +335,11 @@ class Grid extends Component {
 		}
 		generateRoom()
 	}
-
+	buildMap() {
+		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
+		let connectPath = this._drawPath(grid);
+		return connectPath(10, 10, 105, 105)
+	}
 
 	// Transpose array to convert grid to true [x][y]
 	_helperTranspose(a) {
