@@ -276,6 +276,7 @@ class Grid extends Component {
 	// Accepted parameters is grid to be manipulated and number of desired rooms
 	_generateRooms(grid, rooms) {
 		const that = this;
+		let roomCenterPoints = Array.prototype.slice.call(this.state.rooms);
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
 			let randomX = Math.floor(Math.random() * 150);
@@ -302,24 +303,24 @@ class Grid extends Component {
 			let width = randomSize[0];
 			let height = randomSize[1];
 
-			let rooms = Array.prototype.slice.call(that.state.rooms);
+			
 			
 			if (x + width > that.state.width || y + height > that.state.height) {
 				generateRoom();
 			}
 			else {
-				let rooms = Array.prototype.slice.call(that.state.rooms);
-				rooms.push(helperFindCenterOfRoom(x, y, width, height))
+				//let rooms = Array.prototype.slice.call(that.state.rooms);
+				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
 				console.log(helperFindCenterOfRoom(x, y, width, height))
 				for (let i = x; i < x + width; i++) {
 					for (let j = y; j < y + height; j++) {
 						grid[i][j] = 'R';
 					}
 				}
-				console.log('rooms')
-				console.log(rooms)
+				// console.log('rooms')
+				// console.log(rooms)
 				that.setState({
-					rooms: rooms
+					rooms: roomCenterPoints
 				})
 			}
 		}
