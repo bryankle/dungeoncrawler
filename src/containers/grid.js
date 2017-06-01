@@ -272,8 +272,9 @@ class Grid extends Component {
 		}
 		
 	}
-	
-	_generateRooms(cols, rows) {
+	// Convert this into a pure function
+	// Accepted parameters is grid to be manipulated and number of desired rooms
+	_generateRooms(grid, rooms) {
 		const that = this;
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
@@ -306,16 +307,26 @@ class Grid extends Component {
 			}
 			else {
 				let rooms = Array.prototype.slice.call(that.state.rooms);
+				rooms.push(helperFindCenterOfRoom(x, y, width, height))
+				for (let i = x; i < x + width; i++) {
+					for (let j = y; j < y + height; j++) {
+						grid[i][j] = 'R';
+					}
+				}
 				console.log('rooms')
 				console.log(rooms)
 			}
 		}
-		generateRoom()
+		for (let i = 0; i < rooms; i++) {
+			generateRoom()
+		}
+		return grid;
 	}
 	buildMap() {
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		let connectPath = this._drawPath(grid);
-		return connectPath(10, 10, 105, 105)
+		//return connectPath(10, 10, 105, 105);
+		return this._generateRooms(grid, 2)
 	}
 
 	// Transpose array to convert grid to true [x][y]
@@ -405,7 +416,7 @@ class Grid extends Component {
 			console.log('From Redux...');
 			console.log(this.props)
 			console.log('_generateRooms');
-			this._generateRooms()
+		//	this._generateRooms(5)
 			
 		return(
 			<div>

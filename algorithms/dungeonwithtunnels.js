@@ -269,6 +269,8 @@ Map.prototype.generateRooms = function() {
         else {
             // that.rooms[that.roomCount] = helperFindCenterOfRoom(x, y, width, height);
             // that.roomCount++;
+
+            // Creates center of each room created for connecting
             that.rooms.push(helperFindCenterOfRoom(x, y, width, height))
             console.log(that.rooms)
             for (var i = x; i < x + width; i++) {
