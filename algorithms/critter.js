@@ -213,7 +213,7 @@ var map1 = new Map(10, 10);
 // var critter2 = new Critter(1,1, 'critter2', map1);
 // critter2.comeAlive();
 map1.generateRooms(5);
-map1.spawnCritters('rat', 1);
+map1.spawnCritters('rat', 5);
 
 
 // Spawns obstacles/rooms

@@ -10,6 +10,7 @@ import Rock from '../../img/rock.jpg';
 
 // IDEAS
 // Create a random map generated with rocks and grass with collision data stored in objects
+// When spawning character in dungeon, save the center points for each generated room and randomly select from array as initial character spawn point
 
 const renderGrass = <img src={Grass} />
 
@@ -21,9 +22,10 @@ class Grid extends Component {
 			mapPosition: [0, 0], // Not in use at the moment
 			entireGrid: [], // Can be as large as neccessary
 			visibleGrid: [], // Only 15 x 15 is visible in camera view
-			mapSize: 150,
+			mapSize: 150, // Adjust all references to mapSize to height & width later and delete
 			height: 150,
 			width: 150,
+			rooms: [],
 			cameraSize: 15,
 			objectInformation: {
 				whiteKnight: {
@@ -35,7 +37,7 @@ class Grid extends Component {
 				GRASS: {
 					solid: false
 				},
-				ROCK: {
+				R: { // Rock
 					solid: true
 				}
 			}
@@ -166,8 +168,8 @@ class Grid extends Component {
 				}
 				else {
 					// Randomly generate grass or rock on tile
-					//tile = random > 0.4 ? 'GRASS' : 'ROCK';
-					tile = '_'
+				tile = random > 0.4 ? '_' : 'R';
+				//	tile = '_'
 				}
 				row.push(tile)
 			}
@@ -176,7 +178,17 @@ class Grid extends Component {
 		return grid
 	}
 
+	_distance(x2, y2) {
+		return function(x1, y1) {
+			var dx = x2 - x1;
+			var dy = y2 - y1;
+			return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+		}
+	}
+
+	// Run by drawPath
 	_calculatePath(x0, y0, x1, y1) {
+		const that = this;
 		let arr = [];
 		let start = {
 			x: x0,
@@ -186,9 +198,73 @@ class Grid extends Component {
 			x: x1,
 			y: y1
 		}		
+		function helper(x, y) {
+			arr.push([x, y]);
+
+			let setEndPoint = that._distance(end.x, end.y);
+			let D1 = {
+				x: x + 1,
+				y: y,
+				distance: setEndPoint(x + 1, y)
+			}
+			let D2 = {
+				x: x,
+				y: y + 1,
+				distance: setEndPoint(x, y + 1)
+			}
+			let D3 = {
+				x: x - 1,
+				y: y,
+				distance: setEndPoint(x - 1, y)
+			}
+			let D4 = {
+				x: x,
+				y: y - 1,
+				distance: setEndPoint(x, y - 1)
+			}
+			// Array of objects for 4 directions
+			let directions = [D1, D2, D3, D4];
+			// Sort directions by closest distance to furthest distance
+			directions.sort(function(a, b) {
+				return a.distance > b.distance;
+			});
+			// Loop through all 4 directions subject to conditions and decides on final direction to take
+			for (let d = 0; d < directions.length; d++) {
+				let dir = directions[d];
+			// Ensures projected coordinates stay on grid
+				if (dir.x >= that.width || dir.y >= that.length) {
+					continue;
+				}
+				else if (dir.x == end.x && dir.y == end.y) {
+					return arr;
+				}
+				helper (dir.x, dir.y);
+				break;
+			}
+		}
+		helper(start.x, start.y);
+		// this.setState = {
+		// 	path: arr
+		// }
+		// Unneccessary to update state of path, return arr for drawPath instead
+		return arr;
+	}
+	// CONTINUE HERE
+	// SET UP DRAW PATH TO INTEGRATE WITH GRID IN STATE INSTEAD OF OBJECT PROPERTY
+	// Ran from _connectRooms
+	_drawPath(x0, y0, x1, y1) {
+		this._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
+			let x = coordinate[0];
+			let y = coordinate[1];
+			if (idx !== 0) {
+				this.state.grid[x][y] = 'X'
+			}
+		}.bind(this))
+		return this.grid;
 	}
 	
 	_generateRooms(cols, rows) {
+		const that = this;
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
 			let randomX = Math.floor(Math.random() * 150);
@@ -205,15 +281,24 @@ class Grid extends Component {
 		}
 		function generateRoom() {
 			console.log('Log generateRoom activity');
-
+			
 			let randomPosition = helperGeneratePosition();
 			let randomSize = helperGenerateRoomSize();
 			console.log('randomPosition:' + randomPosition);
 			console.log('randomSize: ' + randomSize);
+			let x = randomPosition[0];
+			let y = randomPosition[1];
 			let width = randomSize[0];
 			let height = randomSize[1];
 			
-			if (x + width > this.state.width || y + height > this.state.height)
+			if (x + width > that.state.width || y + height > that.state.height) {
+				generateRoom();
+			}
+			else {
+				let rooms = Array.prototype.slice.call(that.state.rooms);
+				console.log('rooms')
+				console.log(rooms)
+			}
 		}
 		generateRoom()
 	}
@@ -299,6 +384,8 @@ class Grid extends Component {
 			// console.log(this.state.mapPosition)
 			// console.log(this.state.charPosition)
 			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
+			console.log('Testing');
+			console.log(this._calculatePath(0, 0, 10, 10))
 			console.log('From Redux...');
 			console.log(this.props)
 			console.log('_generateRooms');

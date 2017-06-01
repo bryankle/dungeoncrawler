@@ -164,7 +164,7 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
             //Return once destination has been reached
             else if (a == end.x && b == end.y) {
                  //console.log('C')
-                return this.path = arr;
+               // / return this.path = arr;
             }
 
             // No obstacle avoidance
@@ -176,7 +176,9 @@ Map.prototype.calculatePath = function(x0, y0, x1, y1) {
     helper(start.x, start.y);
     // Update 'path' property of map
     //console.log(arr);
-    return this.path = arr;
+   // return this.path = arr;
+   return arr; // Does not need to return this.path
+   // Must return arr in order for drawPath to use array
 }
 
 /* Render grid on console
@@ -204,6 +206,7 @@ Map.prototype.drawSequentialPath = function(pathArray) {
     var that = this;
     function drawStep() {
         console.log('Hi...')
+        console.log(this)
         i++;
         var x = that.path[i][0];
         var y = that.path[i][1];
@@ -280,7 +283,7 @@ Map.prototype.generateRooms = function() {
 
     generateRoom()
 }
-
+// connectRooms -> drawPath -> calculatePath 
 Map.prototype.connectRooms = function() {
     var x0, y0, x1, y1;
     console.log(this.rooms)
