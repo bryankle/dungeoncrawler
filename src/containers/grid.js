@@ -320,6 +320,18 @@ class Grid extends Component {
 				}
 				// console.log('rooms')
 				// console.log(rooms)
+				// Build tunnels here in same step as dungeon generation
+				let curriedDrawPath = that._drawPath(grid);
+				for (let i = 0; i < roomCenterPoints.length - 1; i++) {
+					console.log(roomCenterPoints[i] + ' and ' + roomCenterPoints[i + 1])
+					let x0, y0, x1, y1;
+					x0 = roomCenterPoints[i][0];
+					y0 = roomCenterPoints[i][1];
+					x1 = roomCenterPoints[i + 1][0];
+					y1 = roomCenterPoints[i + 1][1];
+
+					grid = curriedDrawPath(x0, y0, x1, y1)
+				}
 				that.setState({
 					rooms: roomCenterPoints
 				})
@@ -331,23 +343,30 @@ class Grid extends Component {
 		return grid;
 	}
 
+	generateTunnels() {
 
+	}
 
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
-		let connectPath = this._drawPath(grid);
+		//this._generateRooms(this._createGrid('_', this.state.mapSize, this.state.mapSize), 10)
+		// Curried function for testing
+		// let connectPath = this._drawPath(grid);
 		//return connectPath(10, 10, 105, 105);
-		function connectRooms() {
-			let x0, y0, x1, y1;
-			for (let i = 0; i < that.state.rooms - 1; i++) {
-				console.log(that.state.rooms[i] + ' and ' + that.state.rooms[i + 1])
-
-			}
-		}
+		grid = this._generateRooms(grid, 5)
+// 		const linkRooms = function(grid) {
+// 			let x0, y0, x1, y1;
+// 			console.log('Connect rooms running')
+// 			console.log(that.state.rooms)
+// 			for (let i = 0; i < that.state.rooms - 1; i++) {
+// 				console.log(that.state.rooms[i] + ' and ' + that.state.rooms[i + 1])
+// 				grid = this._drawPath(grid, x0, y0, x1, y1)
+// 			}
+// 			return grid;
+// 		}
 		
-		grid = this._generateRooms(grid, 10)
-		connectRooms();
+// linkRooms();
 		return grid;
 	}
 
