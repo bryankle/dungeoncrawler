@@ -267,10 +267,65 @@ class Grid extends Component {
 		}
 		
 	}
+
+	_sortByDistance(arr) {
+		let that = this;
+		let idx = 0,
+			links = {},
+			linkNo = 0,
+			currCoordinate,
+			x,
+			y;
+		
+		while (arr.length > 1) {
+			currCoordinate = arr[idx];
+			let rooms = [];
+			let x0 = currCoordinate[0];
+			let y0 = currCoordinate[1];
+			arr.splice(idx, 1);
+			arr.forEach(function(nextCoordinate, i) {
+				let obj = {},
+					x1 = nextCoordinate[0],
+					y1 = nextCoordinate[1];
+				
+				obj = {
+					'coordinates': [x1, y1],
+					'distance': that._distance(x1, y1, x0, y0)
+				}
+				rooms.push(obj)
+			})
+
+			// if (linkNo === 0) {
+			// 	linkArr.push([x0, y0])
+			// }
+			
+			let closestRoom = rooms.sort(function(a, b) {
+				return a.distance > b.distance;
+			})[0].coordinates;
+			links['link' + linkNo] = {
+				start: [x0, y0],
+				end: closestRoom
+			}
+			linkNo++;
+			
+			arr.forEach(function(subArray, i) {
+				var sx = subArray[0];
+				var sy = subArray[1];
+				var cx = closestRoom[0];
+				var cy = closestRoom[1];
+				if (sx == cx && sy == cy) {
+					idx = i;
+				}
+			})
+		}
+		return links
+	}
+
 	// Convert this into a pure function
 	// Accepted parameters is grid to be manipulated and number of desired rooms
 	_generateRooms(grid, rooms) {
 		const that = this;
+		let testArr = [];
 		let roomCenterPoints = [];
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
@@ -279,20 +334,20 @@ class Grid extends Component {
 			return [randomX, randomY]
 		}
 		function helperGenerateRoomSize() {
-			let randomWidth = Math.floor(Math.random() * 15) + 5;
-			let randomHeight = Math.floor(Math.random() * 15) + 5;
+			let randomWidth = Math.floor(Math.random() * 10) + 5;
+			let randomHeight = Math.floor(Math.random() * 10) + 5;
 			return [randomWidth, randomHeight];
 		}
 		function helperFindCenterOfRoom(x, y, w, h) {
 			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
 		}
 		function generateRoom() {
-			console.log('Log generateRoom activity');
-			
+			// console.log('Log generateRoom activity'); // Recursion count
+			//testArr.push('hello')
 			let randomPosition = helperGeneratePosition();
 			let randomSize = helperGenerateRoomSize();
-			console.log('randomPosition:' + randomPosition);
-			console.log('randomSize: ' + randomSize);
+			// console.log('randomPosition:' + randomPosition);
+			// console.log('randomSize: ' + randomSize);
 			let x = randomPosition[0];
 			let y = randomPosition[1];
 			let width = randomSize[0];
@@ -305,8 +360,13 @@ class Grid extends Component {
 			}
 			else {
 				//let rooms = Array.prototype.slice.call(that.state.rooms);
-				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
+				testArr.push(helperFindCenterOfRoom(x, y, width, height))
+				console.log('test2')
 				console.log(helperFindCenterOfRoom(x, y, width, height))
+				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
+				//console.log('roomCenterPoints');
+				//console.log(roomCenterPoints)
+				
 				for (let i = x; i < x + width; i++) {
 					for (let j = y; j < y + height; j++) {
 						grid[i][j] = 'R';
@@ -315,36 +375,81 @@ class Grid extends Component {
 			
 				// Build tunnels here in same step as dungeon generation
 				// Tunnel building was moved into this function for the purpose of gaining outer scope to build on top of grid
-				let curriedDrawPath = that._drawPath(grid);
-				for (let i = 0; i < roomCenterPoints.length - 1; i++) {
-					console.log(roomCenterPoints[i] + ' and ' + roomCenterPoints[i + 1])
-					let x0, y0, x1, y1;
-					x0 = roomCenterPoints[i][0];
-					y0 = roomCenterPoints[i][1];
-					x1 = roomCenterPoints[i + 1][0];
-					y1 = roomCenterPoints[i + 1][1];
+				//let curriedDrawPath = that._drawPath(grid);
 
-					grid = curriedDrawPath(x0, y0, x1, y1)
-				}
+			// 	for (let i = 0; i < roomCenterPoints.length - 1; i++) {
+			// 		//console.log(roomCenterPoints[i] + ' and ' + roomCenterPoints[i + 1])
+			// 		let x0, y0, x1, y1;
+			// 		x0 = roomCenterPoints[i][0];
+			// 		y0 = roomCenterPoints[i][1];
+			// 		x1 = roomCenterPoints[i + 1][0];
+			// 		y1 = roomCenterPoints[i + 1][1];
+			// 		console.log('RUNNING!!!')
+					
+			// 	//	grid = curriedDrawPath(x0, y0, x1, y1)
+			// }
+			// console.log('roomCenterPoints')
+			// console.log(roomCenterPoints)
+			// let testObj = that._sortByDistance(roomCenterPoints)
+			// console.log(that._sortByDistance(roomCenterPoints))
+			// // console.log('testObj')
+			// // console.log(testObj)
+			// for (let test in testObj) {
+			// 	//console.log(test)
+			// 	//console.log(testObj[test])
+			// 	let start = testObj[test].start;
+			// 	let sx = start[0];
+			// 	let sy = start[1];
+			// 	let end = testObj[test].end;
+			// 	let ex = end[0];
+			// 	let ey = end[1];
+			// 	//console.log(start, end)
+			// 	grid = curriedDrawPath(sx, sy, ex, ey)
+			// }
+			// Create function that will loop through entire array 
+
 				// that.setState({
 				// 	rooms: roomCenterPoints
 				// })
 			}
 		}
+		
 		for (let i = 0; i < rooms; i++) {
 			generateRoom()
 		}
+
+		// FIX THIS
+		_sortByDistance is not working properly, test array with distancesort.js to verify
+		
+		let curriedDrawPath = that._drawPath(grid);
+		// console.log(testArr)
+		// console.log(that._sortByDistance(testArr))
+		console.log(roomCenterPoints)
+		let testObj = that._sortByDistance(roomCenterPoints)
+			console.log(testObj)
+			// console.log('testObj')
+			// console.log(testObj)
+			for (let test in testObj) {
+				//console.log(test)
+				//console.log(testObj[test])
+				let start = testObj[test].start;
+				let sx = start[0];
+				let sy = start[1];
+				let end = testObj[test].end;
+				let ex = end[0];
+				let ey = end[1];
+				//console.log(start, end)
+				grid = curriedDrawPath(sx, sy, ex, ey)
+			}
+		console.log(testArr)
 		return grid;
 	}
 
-	generateTunnels() {
-
-	}
 
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
-		grid = this._generateRooms(grid, 30)
+		grid = this._generateRooms(grid, 10)
 		return grid;
 	}
 

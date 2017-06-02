@@ -1,9 +1,22 @@
+// var arr = [
+//     [123,15],
+//     [67,21],
+//     [2,109],
+//     [33, 12],
+//     [90, 42]
+// ]
+
 var arr = [
-    [123,15],
-    [67,21],
-    [2,109],
-    [33, 12],
-    [90, 42]
+    [142, 77],
+    [28, 111],
+    [8, 124],
+    [18, 141],
+    [138, 106],
+    [109, 145],
+    [59, 42],
+    [101, 5],
+    [81, 128],
+    [36, 102]
 ]
 
 var links = {
@@ -25,11 +38,12 @@ function distance(x2, y2) {
 // console.log(distance(arr[0][0], arr[0][1])(arr[1][0], arr[1][1]))
 
 
-function sortByDistance(arr) {
+function _sortByDistance(arr) {
     //var obj = {},
-    var    idx = 0,
+    var idx = 0,
         //rooms = [],
         links = {},
+        linkArr = [],
         linkNo = 0,
         currCoordinate,
         x, y;
@@ -53,7 +67,10 @@ function sortByDistance(arr) {
             rooms.push(obj)
             //dist.push(distance(x1, y1)(x0, y0));
         })
-
+        // Adds only first array into linkArr array before consecutive additions taken over by adding closestRoom
+        if (linkNo === 0) {
+            linkArr.push([x0, y0])
+        }
 
         var closestRoom = rooms.sort(function(a, b) {
             return a.distance > b.distance;
@@ -61,6 +78,7 @@ function sortByDistance(arr) {
         console.log('currentRoom: ' + x0, y0);
         console.log('closestRoom: ' + closestRoom);
         console.log(arr)
+        linkArr.push(closestRoom);
         links['link'+linkNo] = {
             start: [x0, y0],
             end: closestRoom
@@ -82,7 +100,8 @@ function sortByDistance(arr) {
         // /console.log(rooms);
     } // WHILE LOOP ENDS
     console.log(links)
+    console.log(linkArr)
     return links;
 }
 
-sortByDistance(arr)
+_sortByDistance(arr)
