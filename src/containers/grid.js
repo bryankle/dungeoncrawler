@@ -279,8 +279,8 @@ class Grid extends Component {
 			return [randomX, randomY]
 		}
 		function helperGenerateRoomSize() {
-			let randomWidth = Math.floor(Math.random() * 10) + 2;
-			let randomHeight = Math.floor(Math.random() * 10) + 2;
+			let randomWidth = Math.floor(Math.random() * 15) + 5;
+			let randomHeight = Math.floor(Math.random() * 15) + 5;
 			return [randomWidth, randomHeight];
 		}
 		function helperFindCenterOfRoom(x, y, w, h) {
@@ -343,7 +343,7 @@ class Grid extends Component {
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
-		grid = this._generateRooms(grid, 10)
+		grid = this._generateRooms(grid, 30)
 		return grid;
 	}
 
