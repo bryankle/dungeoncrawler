@@ -271,7 +271,7 @@ class Grid extends Component {
 	// Accepted parameters is grid to be manipulated and number of desired rooms
 	_generateRooms(grid, rooms) {
 		const that = this;
-		let roomCenterPoints = Array.prototype.slice.call(this.state.rooms);
+		let roomCenterPoints = [];
 		function helperGeneratePosition() {
 			// cols & rows will temporarily be substituted for 150 
 			let randomX = Math.floor(Math.random() * 150);
@@ -314,6 +314,7 @@ class Grid extends Component {
 				}
 			
 				// Build tunnels here in same step as dungeon generation
+				// Tunnel building was moved into this function for the purpose of gaining outer scope to build on top of grid
 				let curriedDrawPath = that._drawPath(grid);
 				for (let i = 0; i < roomCenterPoints.length - 1; i++) {
 					console.log(roomCenterPoints[i] + ' and ' + roomCenterPoints[i + 1])
@@ -325,9 +326,9 @@ class Grid extends Component {
 
 					grid = curriedDrawPath(x0, y0, x1, y1)
 				}
-				that.setState({
-					rooms: roomCenterPoints
-				})
+				// that.setState({
+				// 	rooms: roomCenterPoints
+				// })
 			}
 		}
 		for (let i = 0; i < rooms; i++) {
