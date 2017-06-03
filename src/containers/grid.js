@@ -194,6 +194,81 @@ class Grid extends Component {
 		return grid
 	}
 
+	// Expected parameters: grid to be manipulated and number of desired rooms
+	_generateRooms(grid, rooms) {
+		const that = this;
+		let roomCenterPoints = [];
+		function helperGeneratePosition() {
+			// cols & rows will temporarily be substituted for 150 
+			let randomX = Math.floor(Math.random() * 150);
+			let randomY = Math.floor(Math.random() * 150);
+			return [randomX, randomY]
+		}
+		function helperGenerateRoomSize() {
+			let randomWidth = Math.floor(Math.random() * 10) + 5;
+			let randomHeight = Math.floor(Math.random() * 10) + 5;
+			return [randomWidth, randomHeight];
+		}
+		function helperFindCenterOfRoom(x, y, w, h) {
+			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
+		}
+		function generateRoom() {
+			// console.log('Log generateRoom activity'); // Recursion count
+			let randomPosition = helperGeneratePosition();
+			let randomSize = helperGenerateRoomSize();
+			console.log('randomPosition:' + randomPosition);
+			console.log('randomSize: ' + randomSize);
+			let x = randomPosition[0];
+			let y = randomPosition[1];
+			let width = randomSize[0];
+			let height = randomSize[1];
+
+			
+			
+			if (x + width > that.state.width - 1 || // Added -1 to width and height to determine if generateRoom error still occurs
+				y + height > that.state.height - 1 ||// Added -1 to width and height to determine if generateRoom error still occurs
+				grid[x][y] !== '_' ||
+				grid[x][y + height] !== '_' ||
+				grid[x + width][y] !== '_' ||
+				grid[y + width][y + height] !== '_'
+				) {
+				generateRoom();
+			}
+			else {
+
+				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
+				
+				for (let i = x; i < x + width; i++) {
+					for (let j = y; j < y + height; j++) {
+						grid[i][j] = 'R';
+					}
+				}
+			}
+		}
+		
+		for (let i = 0; i < rooms; i++) {
+			generateRoom()
+		}
+		// Links dungeons together
+		// Begins with first dungeon created then sorts by next closest dungeons to minimize overlapping tunnels
+		let curriedDrawPath = that._drawPath(grid);
+		let paths = that._sortByDistance(roomCenterPoints)
+			console.log(paths)
+		
+			for (let path in paths) {
+		
+				let start = paths[path].start;
+				let sx = start[0];
+				let sy = start[1];
+				let end = paths[path].end;
+				let ex = end[0];
+				let ey = end[1];
+				grid = curriedDrawPath(sx, sy, ex, ey)
+			}
+		return grid;
+	}
+
+
 	// Helper function for generateDungeons; used in _calculatePath
 	// Distance formula utilized for calculating dynamically calculating distance from all 
 	// potential directions (up, down, left, right) to determine closest path
@@ -339,81 +414,6 @@ class Grid extends Component {
 	return links;
 	}
 
-	// Expected parameters: grid to be manipulated and number of desired rooms
-	_generateRooms(grid, rooms) {
-		const that = this;
-		let roomCenterPoints = [];
-		function helperGeneratePosition() {
-			// cols & rows will temporarily be substituted for 150 
-			let randomX = Math.floor(Math.random() * 150);
-			let randomY = Math.floor(Math.random() * 150);
-			return [randomX, randomY]
-		}
-		function helperGenerateRoomSize() {
-			let randomWidth = Math.floor(Math.random() * 10) + 5;
-			let randomHeight = Math.floor(Math.random() * 10) + 5;
-			return [randomWidth, randomHeight];
-		}
-		function helperFindCenterOfRoom(x, y, w, h) {
-			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
-		}
-		function generateRoom() {
-			// console.log('Log generateRoom activity'); // Recursion count
-			let randomPosition = helperGeneratePosition();
-			let randomSize = helperGenerateRoomSize();
-			console.log('randomPosition:' + randomPosition);
-			console.log('randomSize: ' + randomSize);
-			let x = randomPosition[0];
-			let y = randomPosition[1];
-			let width = randomSize[0];
-			let height = randomSize[1];
-
-			
-			
-			if (x + width > that.state.width - 1 || // Added -1 to width and height to determine if generateRoom error still occurs
-				y + height > that.state.height - 1 ||// Added -1 to width and height to determine if generateRoom error still occurs
-				grid[x][y] !== '_' ||
-				grid[x][y + height] !== '_' ||
-				grid[x + width][y] !== '_' ||
-				grid[y + width][y + height] !== '_'
-				) {
-				generateRoom();
-			}
-			else {
-
-				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
-				
-				for (let i = x; i < x + width; i++) {
-					for (let j = y; j < y + height; j++) {
-						grid[i][j] = 'R';
-					}
-				}
-			}
-		}
-		
-		for (let i = 0; i < rooms; i++) {
-			generateRoom()
-		}
-		// Links dungeons together
-		// Begins with first dungeon created then sorts by next closest dungeons to minimize overlapping tunnels
-		let curriedDrawPath = that._drawPath(grid);
-		let paths = that._sortByDistance(roomCenterPoints)
-			console.log(paths)
-		
-			for (let path in paths) {
-		
-				let start = paths[path].start;
-				let sx = start[0];
-				let sy = start[1];
-				let end = paths[path].end;
-				let ex = end[0];
-				let ey = end[1];
-				grid = curriedDrawPath(sx, sy, ex, ey)
-			}
-		return grid;
-	}
-
-
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
@@ -458,16 +458,15 @@ class Grid extends Component {
 		console.log(this.state.charPosition[0])
 		return gridView;
 	}
-	// ADD CRITTERS INTO THIS COMPONENT
-	// PHOTOSHOP CLEAR PNG WHEN HOME
-	// renderGrid accepts an array (cameraGrid) and translates into tile sprites
+
+	// renderGrid accepts an array (cameraGrid) and translates the array into tile sprites
 	renderGrid(grid) {
 		let renderGrid = [];
 		const that = this;
 		grid.forEach(function(row) {
 			let renderRow = [];
 			row.forEach(function(tile) {
-				// Remove if statement to revert back to original settings
+				// Special case render if knight is on top of a tile
 				if (Array.isArray(tile)) {
 					tile.forEach(function(type) {
 						switch(type) {
@@ -489,6 +488,7 @@ class Grid extends Component {
 						}
 					})
 				}
+				// Regular case - render tile normally
 				switch(tile) {
 					case '_':
 						renderRow.push(<img src={Grass} />)
@@ -499,21 +499,6 @@ class Grid extends Component {
 					case 'KNIGHT':
 						renderRow.push(<Hero />)
 						break;
-						// For direction
-						// this.state.heroDirection = left, right, up, down
-						/*
-							if (this.state.heroDir = 'right) {
-								renderRow.push()
-							}
-
-							or pass direction into Hero and hero will render
-							<Hero
-								direction={this.state.heroDirection}
-							/>
-
-							// in Hero
-							// switch statement for each direction and return correct sprite
-						*/
 					case 'R':
 						renderRow.push(<img src={Rock} />)
 						break;
@@ -529,14 +514,8 @@ class Grid extends Component {
 	}
 
 	render() {
-		console.log('Current direction')
-		console.log(this.state.heroDirection)
-		//	this._generateRooms(5)
-		console.log(this.state.entireGrid)
 		return(
 			<div>
-			
-				
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
 			</div>
 		)
