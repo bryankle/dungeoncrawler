@@ -29,6 +29,7 @@ class Grid extends Component {
 			width: 150,
 			rooms: [],
 			cameraSize: 15,
+			heroDirection: '',
 			objectInformation: {
 				whiteKnight: {
 					solid: true
@@ -53,7 +54,7 @@ class Grid extends Component {
 		this.setState({ // Removed this._helperTranspose; add in later if needed
 			entireGrid: this.buildMap() //this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
-		this._drawPath(10,10,15,15);
+		//this._drawPath(10,10,15,15);
 	}
 
 	_handleKeydown(e) {
@@ -119,6 +120,9 @@ class Grid extends Component {
 						cloneCharPosition[1]--;
 					}
 				}
+				this.setState({
+					heroDirection: 'up'
+				})
 				break;
 			case 'down':
 				if (cloneMapPosition[1] < this.state.mapSize) { // Prevent user from going off grid
@@ -129,6 +133,9 @@ class Grid extends Component {
 					cloneMapPosition[1]++;
 					cloneCharPosition[1]++;
 				}
+				this.setState({
+					heroDirection: 'down'
+				})
 				break;
 			case 'left':
 				if (cloneMapPosition[0] > 0) {
@@ -139,6 +146,9 @@ class Grid extends Component {
 					cloneMapPosition[0]--;
 					cloneCharPosition[0]--;
 				}
+				this.setState({
+					heroDirection: 'left'
+				})
 				break;
 			case 'right':
 				if (cloneMapPosition[0] < this.state.mapSize) {
@@ -149,6 +159,9 @@ class Grid extends Component {
 					cloneMapPosition[0]++;
 					cloneCharPosition[0]++;
 				}
+				this.setState({
+					heroDirection: 'right'
+				})
 				break;
 			default:
 				break;
@@ -530,12 +543,8 @@ class Grid extends Component {
 	}
 
 	render() {
-		
-			console.log('Testing');
-			console.log('Rooms')
-			console.log(this.state.rooms)
-			
-			console.log('_generateRooms');
+		console.log('Current direction')
+		console.log(this.state.heroDirection)
 		//	this._generateRooms(5)
 			
 		return(
