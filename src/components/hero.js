@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
 import whiteKnight from '../../img/knight-front2.png'
+import knightFront from '../../img/knight-front.png';
+import knightBack from '../../img/knight-back.png';
+import knightLeft from '../../img/knight-left.png';
+import knightRight from '../../img/knight-right.png';
 
 class Hero extends Component {
 	constructor(props) {
 		super(props)
-		this.cameraGrid = this.props.cameraGrid;
-		this.renderGrid = this.props.renderGrid;
-	}
-
-	componentWillMount() {
-		let superGrid = this.props.grid;
-		console.log(superGrid)
-	}
-
-
-	componentDidMount() {
 	}
 
 	addToGrid() {
@@ -24,42 +17,34 @@ class Hero extends Component {
 			}
 		}
 	}
+	// Outputs hero sprite corresponding to direction traveled
+	heroDirection(direction) {
+		switch(direction) {
+			case 'up':
+				return knightBack
+			case 'down':
+				return knightFront
+			case 'left':
+				return knightLeft
+			case 'right':
+				return knightRight
+			default:
+				break;
+		}
+	}
 
 	// PUSH EMPTY PNG FOR '_' to create second layer
 
 	render() {
-		console.log(this.cameraGrid)
-		console.log('greetings from hero');
-		console.log('superGrid');
-		///console.log(superGrid)
-		const sprite = document.querySelector('.hero-sprite');
-		console.log('Rendered')
-
 		return(
 		
-				<img
-					className='whiteKnight' 
-					src={whiteKnight} />
-			
+		<img
+			className='whiteKnight' 
+			src={this.heroDirection(this.props.direction)} />
+	
 		)
 	}
 }
 
 export default Hero;
 
-/*
-<button
-					onClick={this.addToGrid()}
-				>
-				Add to grid
-				</button>
-				<button
-					onClick={() => {
-						this.props.updateGrid(this.props.grid)
-					}}
-				>Set State</button>
-				<img 
-					className="hero-sprite"
-					src={whiteKnight} 
-				/>
-*/

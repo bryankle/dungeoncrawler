@@ -27,7 +27,6 @@ class Grid extends Component {
 			mapSize: 150, // Adjust all references to mapSize to height & width later and delete
 			height: 150,
 			width: 150,
-			rooms: [],
 			cameraSize: 15,
 			heroDirection: '',
 			objectInformation: {
@@ -337,7 +336,6 @@ class Grid extends Component {
 		})
 	} 
 	// End of while loop 
-	console.log(links)
 	return links;
 	}
 
@@ -390,12 +388,6 @@ class Grid extends Component {
 						grid[i][j] = 'R';
 					}
 				}
-			
-				// Build tunnels here in same step as dungeon generation
-				// Tunnel building was moved into this function for the purpose of gaining outer scope to build on top of grid
-				//let curriedDrawPath = that._drawPath(grid);
-
-			
 			}
 		}
 		
@@ -460,13 +452,7 @@ class Grid extends Component {
 	
 		//gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT' // ORIGINAL SETTINGS; also go to style.css and remove position: absolute
 		gridView[Math.floor(center)][Math.floor(center)] = ['KNIGHT', tileUnderKnight]//gridView[Math.floor(center)][Math.floor(center)].concat(', KNIGHT')
-		// gridView[Math.floor(center)].forEach(function(a) {
-		// 	if (Array.isArray(a)) {
-		// 		a.forEach(function(b) {
-		// 		console.log(b)
-		// 	})
-		// 	}
-		// })
+		
 		console.log(gridView[Math.floor(center)])
 		console.log(Math.floor(center));
 		console.log(this.state.charPosition[0])
@@ -477,7 +463,7 @@ class Grid extends Component {
 	// renderGrid accepts an array (cameraGrid) and translates into tile sprites
 	renderGrid(grid) {
 		let renderGrid = [];
-		
+		const that = this;
 		grid.forEach(function(row) {
 			let renderRow = [];
 			row.forEach(function(tile) {
@@ -492,23 +478,8 @@ class Grid extends Component {
 								renderRow.push(<img src={Grass} />)
 								break;
 							case 'KNIGHT':
-								renderRow.push(<Hero />)
+								renderRow.push(<Hero direction={that.state.heroDirection ? that.state.heroDirection : 'down'}/>) // Default position front facing on initial load
 								break;
-								// For direction
-								// this.state.heroDirection = left, right, up, down
-								/*
-									if (this.state.heroDir = 'right) {
-										renderRow.push()
-									}
-
-									or pass direction into Hero and hero will render
-									<Hero
-										direction={this.state.heroDirection}
-									/>
-
-									// in Hero
-									// switch statement for each direction and return correct sprite
-								*/
 							case 'R':
 								renderRow.push(<img src={Rock} />)
 								break;
@@ -565,17 +536,7 @@ class Grid extends Component {
 		return(
 			<div>
 			
-				<div className="grid hero">
-				<Hero 
-					grid={this.state.entireGrid}
-					updateGrid={(grid) => {
-						this.setState({
-							entireGrid: grid
-						})
-					}}
-					renderGrid={this.renderGrid}
-					cameraGrid={this.cameraGrid}
-				/></div>
+				
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
 			</div>
 		)
