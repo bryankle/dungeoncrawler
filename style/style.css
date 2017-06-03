@@ -1,5 +1,16 @@
 img {
-	height: 50px;
-	width: 50px;
+	height: 30px;
+	width: 30px;
 }
 
+.whiteKnight {
+	position: absolute
+}
+
+.container {
+	width: 100%
+}
+
+.grid {
+	width:1400px
+}

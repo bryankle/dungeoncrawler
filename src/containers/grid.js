@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 //import Hero from '../img/Hero';
 import Dungeon from './generateDungeon';
+import Hero from '../components/hero';
 
 import Grass from '../../img/grass.jpg';
 import whiteKnight from '../../img/knight-front.png';
 import Rock from '../../img/rock.jpg';
+//import critter from '../../img/pikachu.png';
 
 
 // IDEAS
@@ -39,7 +41,8 @@ class Grid extends Component {
 				},
 				R: { // Rock
 					solid: false
-				}
+				},
+
 			}
 		}
 	}
@@ -269,57 +272,67 @@ class Grid extends Component {
 	}
 
 	_sortByDistance(arr) {
-		let that = this;
-		let idx = 0,
-			links = {},
-			linkNo = 0,
-			currCoordinate,
-			x,
-			y;
-		
-		while (arr.length > 1) {
-			currCoordinate = arr[idx];
-			let rooms = [];
-			let x0 = currCoordinate[0];
-			let y0 = currCoordinate[1];
-			arr.splice(idx, 1);
-			arr.forEach(function(nextCoordinate, i) {
-				let obj = {},
-					x1 = nextCoordinate[0],
-					y1 = nextCoordinate[1];
-				
-				obj = {
-					'coordinates': [x1, y1],
-					'distance': that._distance(x1, y1, x0, y0)
-				}
-				rooms.push(obj)
-			})
+	//var obj = {},
+	var that = this;
+	var	idx = 0,
+		//rooms = [],
+		links = {},
+		linkNo = 0,
+		currCoordinate,
+		x, y;
+	while (arr.length > 1) {
+		var rooms = [];		
+		currCoordinate = arr[idx];
+		var x0 = currCoordinate[0];
+		var y0 = currCoordinate[1];
+		arr.splice(idx, 1)
+		arr.forEach(function(nextCoordinate, i) {
+			var obj = {};
+			var x1 = nextCoordinate[0];
+			var y1 = nextCoordinate[1];
 
-			// if (linkNo === 0) {
-			// 	linkArr.push([x0, y0])
-			// }
-			
-			let closestRoom = rooms.sort(function(a, b) {
-				return a.distance > b.distance;
-			})[0].coordinates;
-			links['link' + linkNo] = {
-				start: [x0, y0],
-				end: closestRoom
+			//obj['room' + i]['coordinates'] = [x1, y1];
+			obj = {
+				'coordinates': [x1, y1],
+				'distance': that._distance(x1, y1)(x0, y0)
 			}
-			linkNo++;
-			
-			arr.forEach(function(subArray, i) {
-				var sx = subArray[0];
-				var sy = subArray[1];
-				var cx = closestRoom[0];
-				var cy = closestRoom[1];
-				if (sx == cx && sy == cy) {
-					idx = i;
-				}
-			})
+			//console.log(obj)
+			rooms.push(obj)
+			//dist.push(distance(x1, y1)(x0, y0));
+		})
+	
+
+		var closestRoom = rooms.sort(function(a, b) {
+			return a.distance > b.distance;
+		})[0].coordinates
+		console.log('currentRoom: ' + x0, y0);
+		console.log('closestRoom: ' + closestRoom);
+		console.log(arr)
+		links['link'+linkNo] = {
+			start: [x0, y0],
+			end: closestRoom
 		}
-		return links
+		linkNo++;
+		// Updates idx number for next iteration
+		arr.forEach(function(subArray, i) {
+			var sx = subArray[0];
+			var sy = subArray[1];
+			var cx = closestRoom[0];
+			var cy = closestRoom[1];
+			console.log(sx, sy);
+			if (sx == cx && sy == cy) {
+				//console.log(idx)
+				//return arr.splice(idx, 1);
+				idx = i;
+			}
+		})
+		// /console.log(rooms);
+	} // WHILE LOOP ENDS
+	console.log(links)
+	return links;
 	}
+
+
 
 	// Convert this into a pure function
 	// Accepted parameters is grid to be manipulated and number of desired rooms
@@ -355,7 +368,13 @@ class Grid extends Component {
 
 			
 			
-			if (x + width > that.state.width || y + height > that.state.height) {
+			if (x + width > that.state.width || 
+				y + height > that.state.height ||
+				grid[x][y] !== '_' ||
+				grid[x][y + height] !== '_' ||
+				grid[x + width][y] !== '_' ||
+				grid[y + width][y + height] !== '_'
+				) {
 				generateRoom();
 			}
 			else {
@@ -377,40 +396,7 @@ class Grid extends Component {
 				// Tunnel building was moved into this function for the purpose of gaining outer scope to build on top of grid
 				//let curriedDrawPath = that._drawPath(grid);
 
-			// 	for (let i = 0; i < roomCenterPoints.length - 1; i++) {
-			// 		//console.log(roomCenterPoints[i] + ' and ' + roomCenterPoints[i + 1])
-			// 		let x0, y0, x1, y1;
-			// 		x0 = roomCenterPoints[i][0];
-			// 		y0 = roomCenterPoints[i][1];
-			// 		x1 = roomCenterPoints[i + 1][0];
-			// 		y1 = roomCenterPoints[i + 1][1];
-			// 		console.log('RUNNING!!!')
-					
-			// 	//	grid = curriedDrawPath(x0, y0, x1, y1)
-			// }
-			// console.log('roomCenterPoints')
-			// console.log(roomCenterPoints)
-			// let testObj = that._sortByDistance(roomCenterPoints)
-			// console.log(that._sortByDistance(roomCenterPoints))
-			// // console.log('testObj')
-			// // console.log(testObj)
-			// for (let test in testObj) {
-			// 	//console.log(test)
-			// 	//console.log(testObj[test])
-			// 	let start = testObj[test].start;
-			// 	let sx = start[0];
-			// 	let sy = start[1];
-			// 	let end = testObj[test].end;
-			// 	let ex = end[0];
-			// 	let ey = end[1];
-			// 	//console.log(start, end)
-			// 	grid = curriedDrawPath(sx, sy, ex, ey)
-			// }
-			// Create function that will loop through entire array 
-
-				// that.setState({
-				// 	rooms: roomCenterPoints
-				// })
+			
 			}
 		}
 		
@@ -418,9 +404,6 @@ class Grid extends Component {
 			generateRoom()
 		}
 
-		// FIX THIS
-		_sortByDistance is not working properly, test array with distancesort.js to verify
-		
 		let curriedDrawPath = that._drawPath(grid);
 		// console.log(testArr)
 		// console.log(that._sortByDistance(testArr))
@@ -441,7 +424,6 @@ class Grid extends Component {
 				//console.log(start, end)
 				grid = curriedDrawPath(sx, sy, ex, ey)
 			}
-		console.log(testArr)
 		return grid;
 	}
 
@@ -449,7 +431,7 @@ class Grid extends Component {
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
-		grid = this._generateRooms(grid, 10)
+		grid = this._generateRooms(grid, 13)
 		return grid;
 	}
 
@@ -470,18 +452,21 @@ class Grid extends Component {
 		let gridView = [];
 		for (let i = y; i < y + this.state.cameraSize; i++) {
 			let row = [];
+			// Temporary switched to 20 to widen camera view
 			for (let j = x; j < x + this.state.cameraSize; j++) {
 				row.push(grid[i][j])
 			}
 			gridView.push(row);
 		}
 		let center = this.state.cameraSize / 2;
+		// Change 10 to Math.floor(center) later
 		gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT';
 		console.log(Math.floor(center));
 		console.log(this.state.charPosition[0])
 		return gridView;
 	}
-	
+	// ADD CRITTERS INTO THIS COMPONENT
+	// PHOTOSHOP CLEAR PNG WHEN HOME
 	// renderGrid accepts an array (cameraGrid) and translates into tile sprites
 	renderGrid(grid) {
 		let renderGrid = [];
@@ -497,8 +482,23 @@ class Grid extends Component {
 						renderRow.push(<img src={Grass} />)
 						break;
 					case 'KNIGHT':
-						renderRow.push(<img src={whiteKnight} />)
+						renderRow.push(<Hero />, <img src={Grass} />)
 						break;
+						// For direction
+						// this.state.heroDirection = left, right, up, down
+						/*
+							if (this.state.heroDir = 'right) {
+								renderRow.push()
+							}
+
+							or pass direction into Hero and hero will render
+							<Hero
+								direction={this.state.heroDirection}
+							/>
+
+							// in Hero
+							// switch statement for each direction and return correct sprite
+						*/
 					case 'R':
 						renderRow.push(<img src={Rock} />)
 						break;
@@ -530,24 +530,29 @@ class Grid extends Component {
 	}
 
 	render() {
-			// console.log(this.state.mapPosition)
-			// console.log(this.state.charPosition)
-			//this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)
+		
 			console.log('Testing');
 			console.log('Rooms')
 			console.log(this.state.rooms)
-			this._drawPath(5,5,10,10);
-			//console.log(this._calculatePath(0, 0, 10, 10)) // Working
-			//this._drawPath(5,5,10,10)
-			// console.log('From Redux...');
-			// console.log(this.props)
+			
 			console.log('_generateRooms');
 		//	this._generateRooms(5)
 			
 		return(
 			<div>
-				<Dungeon />	
-				{this.renderGrid(this.cameraGrid(this.state.entireGrid))}
+			
+				<div className="grid hero">
+				<Hero 
+					grid={this.state.entireGrid}
+					updateGrid={(grid) => {
+						this.setState({
+							entireGrid: grid
+						})
+					}}
+					renderGrid={this.renderGrid}
+					cameraGrid={this.cameraGrid}
+				/></div>
+				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
 			</div>
 		)
 	}
