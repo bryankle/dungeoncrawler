@@ -45,6 +45,9 @@ class Grid extends Component {
 				R: { // Rock
 					solid: false
 				},
+				RAT: {
+					solid: false
+				}
 
 			}
 		}
@@ -435,6 +438,7 @@ createCritter(grid, type, x, y) {
 	console.log('grid content at ' + x + ' and ' + y);
 	console.log(grid[x][y])
 	crittersClone['critter' + this.state.critterCount] = critter;
+	// if (!x && !y) --> generateRandomCoordinates within dungeon
 	this.setState({
 		critterCount: this.state.critterCount + 1,
 		critters: crittersClone
@@ -443,26 +447,29 @@ createCritter(grid, type, x, y) {
 }
 // Take in copy of critters in state and apply callback function
 eachCritter(critters, fn) {
-	for (critter in critters) {
-	
+	for (let critter in critters) {
+		console.log(critter)
+		fn(critters[critter])
 	}
 }
-// Accepts an array and returns an updated array
-// Input: [x, y]
+// Accepts critter object and returns an critter object with updated coordinates
+// Takes arguments from this.eachCritter
 moveCritter(critter) {
-	let x = critter[0];
-	let y = critter[1];
+	console.log('moveCritter...');
+	console.log(critter)
+	let x = critter.x;
+	let y = critter.y;
 	function _moveRight() {
-		
+		x++;
 	}
 	function _moveLeft() {
-
+		x--;
 	}
 	function _moveUp() {
-
+		y--;
 	}
 	function _moveDown() {
-
+		y++;
 	}
 	let moves = [_moveRight(), _moveLeft(), _moveUp(), _moveDown()];
 	
@@ -471,7 +478,7 @@ moveCritter(critter) {
 	// Continue
 	}
 
-	return [x, y]
+	
 }
 
 
@@ -602,7 +609,7 @@ moveCritter(critter) {
 		console.log('this.state.critterCount')
 		console.log(this.state.critterCount)
 
-		console.log(this.state.entireGrid)
+		this.eachCritter(this.state.critters, this.moveCritter)
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>

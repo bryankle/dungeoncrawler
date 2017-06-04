@@ -8,6 +8,7 @@ import knightRight from '../../img/knight-right.png';
 class Hero extends Component {
 	constructor(props) {
 		super(props)
+
 	}
 
 	addToGrid() {
