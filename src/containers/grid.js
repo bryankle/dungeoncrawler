@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 //import Hero from '../img/Hero';
 import Dungeon from './generateDungeon';
 import Hero from '../components/hero';
+import Rat from '../components/rat';
 
 import Grass from '../../img/grass.jpg';
 import whiteKnight from '../../img/knight-front.png';
@@ -29,6 +30,8 @@ class Grid extends Component {
 			width: 150,
 			cameraSize: 15,
 			heroDirection: '',
+			critterCount: 0,
+			critters: {},
 			objectInformation: {
 				whiteKnight: {
 					solid: true
@@ -40,7 +43,7 @@ class Grid extends Component {
 					solid: false
 				},
 				R: { // Rock
-					solid: true
+					solid: false
 				},
 
 			}
@@ -53,6 +56,8 @@ class Grid extends Component {
 		this.setState({ // Removed this._helperTranspose; add in later if needed
 			entireGrid: this.buildMap() //this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
+		//this.createCritter(this.state.entireGrid, 'rat', 10, 10);
+		// Set critter movement here
 	}
 
 	_handleKeydown(e) {
@@ -360,6 +365,7 @@ class Grid extends Component {
 		
 	}
 	// Helper function for generateRooms; links dungeons together by proximity
+
 	_sortByDistance(arr) {
 	var that = this;
 	var	idx = 0,
@@ -412,12 +418,86 @@ class Grid extends Component {
 	} 
 	// End of while loop 
 	return links;
+}
+// setInterval to alter direction of critter and setState to update all critter locations. This will force a rerender
+
+// Spawn critter at (10, 10) for now
+createCritter(grid, type, x, y) {
+	let crittersClone = Object.assign({}, this.state.critters);
+	let critter = {
+		type: type,
+		x: x,
+		y: y
 	}
+	let tileUnderCritter = grid[x][y];
+	grid[x][y] = ['RAT', tileUnderCritter]
+	//grid[x][y] = 'R'
+	console.log('grid content at ' + x + ' and ' + y);
+	console.log(grid[x][y])
+	crittersClone['critter' + this.state.critterCount] = critter;
+	this.setState({
+		critterCount: this.state.critterCount + 1,
+		critters: crittersClone
+	})
+	return grid;
+}
+// Take in copy of critters in state and apply callback function
+eachCritter(critters, fn) {
+	for (critter in critters) {
+	
+	}
+}
+// Accepts an array and returns an updated array
+// Input: [x, y]
+moveCritter(critter) {
+	let x = critter[0];
+	let y = critter[1];
+	function _moveRight() {
+		
+	}
+	function _moveLeft() {
+
+	}
+	function _moveUp() {
+
+	}
+	function _moveDown() {
+
+	}
+	let moves = [_moveRight(), _moveLeft(), _moveUp(), _moveDown()];
+	
+	function _generateCoordinateInBound() {
+		let random = Math.floor(Math.random() * 4);
+	// Continue
+	}
+
+	return [x, y]
+}
+
+
+	/*
+		How critters will be represented in state
+		critters = {
+			critter1: {
+				type: type, // Use type to represent in grid
+				this.x = x,
+				this.y = y,
+				
+			}
+		}
+	*/
+
+
+
+
+
 
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		grid = this._generateRooms(grid, 13)
+		// Set initial critters here
+		grid = this.createCritter(grid, 'rat', 10, 10);
 		return grid;
 	}
 
@@ -482,6 +562,8 @@ class Grid extends Component {
 							case 'R':
 								renderRow.push(<img src={Rock} />)
 								break;
+							case 'RAT':
+								renderRow.push(<Rat direction={that.state.heroDirection ? that.state.heroDirection : 'down'}/>)
 							default:
 								break;
 							
@@ -514,6 +596,13 @@ class Grid extends Component {
 	}
 
 	render() {
+		// TESTING
+		console.log('this.state.critters')
+		console.log(this.state.critters)
+		console.log('this.state.critterCount')
+		console.log(this.state.critterCount)
+
+		console.log(this.state.entireGrid)
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
