@@ -63,6 +63,16 @@ class Grid extends Component {
 		// Set critter movement here
 	}
 
+	componentDidMount() {
+		console.log('componentDidMount');
+		const that = this;
+		setInterval(this.eachCritter(that.state.critters, that.moveCritter), 1000)
+		setInterval(() => {
+			this.eachCritter(this.state.critters, this.moveCritter)
+		}, 1000)
+		
+	}
+
 	_handleKeydown(e) {
 		if (e.keyCode == 37) {
 			console.log('Going left...')
@@ -447,6 +457,7 @@ createCritter(grid, type, x, y) {
 }
 // Take in copy of critters in state and apply callback function
 eachCritter(critters, fn) {
+	console.log('eachCritter...')
 	let updatedCritters = {};
 	for (let critter in critters) {
 		console.log(critter)
@@ -455,9 +466,13 @@ eachCritter(critters, fn) {
 	// Update state for each critter here
 	console.log('updatedCritters')
 	console.log(updatedCritters)
+	console.log(this.state)
+	// this.setState({
+	// 	critters: updatedCritters
+	// })
 }
 // Accepts critter object and returns an critter object with updated coordinates
-// Takes arguments from this.eachCritter
+// Takes arguments from this.eachCritter1
 moveCritter = (critter) => {
 	const that = this;
 	console.log('moveCritter...');
@@ -526,7 +541,9 @@ moveCritter = (critter) => {
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
-		grid = this.createCritter(grid, 'rat', 10, 10);
+		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
+		grid = this.createCritter(grid, 'rat', 11, 11);
+		
 		return grid;
 	}
 
@@ -631,6 +648,7 @@ moveCritter = (critter) => {
 		console.log('this.state.critterCount')
 		console.log(this.state.critterCount)
 
+		console.log(this.state)
 		// this.eachCritter(this.state.critters, this.moveCritter)
 		return(
 			<div>
