@@ -447,55 +447,77 @@ createCritter(grid, type, x, y) {
 }
 // Take in copy of critters in state and apply callback function
 eachCritter(critters, fn) {
+	let updatedCritters = {};
 	for (let critter in critters) {
 		console.log(critter)
-		fn(critters[critter])
+		updatedCritters[critter] = fn(critters[critter]) // Returns updated object
 	}
+	// Update state for each critter here
+	console.log('updatedCritters')
+	console.log(updatedCritters)
 }
 // Accepts critter object and returns an critter object with updated coordinates
 // Takes arguments from this.eachCritter
-moveCritter(critter) {
+moveCritter = (critter) => {
+	const that = this;
 	console.log('moveCritter...');
 	console.log(critter)
-	let x = critter.x;
-	let y = critter.y;
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	let cx = critter.x;
+	let cy = critter.y;
 	function _moveRight() {
-		x++;
+		console.log('_moveRight')
+		cx++;
 	}
 	function _moveLeft() {
-		x--;
+		console.log('_moveLeft')
+		cx--;
 	}
 	function _moveUp() {
-		y--;
+		console.log('_moveUp')
+		cy--;
 	}
 	function _moveDown() {
-		y++;
+		console.log('_moveDown')
+		cy++;
 	}
-	let moves = [_moveRight(), _moveLeft(), _moveUp(), _moveDown()];
+	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
 	
-	function _generateCoordinateInBound() {
+	 	function _generateCoordinateInBound() {
+		console.log(this)
+		
 		let random = Math.floor(Math.random() * 4);
-	// Continue
-	}
-
-	
-}
-
-
-	/*
-		How critters will be represented in state
-		critters = {
-			critter1: {
-				type: type, // Use type to represent in grid
-				this.x = x,
-				this.y = y,
-				
-			}
+		// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
+		
+		// If critter moves up and object north of critter is solid, generate another random direction
+		if (random === 2 && that.state.objectInformation[that.state.entireGrid[cx][cy - 1]] === 'solid') {
+			_generateCoordinateInBound();
 		}
-	*/
-
-
-
+		// If critter moves down and object south of critter is solid, generate another random direction
+		else if (random === 3 && that.state.objectInformation[that.state.entireGrid[cx][cy + 1]] === 'solid') {
+			_generateCoordinateInBound();
+		}
+		// If critter moves left and object west of critter is solid, generate another random direction
+		else if (random === 1 && that.state.objectInformation[that.state.entireGrid[cx - 1][cy]] === 'solid') {
+			_generateCoordinateInBound();
+		}
+		// If critter moves right and object right of critter is solid, generate another random direction
+		else if (random === 0 && that.state.objectInformation[that.state.entireGrid[cx + 1][cy]] === 'solid') {
+			_generateCoordinateInBound();
+		}
+	// Continue
+		else {
+			moves[random]();
+			console.log('new coordinates')
+			console.log(cx, cy)
+		}
+		critter.x = cx;
+		critter.y = cy;
+		console.log(critter)
+	}
+	_generateCoordinateInBound()
+	return critter
+}
 
 
 
@@ -609,7 +631,7 @@ moveCritter(critter) {
 		console.log('this.state.critterCount')
 		console.log(this.state.critterCount)
 
-		this.eachCritter(this.state.critters, this.moveCritter)
+		// this.eachCritter(this.state.critters, this.moveCritter)
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
