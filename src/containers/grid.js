@@ -43,12 +43,11 @@ class Grid extends Component {
 					solid: false
 				},
 				R: { // Rock
-					solid: false
+					solid: true
 				},
 				RAT: {
 					solid: false
 				}
-
 			}
 		}
 	}
@@ -66,11 +65,13 @@ class Grid extends Component {
 	componentDidMount() {
 		console.log('componentDidMount');
 		const that = this;
-		setInterval(this.eachCritter(that.state.critters, that.moveCritter), 1000)
+		//setInterval(this.eachCritter(that.state.critters, that.moveCritter), 1000)
+		// Uncomment below
+		// CONTINUE HERE
+		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
 		}, 1000)
-		
 	}
 
 	_handleKeydown(e) {
@@ -91,6 +92,7 @@ class Grid extends Component {
 			this._moveCharPosition('down');			
 		}
 	}
+
 // Render random map and place the array in local state or Redux
 
 // Set character position in center of the map
@@ -111,7 +113,6 @@ class Grid extends Component {
 
 // Seperate the logic between grid creation and grid display
 	// Create entire grid (whole map) --> determine character camera view of grid --> render view into UI
-
 	_moveCharPosition(direction) {
 		// Create copy of map position and char position before manipulating and updating back into state
 		let cloneMapPosition = Array.prototype.slice.call(this.state.mapPosition);
@@ -202,7 +203,7 @@ class Grid extends Component {
 				else {
 					// Adjust to generate random obstacles for testing
 					// Randomly generate grass or rock on tile
-				//tile = random > 0.4 ? '_' : 'R';
+					//tile = random > 0.4 ? '_' : 'R';
 					tile = '_'
 				}
 				row.push(tile)
@@ -242,7 +243,6 @@ class Grid extends Component {
 			let height = randomSize[1];
 
 			
-			
 			if (x + width > that.state.width - 1 || // Added -1 to width and height to determine if generateRoom error still occurs
 				y + height > that.state.height - 1 ||// Added -1 to width and height to determine if generateRoom error still occurs
 				grid[x][y] !== '_' ||
@@ -261,12 +261,20 @@ class Grid extends Component {
 						grid[i][j] = 'R';
 					}
 				}
+				// TESTING GRID
+				grid[9][9] = 'R'
+				grid[9][8] = 'R'
+				grid[9][7] = 'R'
+				
+				grid[8][9] = 'R'
+				grid[7][9] = 'R'
 			}
 		}
-		
+
 		for (let i = 0; i < rooms; i++) {
 			generateRoom()
 		}
+
 		// Links dungeons together
 		// Begins with first dungeon created then sorts by next closest dungeons to minimize overlapping tunnels
 		let curriedDrawPath = that._drawPath(grid);
@@ -285,7 +293,6 @@ class Grid extends Component {
 			}
 		return grid;
 	}
-
 
 	// Helper function for generateDungeons; used in _calculatePath
 	// Distance formula utilized for calculating dynamically calculating distance from all 
@@ -358,7 +365,6 @@ class Grid extends Component {
 		}
 		helper(start.x, start.y);
 		
-		
 		return arr;
 	}
 	// Helper function for generateRoms; draws paths between each room generated
@@ -375,7 +381,6 @@ class Grid extends Component {
 			})
 			return grid;
 		}
-		
 	}
 	// Helper function for generateRooms; links dungeons together by proximity
 
@@ -403,7 +408,6 @@ class Grid extends Component {
 			rooms.push(obj)
 		})
 	
-
 		var closestRoom = rooms.sort(function(a, b) {
 			return a.distance > b.distance;
 		})[0].coordinates
@@ -496,34 +500,44 @@ moveCritter = (critter) => {
 		console.log('_moveDown')
 		cy++;
 	}
+
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
 	
 	 	function _generateCoordinateInBound() {
-		console.log(this)
 		
 		let random = Math.floor(Math.random() * 4);
 		// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
 		
 		// If critter moves up and object north of critter is solid, generate another random direction
-		if (random === 2 && that.state.objectInformation[that.state.entireGrid[cx][cy - 1]] === 'solid') {
+		// If going up
+		if (random === 2 && that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid) {
+			console.log('random: 2')
 			_generateCoordinateInBound();
 		}
 		// If critter moves down and object south of critter is solid, generate another random direction
-		else if (random === 3 && that.state.objectInformation[that.state.entireGrid[cx][cy + 1]] === 'solid') {
+		// If going down
+		else if (random === 3 && that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid) {
+			console.log('random: 3')
 			_generateCoordinateInBound();
 		}
 		// If critter moves left and object west of critter is solid, generate another random direction
-		else if (random === 1 && that.state.objectInformation[that.state.entireGrid[cx - 1][cy]] === 'solid') {
+		// If going left
+		else if (random === 1 && that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid) {
+			console.log('random: 1')
 			_generateCoordinateInBound();
 		}
 		// If critter moves right and object right of critter is solid, generate another random direction
-		else if (random === 0 && that.state.objectInformation[that.state.entireGrid[cx + 1][cy]] === 'solid') {
+		// If going right
+		else if (random === 0 && that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid) {
+			console.log('random: 0')
 			_generateCoordinateInBound();
 		}
 	// Continue
 		else {
+			console.log("randomly moving else")
+			console.log(that.state.objectInformation[that.state.entireGrid[cx+ 1][cy]])
+			//console.log(that.state.objectInformation[that.state.entireGrid[cx][cy]])
 			moves[random]();
-			console.log('new coordinates')
 			console.log(cx, cy)
 		}
 		critter.x = cx;
@@ -534,16 +548,13 @@ moveCritter = (critter) => {
 	return critter
 }
 
-
-
 	buildMap() {
 		var that = this;
 		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 'rat', 11, 11);
-		
+		grid = this.createCritter(grid, 'rat', 8, 8);
 		return grid;
 	}
 
@@ -647,7 +658,7 @@ moveCritter = (critter) => {
 		console.log(this.state.critters)
 		console.log('this.state.critterCount')
 		console.log(this.state.critterCount)
-
+		
 		console.log(this.state)
 		// this.eachCritter(this.state.critters, this.moveCritter)
 		return(
