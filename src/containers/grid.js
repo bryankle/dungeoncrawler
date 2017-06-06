@@ -55,6 +55,7 @@ class Grid extends Component {
 	componentWillMount() {
 		// Listen to arrow keys for character movement
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
+
 		this.setState({ // Removed this._helperTranspose; add in later if needed
 			entireGrid: this.buildMap() //this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
@@ -119,6 +120,7 @@ class Grid extends Component {
 		let cloneCharPosition = Array.prototype.slice.call(this.state.charPosition);
 		let X = cloneCharPosition[0];
 		let Y = cloneCharPosition[1];
+		let grid = this.state.entireGrid[X][Y];
 		
 		let tileType = this.state.entireGrid[X][Y];
 		console.log(this.state.objectInformation[tileType].solid)
@@ -181,6 +183,7 @@ class Grid extends Component {
 			default:
 				break;
 		}
+	//	grid[X][Y] = ['_', 'KNIGHT']
 		this.setState({
 			mapPosition: cloneMapPosition,
 			charPosition: cloneCharPosition
@@ -411,9 +414,6 @@ class Grid extends Component {
 		var closestRoom = rooms.sort(function(a, b) {
 			return a.distance > b.distance;
 		})[0].coordinates
-		console.log('currentRoom: ' + x0, y0);
-		console.log('closestRoom: ' + closestRoom);
-		console.log(arr)
 		links['link'+linkNo] = {
 			start: [x0, y0],
 			end: closestRoom
@@ -478,7 +478,8 @@ eachCritter(critters, fn) {
 moveCritter = (critter) => {
 	const that = this;
 	console.log('moveCritter...');
-	console.log(critter)
+	console.log('charposition');
+	console.log(this.state.charPosition)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let cx = critter.x;
 	let cy = critter.y;
@@ -512,24 +513,28 @@ moveCritter = (critter) => {
 		// If going up
 		if (random === 2 && that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid) {
 			console.log('random: 2')
+			console.log(cx, cy - 1)
 			_generateCoordinateInBound();
 		}
 		// If critter moves down and object south of critter is solid, generate another random direction
 		// If going down
 		else if (random === 3 && that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid) {
 			console.log('random: 3')
+			console.log(cx, cy + 1)
 			_generateCoordinateInBound();
 		}
 		// If critter moves left and object west of critter is solid, generate another random direction
 		// If going left
 		else if (random === 1 && that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid) {
 			console.log('random: 1')
+			console.log(cx - 1, cy)
 			_generateCoordinateInBound();
 		}
 		// If critter moves right and object right of critter is solid, generate another random direction
 		// If going right
 		else if (random === 0 && that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid) {
 			console.log('random: 0')
+			console.log(cx + 1, cy)
 			_generateCoordinateInBound();
 		}
 	// Continue
@@ -552,6 +557,8 @@ moveCritter = (critter) => {
 }
 
 renderCritter(critter, prevCoordinates, prevTile) {
+	console.log('mapPosition');
+		console.log(this.state.mapPosition)
 	let px = prevCoordinates[0];
 	let py = prevCoordinates[1];
 	let cx = critter.x;
@@ -561,8 +568,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let tileUnderCritter = grid[cx][cy];
 	grid[px][py] = prevTile;
-	console.log('KNIGHT')
-	console.log(grid[7][7])
+
 	grid[cx][cy] = ['RAT', tileUnderCritter]
 	this.setState({
 		entireGrid: grid
@@ -613,9 +619,9 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		//gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT' // ORIGINAL SETTINGS; also go to style.css and remove position: absolute
 		gridView[Math.floor(center)][Math.floor(center)] = ['KNIGHT', tileUnderKnight]//gridView[Math.floor(center)][Math.floor(center)].concat(', KNIGHT')
 		
-		console.log(gridView[Math.floor(center)])
-		console.log(Math.floor(center));
-		console.log(this.state.charPosition[0])
+		// console.log(gridView[Math.floor(center)])
+		// console.log(Math.floor(center));
+		// console.log(this.state.charPosition[0])
 		return gridView;
 	}
 
