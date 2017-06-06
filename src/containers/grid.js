@@ -72,7 +72,7 @@ class Grid extends Component {
 		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 1000)
+		}, 500)
 	}
 
 	_handleKeydown(e) {
@@ -183,6 +183,7 @@ class Grid extends Component {
 			default:
 				break;
 		}
+
 	//	grid[X][Y] = ['_', 'KNIGHT']
 		this.setState({
 			mapPosition: cloneMapPosition,
@@ -264,13 +265,7 @@ class Grid extends Component {
 						grid[i][j] = 'R';
 					}
 				}
-				// TESTING GRID
-				grid[9][9] = 'R'
-				grid[9][8] = 'R'
-				grid[9][7] = 'R'
-				
-				grid[8][9] = 'R'
-				grid[7][9] = 'R'
+			
 			}
 		}
 
@@ -483,6 +478,13 @@ moveCritter = (critter) => {
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let cx = critter.x;
 	let cy = critter.y;
+	console.log('cx, cy');
+	console.log(cx, cy)
+	let hy = that.state.charPosition[0];
+	let hx = that.state.charPosition[1];
+	console.log('hx, hy');
+	console.log(hx, hy)
+
 	let coordinateCache = [cx, cy];
 	let tileCache = grid[cx][cy][1];
 	function _moveRight() {
@@ -508,31 +510,32 @@ moveCritter = (critter) => {
 		
 		let random = Math.floor(Math.random() * 4);
 		// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
-		
+
+
 		// If critter moves up and object north of critter is solid, generate another random direction
 		// If going up
-		if (random === 2 && that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid) {
+		if (random === 2 && (that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid || (cx == hx && cy - 1 == hy))) {
 			console.log('random: 2')
 			console.log(cx, cy - 1)
 			_generateCoordinateInBound();
 		}
 		// If critter moves down and object south of critter is solid, generate another random direction
 		// If going down
-		else if (random === 3 && that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid) {
+		else if (random === 3 && (that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid || (cx == hx && cy + 1 == hy))) {
 			console.log('random: 3')
 			console.log(cx, cy + 1)
 			_generateCoordinateInBound();
 		}
 		// If critter moves left and object west of critter is solid, generate another random direction
 		// If going left
-		else if (random === 1 && that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid) {
+		else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
 			console.log('random: 1')
 			console.log(cx - 1, cy)
 			_generateCoordinateInBound();
 		}
 		// If critter moves right and object right of critter is solid, generate another random direction
 		// If going right
-		else if (random === 0 && that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid) {
+		else if (random === 0 && (that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid || (cx + 1 == hx && cy == hy))) {
 			console.log('random: 0')
 			console.log(cx + 1, cy)
 			_generateCoordinateInBound();
