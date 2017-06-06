@@ -448,7 +448,6 @@ createCritter(grid, type, x, y) {
 	}
 	let tileUnderCritter = grid[x][y];
 	grid[x][y] = ['RAT', tileUnderCritter]
-	//grid[x][y] = 'R'
 	console.log('grid content at ' + x + ' and ' + y);
 	console.log(grid[x][y])
 	crittersClone['critter' + this.state.critterCount] = critter;
@@ -468,12 +467,11 @@ eachCritter(critters, fn) {
 		updatedCritters[critter] = fn(critters[critter]) // Returns updated object
 	}
 	// Update state for each critter here
-	console.log('updatedCritters')
-	console.log(updatedCritters)
+	console.log('STATE')
 	console.log(this.state)
-	// this.setState({
-	// 	critters: updatedCritters
-	// })
+	this.setState({
+		critters: updatedCritters
+	})
 }
 // Accepts critter object and returns an critter object with updated coordinates
 // Takes arguments from this.eachCritter1
@@ -484,6 +482,8 @@ moveCritter = (critter) => {
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let cx = critter.x;
 	let cy = critter.y;
+	let coordinateCache = [cx, cy];
+	let tileCache = grid[cx][cy];
 	function _moveRight() {
 		console.log('_moveRight')
 		cx++;
@@ -538,15 +538,39 @@ moveCritter = (critter) => {
 			console.log(that.state.objectInformation[that.state.entireGrid[cx+ 1][cy]])
 			//console.log(that.state.objectInformation[that.state.entireGrid[cx][cy]])
 			moves[random]();
-			console.log(cx, cy)
+			console.log('SEE BELOW')
+			console.log(cx, cy);
+			console.log(coordinateCache)
 		}
 		critter.x = cx;
 		critter.y = cy;
 		console.log(critter)
 	}
 	_generateCoordinateInBound()
+	this.renderCritter(critter, coordinateCache, tileCache)
 	return critter
 }
+
+renderCritter(critter, prevCoordinates, prevTile) {
+	let px = prevCoordinates[0];
+	let py = prevCoordinates[1];
+	let cx = critter.x;
+	let cy = critter.y;
+	console.log('render critter')
+	console.log(px, py);
+	console.log(cx, cy);
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	let tileUnderCritter = grid[cx][cy];
+	grid[px][py] = '_';
+	console.log('renderCritter')
+	console.log(prevTile)
+	grid[cx][cy] = ['RAT', tileUnderCritter]
+	this.setState({
+		entireGrid: grid
+	})
+}
+
+// Must reflect critters on state grid at all times
 
 	buildMap() {
 		var that = this;
