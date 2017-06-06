@@ -483,7 +483,7 @@ moveCritter = (critter) => {
 	let cx = critter.x;
 	let cy = critter.y;
 	let coordinateCache = [cx, cy];
-	let tileCache = grid[cx][cy];
+	let tileCache = grid[cx][cy][1];
 	function _moveRight() {
 		console.log('_moveRight')
 		cx++;
@@ -557,13 +557,12 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	let cx = critter.x;
 	let cy = critter.y;
 	console.log('render critter')
-	console.log(px, py);
-	console.log(cx, cy);
+	console.log(prevTile)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let tileUnderCritter = grid[cx][cy];
-	grid[px][py] = '_';
-	console.log('renderCritter')
-	console.log(prevTile)
+	grid[px][py] = prevTile;
+	console.log('KNIGHT')
+	console.log(grid[7][7])
 	grid[cx][cy] = ['RAT', tileUnderCritter]
 	this.setState({
 		entireGrid: grid
