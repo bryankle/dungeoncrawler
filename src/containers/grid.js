@@ -673,13 +673,17 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
-							console.log('row, col')
-							console.log(idx1, idx2)
 								for (let i = 0; i < Object.keys(that.state.critters).length; i++){
 									var thisCritter = that.state.critters['critter' + i];
-									if (thisCritter.x == idx1 && thisCritter.y == idx2) {
+									if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
 										renderRow.push(<Rat direction={thisCritter.direction}/>)
 									}
+									console.log('this critters')
+									console.log(thisCritter.x, thisCritter.y);
+									console.log('this map position')
+									console.log(that.state.mapPosition)
+									console.log('this index');
+									console.log(idx1, idx2)
 									
 									// (function(num) {
 									// 	renderRow.push(<Rat direction={that.state.critters['critter' + num].direction}/>)
