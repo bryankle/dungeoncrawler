@@ -70,6 +70,7 @@ class Grid extends Component {
 		// Uncomment below
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
+		 
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
 		}, 1000)
@@ -381,7 +382,6 @@ class Grid extends Component {
 		}
 	}
 	// Helper function for generateRooms; links dungeons together by proximity
-
 	_sortByDistance(arr) {
 	var that = this;
 	var	idx = 0,
@@ -434,19 +434,24 @@ class Grid extends Component {
 // setInterval to alter direction of critter and setState to update all critter locations. This will force a rerender
 
 // Spawn critter at (10, 10) for now
-createCritter(grid, type, x, y) {
+createCritter(grid, total) {
 	let crittersClone = Object.assign({}, this.state.critters);
-	let critter = {
-		type: type,
-		x: x,
-		y: y,
-		direction: 'down'
+	let totalCritters = 0;
+	function helper(type, x, y, i) {
+		let critter = {
+			type: type,
+			x: x,
+			y: y,
+			direction: 'down'
+		}
+		crittersClone['critter' + totalCritters] = critter;
+		totalCritters++;
+		let tileUnderCritter = grid[x][y];
+		grid[x][y] = ['RAT', tileUnderCritter]
 	}
-	let tileUnderCritter = grid[x][y];
-	grid[x][y] = ['RAT', tileUnderCritter]
-	console.log('grid content at ' + x + ' and ' + y);
-	console.log(grid[x][y])
-	crittersClone['critter' + this.state.critterCount] = critter;
+	for (let i = 0; i < total; i++) {
+		helper('RAT', 8 + i, 8, i);
+	}
 	// if (!x && !y) --> generateRandomCoordinates within dungeon
 	this.setState({
 		critterCount: this.state.critterCount + 1,
@@ -598,8 +603,11 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 'rat', 8, 8);
-		grid = this.createCritter(grid, 'rat', 10, 10);
+		grid = this.createCritter(grid, 5);
+		// function critterWrapper() {
+		// 	this.createCritter(grid, 'rat', 8, 8);
+		// }
+		 
 		return grid;
 	}
 
@@ -665,7 +673,10 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
-								renderRow.push(<Rat direction={that.state.critters['critter0'].direction}/>)
+								for (let critter in that.state.critters) {
+									console.log(critter)
+									renderRow.push(<Rat direction={that.state.critters[critter].direction}/>)
+								}
 							default:
 								break;
 							
