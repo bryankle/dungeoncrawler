@@ -31,7 +31,7 @@ class Rat extends Component {
 		
 		<img
 			className='whiteKnight' 
-			src={this.ratDirection('right')} />
+			src={this.ratDirection(this.props.direction)} />
 		)
 	}
 }

@@ -72,7 +72,7 @@ class Grid extends Component {
 		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 500)
+		}, 1000)
 	}
 
 	_handleKeydown(e) {
@@ -439,7 +439,8 @@ createCritter(grid, type, x, y) {
 	let critter = {
 		type: type,
 		x: x,
-		y: y
+		y: y,
+		direction: 'down'
 	}
 	let tileUnderCritter = grid[x][y];
 	grid[x][y] = ['RAT', tileUnderCritter]
@@ -510,8 +511,8 @@ moveCritter = (critter) => {
 		
 		let random = Math.floor(Math.random() * 4);
 		// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
-
-
+		// Collision avoidance
+		console.log('direction');
 		// If critter moves up and object north of critter is solid, generate another random direction
 		// If going up
 		if (random === 2 && (that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid || (cx == hx && cy - 1 == hy))) {
@@ -524,6 +525,7 @@ moveCritter = (critter) => {
 		else if (random === 3 && (that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid || (cx == hx && cy + 1 == hy))) {
 			console.log('random: 3')
 			console.log(cx, cy + 1)
+	
 			_generateCoordinateInBound();
 		}
 		// If critter moves left and object west of critter is solid, generate another random direction
@@ -531,6 +533,7 @@ moveCritter = (critter) => {
 		else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
 			console.log('random: 1')
 			console.log(cx - 1, cy)
+	
 			_generateCoordinateInBound();
 		}
 		// If critter moves right and object right of critter is solid, generate another random direction
@@ -538,17 +541,25 @@ moveCritter = (critter) => {
 		else if (random === 0 && (that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid || (cx + 1 == hx && cy == hy))) {
 			console.log('random: 0')
 			console.log(cx + 1, cy)
+		
 			_generateCoordinateInBound();
 		}
 	// Continue
 		else {
-			console.log("randomly moving else")
-			console.log(that.state.objectInformation[that.state.entireGrid[cx+ 1][cy]])
-			//console.log(that.state.objectInformation[that.state.entireGrid[cx][cy]])
+			if (random == 2) {
+				critter.direction = 'left'
+			}
+			else if (random == 3) {
+				critter.direction = 'right'
+			}
+			else if (random == 1) {
+				critter.direction = 'up'				
+			}
+			else if (random == 0) {
+				critter.direction = 'down'
+			}
 			moves[random]();
-			console.log('SEE BELOW')
-			console.log(cx, cy);
-			console.log(coordinateCache)
+			
 		}
 		critter.x = cx;
 		critter.y = cy;
@@ -566,6 +577,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	let py = prevCoordinates[1];
 	let cx = critter.x;
 	let cy = critter.y;
+	
 	console.log('render critter')
 	console.log(prevTile)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
@@ -587,6 +599,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
 		grid = this.createCritter(grid, 'rat', 8, 8);
+		grid = this.createCritter(grid, 'rat', 10, 10);
 		return grid;
 	}
 
@@ -652,7 +665,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
-								renderRow.push(<Rat direction={that.state.heroDirection ? that.state.heroDirection : 'down'}/>)
+								renderRow.push(<Rat direction={that.state.critters['critter0'].direction}/>)
 							default:
 								break;
 							
