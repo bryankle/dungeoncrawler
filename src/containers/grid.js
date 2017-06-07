@@ -442,7 +442,8 @@ createCritter(grid, total) {
 			type: type,
 			x: x,
 			y: y,
-			direction: 'down'
+			direction: 'down',
+			aggressive: false
 		}
 		crittersClone['critter' + totalCritters] = critter;
 		totalCritters++;
@@ -511,66 +512,73 @@ moveCritter = (critter) => {
 	}
 
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
+
+		function _generateCoordinateChase() {
+			function helper() {
+
+			}
+		}
 	
-	 	function _generateCoordinateInBound() {
+	 	function _generateCoordinateRandom() {
+			let random = Math.floor(Math.random() * 4);
+			// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
+			// Collision avoidance
+			console.log('direction');
+			// If critter moves up and object north of critter is solid, generate another random direction
+			// If going up
+			if (random === 2 && (that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid || (cx == hx && cy - 1 == hy))) {
+				console.log('random: 2')
+				console.log(cx, cy - 1)
+				_generateCoordinateRandom();
+			}
+			// If critter moves down and object south of critter is solid, generate another random direction
+			// If going down
+			else if (random === 3 && (that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid || (cx == hx && cy + 1 == hy))) {
+				console.log('random: 3')
+				console.log(cx, cy + 1)
 		
-		let random = Math.floor(Math.random() * 4);
-		// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
-		// Collision avoidance
-		console.log('direction');
-		// If critter moves up and object north of critter is solid, generate another random direction
-		// If going up
-		if (random === 2 && (that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid || (cx == hx && cy - 1 == hy))) {
-			console.log('random: 2')
-			console.log(cx, cy - 1)
-			_generateCoordinateInBound();
-		}
-		// If critter moves down and object south of critter is solid, generate another random direction
-		// If going down
-		else if (random === 3 && (that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid || (cx == hx && cy + 1 == hy))) {
-			console.log('random: 3')
-			console.log(cx, cy + 1)
-	
-			_generateCoordinateInBound();
-		}
-		// If critter moves left and object west of critter is solid, generate another random direction
-		// If going left
-		else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
-			console.log('random: 1')
-			console.log(cx - 1, cy)
-	
-			_generateCoordinateInBound();
-		}
-		// If critter moves right and object right of critter is solid, generate another random direction
-		// If going right
-		else if (random === 0 && (that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid || (cx + 1 == hx && cy == hy))) {
-			console.log('random: 0')
-			console.log(cx + 1, cy)
+				_generateCoordinateRandom();
+			}
+			// If critter moves left and object west of critter is solid, generate another random direction
+			// If going left
+			else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
+				console.log('random: 1')
+				console.log(cx - 1, cy)
 		
-			_generateCoordinateInBound();
-		}
-	// Continue
-		else {
-			if (random == 2) {
-				critter.direction = 'left'
+				_generateCoordinateRandom();
 			}
-			else if (random == 3) {
-				critter.direction = 'right'
-			}
-			else if (random == 1) {
-				critter.direction = 'up'				
-			}
-			else if (random == 0) {
-				critter.direction = 'down'
-			}
-			moves[random]();
+			// If critter moves right and object right of critter is solid, generate another random direction
+			// If going right
+			else if (random === 0 && (that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid || (cx + 1 == hx && cy == hy))) {
+				console.log('random: 0')
+				console.log(cx + 1, cy)
 			
-		}
-		critter.x = cx;
-		critter.y = cy;
-		console.log(critter)
+				_generateCoordinateRandom();
+			}
+		// Continue
+			else {
+				if (random == 2) {
+					critter.direction = 'left'
+				}
+				else if (random == 3) {
+					critter.direction = 'right'
+				}
+				else if (random == 1) {
+					critter.direction = 'up'				
+				}
+				else if (random == 0) {
+					critter.direction = 'down'
+				}
+				// Execute move
+				moves[random]();
+			}
+			critter.x = cx;
+			critter.y = cy;
+			console.log(critter)
 	}
-	_generateCoordinateInBound()
+	if (!critter.aggressive) {
+		_generateCoordinateRandom()
+	}
 	this.renderCritter(critter, coordinateCache, tileCache)
 	return critter
 }
