@@ -653,9 +653,9 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	renderGrid(grid) {
 		let renderGrid = [];
 		const that = this;
-		grid.forEach(function(row) {
+		grid.forEach(function(row, idx1) {
 			let renderRow = [];
-			row.forEach(function(tile) {
+			row.forEach(function(tile, idx2) {
 				// Special case render if knight is on top of a tile
 				if (Array.isArray(tile)) {
 					tile.forEach(function(type) {
@@ -673,9 +673,17 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
-								for (let critter in that.state.critters) {
-									console.log(critter)
-									renderRow.push(<Rat direction={that.state.critters[critter].direction}/>)
+							console.log('row, col')
+							console.log(idx1, idx2)
+								for (let i = 0; i < Object.keys(that.state.critters).length; i++){
+									var thisCritter = that.state.critters['critter' + i];
+									if (thisCritter.x == idx1 && thisCritter.y == idx2) {
+										renderRow.push(<Rat direction={thisCritter.direction}/>)
+									}
+									
+									// (function(num) {
+									// 	renderRow.push(<Rat direction={that.state.critters['critter' + num].direction}/>)
+									// })(i)
 								}
 							default:
 								break;
