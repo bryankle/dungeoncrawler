@@ -73,7 +73,7 @@ class Grid extends Component {
 		 
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 500)
+		}, 100)
 	}
 
 	_handleKeydown(e) {
@@ -443,7 +443,7 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: false
+			aggressive: true
 		}
 		crittersClone['critter' + totalCritters] = critter;
 		totalCritters++;
@@ -514,8 +514,10 @@ moveCritter = (critter) => {
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
 
 		function _generateCoordinateChase() {
-			let distanceToHero = that._distance(hx, hy);
+			
+			console.log('_generateCoordinateChase WORKING')
 			function helper(x, y) { // Accepts critter current location
+				let distanceToHero = that._distance(hx, hy);
 				let D1 = {
 					x: x + 1,
 					y: y,
@@ -526,7 +528,7 @@ moveCritter = (critter) => {
 					x: x,
 					y: y + 1,
 					move: _moveUp,
-					distance: distnaceToHero(x, y + 1)
+					distance: distanceToHero(x, y + 1)
 				}
 				let D3 = {
 					x: x - 1,
@@ -541,10 +543,11 @@ moveCritter = (critter) => {
 					distance: distanceToHero(x, y - 1)
 				}
 				let directions = [D1, D2, D3, D4];
+				console.log(directions)
 				directions.sort(function(a, b) {
 					return a.distance > b.distance;
 				})
-				for (let d = 0; d < directions.length; d++) {
+				for (let d = 0; d < directions.length; d++) {	
 					let dir = directions[d];
 					let dx = dir.x
 					let dy = dir.y
@@ -554,10 +557,14 @@ moveCritter = (critter) => {
 					}
 					else {
 						dir.move();
+						critter.x = dx;
+						critter.y = dy;
+						break;
 					}
 				
 				}
 			}
+			helper(cx, cy)
 		}
 	
 	 	function _generateCoordinateRandom() {
@@ -619,6 +626,9 @@ moveCritter = (critter) => {
 	if (!critter.aggressive) {
 		_generateCoordinateRandom()
 	}
+	else if (critter.aggressive) {
+		_generateCoordinateChase();
+	}
 	this.renderCritter(critter, coordinateCache, tileCache)
 	return critter
 }
@@ -651,7 +661,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 5);
+		grid = this.createCritter(grid, 1);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
