@@ -73,7 +73,7 @@ class Grid extends Component {
 		 
 		setInterval(() => {
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 1000)
+		}, 500)
 	}
 
 	_handleKeydown(e) {
@@ -514,15 +514,56 @@ moveCritter = (critter) => {
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
 
 		function _generateCoordinateChase() {
-			function helper() {
+			let distanceToHero = that._distance(hx, hy);
+			function helper(x, y) { // Accepts critter current location
+				let D1 = {
+					x: x + 1,
+					y: y,
+					move: _moveRight,
+					distance: distanceToHero(x + 1, y)
+				}
+				let D2 = {
+					x: x,
+					y: y + 1,
+					move: _moveUp,
+					distance: distnaceToHero(x, y + 1)
+				}
+				let D3 = {
+					x: x - 1,
+					y: y,
+					move: _moveLeft,
+					distance: distanceToHero(x - 1, y)
+				}
+				let D4 = {
+					x: x,
+					y: y - 1,
+					move: _moveDown,
+					distance: distanceToHero(x, y - 1)
+				}
+				let directions = [D1, D2, D3, D4];
+				directions.sort(function(a, b) {
+					return a.distance > b.distance;
+				})
+				for (let d = 0; d < directions.length; d++) {
+					let dir = directions[d];
+					let dx = dir.x
+					let dy = dir.y
 
+					if (that.state.objectInformation[that.state.entireGrid[dx][dy].solid] || dx == hx && dy == hy) {
+						continue;
+					}
+					else {
+						dir.move();
+					}
+				
+				}
 			}
 		}
 	
 	 	function _generateCoordinateRandom() {
 			let random = Math.floor(Math.random() * 4);
 			// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
-			// Collision avoidance
+			// Collision avoidance to avoid solid objects and hero
 			console.log('direction');
 			// If critter moves up and object north of critter is solid, generate another random direction
 			// If going up
@@ -544,7 +585,6 @@ moveCritter = (critter) => {
 			else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
 				console.log('random: 1')
 				console.log(cx - 1, cy)
-		
 				_generateCoordinateRandom();
 			}
 			// If critter moves right and object right of critter is solid, generate another random direction
@@ -607,7 +647,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 
 	buildMap() {
 		var that = this;
-		let grid = this._createGrid('_', this.state.mapSize, this.state.mapSize);
+		let grid = this._helperTranspose(this._createGrid('_', this.state.mapSize, this.state.mapSize));
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation

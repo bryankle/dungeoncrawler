@@ -162,7 +162,6 @@ Map.prototype.calculatePath = function() {
                 return this.path = arr;
             }
         }
-
     }
     // Start inner recursive function
     helper(start.x, start.y);
