@@ -83,10 +83,10 @@ Map.prototype.calculatePath = function() {
             latest.shift();
             latest.push(item);
         }
-    else {
-        latest.push(item);
+        else {
+            latest.push(item);
+        }
     }
-}
     // Inner recursive function
     function helper(x, y) {
         // Push definite coordinates into array located in outer function

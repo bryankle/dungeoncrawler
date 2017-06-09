@@ -43,7 +43,7 @@ class Grid extends Component {
 					solid: false
 				},
 				R: { // Rock
-					solid: true
+					solid: false
 				},
 				RAT: {
 					solid: false
@@ -514,7 +514,18 @@ moveCritter = (critter) => {
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
 
 		function _generateCoordinateChase() {
-			
+			// Critter will avoid taking the same way back if initial path calculation does not work
+			let latest = [];
+			function latestQueue(item) {
+				if (latest.length > 1) {
+					latest.shift();
+					latest.push(item);
+				}
+				else {
+					latest.push(item);
+				}
+			}
+
 			console.log('_generateCoordinateChase WORKING')
 			function helper(x, y) { // Accepts critter current location
 				let distanceToHero = that._distance(hx, hy);
@@ -556,9 +567,19 @@ moveCritter = (critter) => {
 					console.log('that')
 					console.log(that.state.objectInformation[that.state.entireGrid[dx][dy]].solid)
 					console.log(that.state.entireGrid[dx][dy])
-					if (that.state.objectInformation[that.state.entireGrid[dx][dy]].solid || dx == hx && dy == hy) {
+					// that.state.objectInformation[that.state.entireGrid[dx][dy]].solid
+					if (that.state.entireGrid[dx][dy] == 'R' || dx == hx && dy == hy) {
 						continue;
 						
+					}
+
+					if (latest.length > 1) {
+						console.log('latest')
+						console.log(latest)
+						// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
+						if (a == latest[0][0] && b == latest[0][1]) {
+							continue;
+						}
 					}
 					// If critter is trapped and all potential directions are exhausted; do nothing
 					else if (d == directions.length) {
@@ -568,6 +589,7 @@ moveCritter = (critter) => {
 						dir.move();
 						critter.x = dx;
 						critter.y = dy;
+						latestQueue([dx, dy])
 						break;
 					}
 				
