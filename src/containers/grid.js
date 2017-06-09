@@ -551,9 +551,18 @@ moveCritter = (critter) => {
 					let dir = directions[d];
 					let dx = dir.x
 					let dy = dir.y
-
-					if (that.state.objectInformation[that.state.entireGrid[dx][dy].solid] || dx == hx && dy == hy) {
+					console.log('that.state.objectInformation[that.state.entireGrid[dx][dy].solid')
+					console.log(that.state.objectInformation[that.state.entireGrid[dx][dy].solid])
+					console.log('that')
+					console.log(that.state.objectInformation[that.state.entireGrid[dx][dy]].solid)
+					console.log(that.state.entireGrid[dx][dy])
+					if (that.state.objectInformation[that.state.entireGrid[dx][dy]].solid || dx == hx && dy == hy) {
 						continue;
+						
+					}
+					// If critter is trapped and all potential directions are exhausted; do nothing
+					else if (d == directions.length) {
+						break;
 					}
 					else {
 						dir.move();
