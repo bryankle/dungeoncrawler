@@ -9,8 +9,9 @@ export default class App extends Component {
     return (
       <div className="container">
       	<Grid />
-        <DamageReport />
+        <DamageReport damage={12}/>
       </div>
     );
   }
 }
+// Convert app.js into a container later to receive Redux information from store

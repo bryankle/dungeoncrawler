@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
-const DamageReport = function() {
+const DamageReport = function(props) {
+    // Will have to use Redux to pass on damage
     return (
         <div>
-            <h1>You have inflicted 10 damage to rat</h1>
+            <h1>You have inflicted {props.damage} damage to rat</h1>
         </div>
     )
 }

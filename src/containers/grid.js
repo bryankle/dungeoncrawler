@@ -45,7 +45,7 @@ class Grid extends Component {
 				},
 				R: { // Rock
 					// Switched to false for testing
-					solid: false
+					solid: true
 				},
 				RAT: {
 					solid: false
@@ -686,7 +686,7 @@ checkCritter = (critter) => {
 
 	}
 }
-
+// Attacking critter mechanism
 heroTargetCritter() {
 	console.log('HEROTARGETCRITTER TESTING')
 	console.log(this.state.charPosition)
@@ -706,7 +706,7 @@ heroTargetCritter() {
 	surroundingCoordinates.forEach((coordinate) => {
 		let x = coordinate[0];
 		let y = coordinate[1];
-		if (this.state.entireGrid[x][y].length > 1) {
+		if (this.state.entireGrid[x][y].includes('RAT')) {
 			this.setState({
 				target: this.findCritter(x, y)
 			})
@@ -719,6 +719,9 @@ heroTargetCritter() {
 		}
 	})
 }
+
+// Function for removing critter from grid
+// 
 
 // Function to identify critter in 'critters' object given x and y coordinate on grid;
 findCritter(x, y) {
