@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { attackCritter } from '../actions/attack-critter';
 //import Hero from '../img/Hero';
 import Dungeon from './generateDungeon';
 import Hero from '../components/hero';
@@ -905,7 +907,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	render() {
 		// TESTING
 		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
-		console.log(this.findCritter(this.state.critters['critter0'].x, this.state.critters['critter0'].y))
+		console.log(this.props)
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
@@ -915,10 +917,15 @@ renderCritter(critter, prevCoordinates, prevTile) {
 }
 function mapStateToProps(state) {
     return {
-        grid: state.grid
+        grid: state.grid,
+		damage: state.damage
     }
 }
 
-export default connect(mapStateToProps)(Grid);
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({attackCritter}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Grid);
 
 //	{this.renderGrid(this.cameraGrid(this.createGrid('GRASS', this.state.mapSize, this.state.mapSize)))}
