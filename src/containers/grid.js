@@ -75,9 +75,7 @@ class Grid extends Component {
 		 
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
-			if (this.state.target == '') {
-				this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
-			}
+			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
 			this.eachCritter(this.state.critters, this.moveCritter)
 		}, 1000)
 	}
@@ -709,9 +707,12 @@ heroTargetCritter() {
 		let x = coordinate[0];
 		let y = coordinate[1];
 		if (this.state.entireGrid[x][y].length > 1) {
-
-
-
+			this.setState({
+				target: this.findCritter(x, y)
+			})
+			console.log(this.state)
+		}
+		else {
 			this.setState({
 				target: ''
 			})
