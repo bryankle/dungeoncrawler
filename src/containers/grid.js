@@ -43,6 +43,7 @@ class Grid extends Component {
 					solid: false
 				},
 				R: { // Rock
+					// Switched to false for testing
 					solid: false
 				},
 				RAT: {
@@ -443,7 +444,7 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: true,
+			aggressive: false,
 			latest: [],
 			health: 100
 		}
@@ -496,21 +497,26 @@ moveCritter = (critter) => {
 
 	let coordinateCache = [cx, cy];
 	let tileCache = grid[cx][cy][1];
+	// Sprite and directions do not correlate
 	function _moveRight() {
 		console.log('_moveRight')
 		cx++;
+		critter.direction = 'down';
 	}
 	function _moveLeft() {
 		console.log('_moveLeft')
 		cx--;
+		critter.direction = 'up';
 	}
 	function _moveUp() {
 		console.log('_moveUp')
 		cy--;
+		critter.direction = 'right';
 	}
 	function _moveDown() {
 		console.log('_moveDown')
 		cy++;
+		critter.direction = 'left';
 	}
 
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
@@ -651,18 +657,7 @@ moveCritter = (critter) => {
 			}
 		// Continue
 			else {
-				if (random == 2) {
-					critter.direction = 'left'
-				}
-				else if (random == 3) {
-					critter.direction = 'right'
-				}
-				else if (random == 1) {
-					critter.direction = 'up'				
-				}
-				else if (random == 0) {
-					critter.direction = 'down'
-				}
+				// Directions to not match sprite
 				// Execute move
 				moves[random]();
 			}
