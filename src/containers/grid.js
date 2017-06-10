@@ -707,8 +707,11 @@ heroTargetCritter() {
 		let x = coordinate[0];
 		let y = coordinate[1];
 		if (this.state.entireGrid[x][y].includes('RAT')) {
+			console.log('INCLUDES RAT')
+			console.log(this.state.entireGrid[x][y])
+			this.attackCritter(this.findCritter(x, y))
 			this.setState({
-				target: this.findCritter(x, y)
+				target: this.findCritter(x, y) // Returns specific critter
 			})
 			console.log(this.state)
 		}
@@ -717,6 +720,28 @@ heroTargetCritter() {
 				target: ''
 			})
 		}
+	})
+}
+
+// Function for attacking critter
+// Accepts specific critter in state and returns updated 'critters' state object to reflect inflicted damage
+// updateCritters(critterName, critterObject) {
+// 	let crittersClone = Object.assign({}, this.state.critters);
+// 	crittersClone[crittersName] = critterObject;
+// 	this.setState({
+// 		critters: crittersClone
+// 	})
+// }
+
+attackCritter(critter) {
+	console.log('CURRENTLY ATTACKING CRITTER')
+	// Generate damage between 0 - 10
+	let damage = Math.floor(Math.random() * 10);
+	// Insert Redux method to take damage and send to store
+	let crittersClone = Object.assign({}, this.state.critters);
+	crittersClone[critter].health = crittersClone[critter].health - damage;
+	this.setState({
+		critters: crittersClone
 	})
 }
 
