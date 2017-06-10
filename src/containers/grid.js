@@ -443,7 +443,8 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: true
+			aggressive: true,
+			latest: []
 		}
 		crittersClone['critter' + totalCritters] = critter;
 		totalCritters++;
@@ -515,14 +516,20 @@ moveCritter = (critter) => {
 
 		function _generateCoordinateChase() {
 			// Critter will avoid taking the same way back if initial path calculation does not work
-			let latest = [];
+			// let latest = [];
+			// console.log('latest')
+			// console.log(latest)
 			function latestQueue(item) {
-				if (latest.length > 1) {
-					latest.shift();
-					latest.push(item);
+				console.log('latest queue working')
+				console.log(critter.latest)
+				if (critter.latest.length > 1) {
+					console.log('LATEST 1')
+					critter.latest.shift();
+					critter.latest.push(item);
 				}
 				else {
-					latest.push(item);
+					console.log('LATEST 2')
+					critter.latest.push(item);
 				}
 			}
 
@@ -558,42 +565,49 @@ moveCritter = (critter) => {
 				directions.sort(function(a, b) {
 					return a.distance > b.distance;
 				})
-				for (let d = 0; d < directions.length; d++) {	
-					let dir = directions[d];
-					let dx = dir.x
-					let dy = dir.y
-					console.log('that.state.objectInformation[that.state.entireGrid[dx][dy].solid')
-					console.log(that.state.objectInformation[that.state.entireGrid[dx][dy].solid])
-					console.log('that')
-					console.log(that.state.objectInformation[that.state.entireGrid[dx][dy]].solid)
-					console.log(that.state.entireGrid[dx][dy])
-					// that.state.objectInformation[that.state.entireGrid[dx][dy]].solid
-					if (that.state.entireGrid[dx][dy] == 'R' || dx == hx && dy == hy) {
-						continue;
-						
-					}
-
-					if (latest.length > 1) {
-						console.log('latest')
-						console.log(latest)
-						// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
-						if (a == latest[0][0] && b == latest[0][1]) {
+				//  If critter is 1 square away from hero in any of 8 surrounding directions; do not move
+				if (
+					// Left and right of critter
+					!((cx - 1 == hx && cy == hy) ||
+					(cx + 1 == hx && cy == hy) ||
+					// Top of critter
+					(cx + 1 == hx && cy + 1 == hy) ||
+					(cx == hx && cy + 1 == hy) ||
+					(cx - 1 == hx && cy + 1 == hy) ||
+					// Bottom of critter
+					(cx + 1 == hx && cy - 1 == hy) ||
+					(cx == hx && cy - 1 == hy) ||
+					(cx - 1 == hx && cy - 1 == hy))
+				) {
+					for (let d = 0; d < directions.length; d++) {
+						let dir = directions[d];
+						let dx = dir.x
+						let dy = dir.y
+					
+						// that.state.objectInformation[that.state.entireGrid[dx][dy]].solid
+						if (that.state.entireGrid[dx][dy] == 'R' || dx == hx && dy == hy) {
 							continue;
 						}
-					}
-					// If critter is trapped and all potential directions are exhausted; do nothing
-					else if (d == directions.length) {
-						break;
-					}
-					else {
-						dir.move();
-						critter.x = dx;
-						critter.y = dy;
-						latestQueue([dx, dy])
-						break;
-					}
-				
+
+						// if (critter.latest.length > 1) {
+						
+						// 	// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
+						// 	if (dx == critter.latest[0][0] && dy == critter.latest[0][1]) {
+						// 		continue;
+						// 	}
+						// }
+						// If critter is trapped and all potential directions are exhausted; do nothing
+						
+						else {
+							dir.move();
+							critter.x = dx;
+							critter.y = dy;
+							latestQueue([dx, dy])
+							break;
+						}
+					}	
 				}
+				
 			}
 			helper(cx, cy)
 		}
@@ -675,10 +689,11 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	console.log('render critter')
 	console.log(prevTile)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
-	let tileUnderCritter = grid[cx][cy];
-	grid[px][py] = prevTile;
-
-	grid[cx][cy] = ['RAT', tileUnderCritter]
+	if (!(grid[cx][cy].length > 1)) {
+		let tileUnderCritter = grid[cx][cy];
+		grid[px][py] = prevTile;
+		grid[cx][cy] = ['RAT', tileUnderCritter];
+	}
 	this.setState({
 		entireGrid: grid
 	})
