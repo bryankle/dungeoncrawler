@@ -32,6 +32,7 @@ class Grid extends Component {
 			heroDirection: '',
 			critterCount: 0,
 			critters: {},
+			target: '',
 			objectInformation: {
 				whiteKnight: {
 					solid: true
@@ -73,8 +74,12 @@ class Grid extends Component {
 		// Uncomment this and begin transferring behavior into grid render
 		 
 		setInterval(() => {
+			// Scan for critter as long as hero has no current target
+			if (this.state.target == '') {
+				this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
+			}
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 100)
+		}, 1000)
 	}
 
 	_handleKeydown(e) {
@@ -464,12 +469,15 @@ createCritter(grid, total) {
 	return grid;
 }
 // Take in copy of critters in state and apply callback function
-eachCritter(critters, fn) {
+eachCritter(critters, fn1) {
 	console.log('eachCritter...')
 	let updatedCritters = {};
 	for (let critter in critters) {
 		console.log(critter)
-		updatedCritters[critter] = fn(critters[critter]) // Returns updated object
+		updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		// if (critters[critter].health > 0) {
+		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		// }
 	}
 	// Update state for each critter here
 	console.log('STATE')
@@ -511,12 +519,12 @@ moveCritter = (critter) => {
 	function _moveUp() {
 		console.log('_moveUp')
 		cy--;
-		critter.direction = 'right';
+		critter.direction = 'left';
 	}
 	function _moveDown() {
 		console.log('_moveDown')
 		cy++;
-		critter.direction = 'left';
+		critter.direction = 'right';
 	}
 
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
@@ -675,9 +683,54 @@ moveCritter = (critter) => {
 	return critter
 }
 
+checkCritter = (critter) => {
+	if (critter.health == 0) {
+
+	}
+}
+
+heroTargetCritter() {
+	console.log('HEROTARGETCRITTER TESTING')
+	console.log(this.state.charPosition)
+	let cx = this.state.charPosition[0];
+	let cy = this.state.charPosition[1];
+	console.log(cx, cy)
+	let surroundingCoordinates = [
+		[cx - 1, cy - 1],
+		[cx    , cy - 1],
+		[cx + 1, cy - 1],
+		[cx - 1, cy    ],
+		[cx + 1, cy    ],
+		[cx - 1, cy + 1],
+		[cx    , cy + 1],
+		[cx + 1, cy + 1]
+	]
+	surroundingCoordinates.forEach((coordinate) => {
+		let x = coordinate[0];
+		let y = coordinate[1];
+		if (this.state.entireGrid[x][y].length > 1) {
+
+
+
+			this.setState({
+				target: ''
+			})
+		}
+	})
+}
+
+// Function to identify critter in 'critters' object given x and y coordinate on grid;
+findCritter(x, y) {
+	for (let critter in this.state.critters) {
+		if (this.state.critters[critter].x == x && this.state.critters[critter].y == y) {
+			return critter
+		}
+	}
+}
+
 renderCritter(critter, prevCoordinates, prevTile) {
-	console.log('mapPosition');
-		console.log(this.state.mapPosition)
+	// console.log('mapPosition');
+	// console.log(this.state.mapPosition)
 	let px = prevCoordinates[0];
 	let py = prevCoordinates[1];
 	let cx = critter.x;
@@ -739,8 +792,6 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		let center = this.state.cameraSize / 2;
 		// Change 10 to Math.floor(center) later
 		let tileUnderKnight = gridView[Math.floor(center)][Math.floor(center)];
-		console.log('tileUnderKnight')
-		console.log(tileUnderKnight)
 	
 		//gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT' // ORIGINAL SETTINGS; also go to style.css and remove position: absolute
 		gridView[Math.floor(center)][Math.floor(center)] = ['KNIGHT', tileUnderKnight]//gridView[Math.floor(center)][Math.floor(center)].concat(', KNIGHT')
@@ -824,13 +875,8 @@ renderCritter(critter, prevCoordinates, prevTile) {
 
 	render() {
 		// TESTING
-		console.log('this.state.critters')
-		console.log(this.state.critters)
-		console.log('this.state.critterCount')
-		console.log(this.state.critterCount)
-		
-		console.log(this.state)
-		// this.eachCritter(this.state.critters, this.moveCritter)
+		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
+		console.log(this.findCritter(this.state.critters['critter0'].x, this.state.critters['critter0'].y))
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
