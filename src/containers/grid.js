@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { attackCritter } from '../actions/attack-critter';
+import { storeDamage } from '../actions/store-damage';
 //import Hero from '../img/Hero';
 import Dungeon from './generateDungeon';
 import Hero from '../components/hero';
@@ -739,6 +739,7 @@ attackCritter(critter) {
 	console.log('CURRENTLY ATTACKING CRITTER')
 	// Generate damage between 0 - 10
 	let damage = Math.floor(Math.random() * 10);
+	this.props.storeDamage(damage)
 	// Insert Redux method to take damage and send to store
 	let crittersClone = Object.assign({}, this.state.critters);
 	crittersClone[critter].health = crittersClone[critter].health - damage;
@@ -923,7 +924,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({attackCritter}, dispatch)
+	return bindActionCreators({storeDamage}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);

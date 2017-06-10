@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 const DamageReport = function(props) {
     // Will have to use Redux to pass on damage
@@ -8,4 +9,11 @@ const DamageReport = function(props) {
         </div>
     )
 }
-export default DamageReport
+
+function mapStateToProps(state) {
+    return {
+        damage: state.damage
+    }
+}
+
+export default connect(mapStateToProps)(DamageReport)
