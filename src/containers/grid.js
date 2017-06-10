@@ -444,7 +444,8 @@ createCritter(grid, total) {
 			y: y,
 			direction: 'down',
 			aggressive: true,
-			latest: []
+			latest: [],
+			health: 100
 		}
 		crittersClone['critter' + totalCritters] = critter;
 		totalCritters++;
@@ -588,7 +589,8 @@ moveCritter = (critter) => {
 						if (that.state.entireGrid[dx][dy] == 'R' || dx == hx && dy == hy) {
 							continue;
 						}
-
+						// Implement at a later time - dead lock critter
+						// Feature: critter will permanently target hero until it dies regardless proximity to hero on map
 						// if (critter.latest.length > 1) {
 						
 						// 	// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
@@ -689,6 +691,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	console.log('render critter')
 	console.log(prevTile)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	// Required to avoid rendering issues when critter is within hero's immediate proximity (8 tiles surrounding hero)
 	if (!(grid[cx][cy].length > 1)) {
 		let tileUnderCritter = grid[cx][cy];
 		grid[px][py] = prevTile;
