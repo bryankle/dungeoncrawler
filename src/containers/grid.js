@@ -449,7 +449,7 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: false,
+			aggressive: true,
 			latest: [],
 			health: 100
 		}
@@ -519,12 +519,12 @@ moveCritter = (critter) => {
 	function _moveUp() {
 		console.log('_moveUp')
 		cy--;
-		critter.direction = 'left';
+		critter.direction = 'right';
 	}
 	function _moveDown() {
 		console.log('_moveDown')
 		cy++;
-		critter.direction = 'right';
+		critter.direction = 'left';
 	}
 
 	let moves = [_moveRight, _moveLeft, _moveUp, _moveDown];
