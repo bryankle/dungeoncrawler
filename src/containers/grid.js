@@ -84,10 +84,11 @@ class Grid extends Component {
 		setInterval(() => {
 			
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
-		}, 1000)
-		setInterval(() => {
 			// Scan for critter as long as hero has no current target
 			this.eachCritter(this.state.critters, this.critterIsAlive)
+		}, 1000)
+		setInterval(() => {
+			// Moves critter each interval
 			this.eachCritter(this.state.critters, this.moveCritter)
 		}, 100)
 	}
@@ -768,13 +769,41 @@ updateCritterState() {
 // 	})
 // }
 
+
 critterIsAlive(thisCritter) {
+	console.log('critterIsAlive')
 	if (thisCritter.health >= 0) {
 		return thisCritter;
 	}
-	// CONTINUE HERE
-	// DELETE PROPERTY FROM ARRAY
+	else if (thisCritter.health < 0) {
+		let x = thisCritter.x;
+		let y = thisCritter.y;
+		//let grid = Array.prototype.slice.call(this.state.entireGrid);
+		// let tilePrev = grid[x][y][1];
+		// console.log('tileprev');
+		// console.log(tilePrev)
+	}
+	// else {
+	//  	console.log('ELSE');
+	// 	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	// 	grid[thisCritter.x, thisCritter.y] = '_';
+	// 	this.setState({
+	// 		entireGrid: grid
+	// 	})
+	// }
+	
 }
+
+removeCritterFromGrid(x, y) {
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	grid[x][y] = '_';
+	this.setState({
+		entireGrid: grid
+	})
+}
+
+
+
 
 // Function for attacking critter
 // Accepts specific critter in state and returns updated 'critters' state object to reflect inflicted damage
@@ -789,13 +818,21 @@ critterIsAlive(thisCritter) {
 attackCritter(critter) {
 	console.log('CURRENTLY ATTACKING CRITTER')
 	// Generate damage between 0 - 10
-	let damage = Math.floor(Math.random() * 10);
+	let damage = Math.floor(Math.random() * 20);
 	this.props.storeDamage(damage)
 	// Insert Redux method to take damage and send to store
 	let crittersClone = Object.assign({}, this.state.critters);
 	crittersClone[critter].health = crittersClone[critter].health - damage;
+
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	if (crittersClone[critter].health < 0) {
+		let x = crittersClone[critter].x;
+		let y = crittersClone[critter].y;
+		grid[x][y] = '_';
+	}
 	this.setState({
-		critters: crittersClone
+		critters: crittersClone,
+		entireGrid: grid
 	})
 }
 
@@ -811,27 +848,27 @@ findCritter(x, y) {
 	}
 }
 
-renderCritter(critter, prevCoordinates, prevTile) {
-	// console.log('mapPosition');
-	// console.log(this.state.mapPosition)
-	let px = prevCoordinates[0];
-	let py = prevCoordinates[1];
-	let cx = critter.x;
-	let cy = critter.y;
-	
-	console.log('render critter')
-	console.log(prevTile)
-	let grid = Array.prototype.slice.call(this.state.entireGrid);
-	// Required to avoid rendering issues when critter is within hero's immediate proximity (8 tiles surrounding hero)
-	if (!(grid[cx][cy].length > 1)) {
-		let tileUnderCritter = grid[cx][cy];
-		grid[px][py] = prevTile;
-		grid[cx][cy] = ['RAT', tileUnderCritter];
+	renderCritter(critter, prevCoordinates, prevTile) {
+		// console.log('mapPosition');
+		// console.log(this.state.mapPosition)
+		let px = prevCoordinates[0];
+		let py = prevCoordinates[1];
+		let cx = critter.x;
+		let cy = critter.y;
+		
+		console.log('render critter')
+		console.log(prevTile)
+		let grid = Array.prototype.slice.call(this.state.entireGrid);
+		// Required to avoid rendering issues when critter is within hero's immediate proximity (8 tiles surrounding hero)
+		if (!(grid[cx][cy].length > 1)) {
+			let tileUnderCritter = grid[cx][cy];
+			grid[px][py] = prevTile;
+			grid[cx][cy] = ['RAT', tileUnderCritter];
+		}
+		this.setState({
+			entireGrid: grid
+		})
 	}
-	this.setState({
-		entireGrid: grid
-	})
-}
 
 // Must reflect critters on state grid at all times
 
@@ -957,8 +994,8 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	render() {
 		// TESTING
 		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
-		console.log(this.state.critters)
-		console.log(this.critterIsAlive(this.state.critters, 'critter0'))
+		console.log(this.state)
+		
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
