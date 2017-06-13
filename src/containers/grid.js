@@ -33,6 +33,7 @@ class Grid extends Component {
 			height: 150,
 			width: 150,
 			cameraSize: 15,
+			health: 100,
 			heroDirection: '',
 			critterCount: 0,
 			critters: {},
