@@ -82,11 +82,12 @@ class Grid extends Component {
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
+			
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
 		}, 1000)
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
-			
+			this.eachCritter(this.state.critters, this.critterIsAlive)
 			this.eachCritter(this.state.critters, this.moveCritter)
 		}, 100)
 	}
@@ -489,8 +490,9 @@ eachCritter(critters, fn1) {
 	console.log('eachCritter...')
 	let updatedCritters = {};
 	for (let critter in critters) {
-		console.log(critter)
-		updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		if (fn1(critters[critter])) {
+			updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		}
 		// if (critters[critter].health > 0) {
 		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		// }
@@ -744,8 +746,32 @@ heroTargetCritter() {
 	})
 }
 
-verifyAliveCritter(allCritters, thisCritter) {
-	let cloneAllCritters = Array.prototype.slice.call(allCritters);
+updateCritterState() {
+	let critters = this.state.critters;
+	
+}
+
+// eachCritter(critters, fn1) {
+// 	console.log('eachCritter...')
+// 	let updatedCritters = {};
+// 	for (let critter in critters) {
+// 		if (fn1(critters[critter])) {
+// 			updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+// 		}
+// 		// if (critters[critter].health > 0) {
+// 		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+// 		// }
+// 	}
+	
+// 	this.setState({
+// 		critters: updatedCritters
+// 	})
+// }
+
+critterIsAlive(thisCritter) {
+	if (thisCritter.health >= 0) {
+		return thisCritter;
+	}
 	// CONTINUE HERE
 	// DELETE PROPERTY FROM ARRAY
 }
@@ -888,16 +914,14 @@ renderCritter(critter, prevCoordinates, prevTile) {
 									if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
 										renderRow.push(<Rat direction={thisCritter.direction}/>)
 									}
-									console.log('this critters')
-									console.log(thisCritter.x, thisCritter.y);
-									console.log('this map position')
-									console.log(that.state.mapPosition)
-									console.log('this index');
-									console.log(idx1, idx2)
+									// console.log('this critters')
+									// console.log(thisCritter.x, thisCritter.y);
+									// console.log('this map position')
+									// console.log(that.state.mapPosition)
+									// console.log('this index');
+									// console.log(idx1, idx2)
 									
-									// (function(num) {
-									// 	renderRow.push(<Rat direction={that.state.critters['critter' + num].direction}/>)
-									// })(i)
+						
 								}
 							default:
 								break;
@@ -933,7 +957,8 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	render() {
 		// TESTING
 		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
-		console.log(this.props)
+		console.log(this.state.critters)
+		console.log(this.critterIsAlive(this.state.critters, 'critter0'))
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
