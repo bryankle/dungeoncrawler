@@ -90,7 +90,7 @@ class Grid extends Component {
 		setInterval(() => {
 			// Moves critter each interval
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 100)
+		}, 500)
 	}
 
 	_handleKeydown(e) {
@@ -467,7 +467,7 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: true,//Math.random() > 0.5 ? true : false,
+			aggressive: Math.random() > 0.5 ? true : false,
 			latest: [],
 			health: 100
 		}
@@ -794,16 +794,6 @@ critterIsAlive(thisCritter) {
 	
 }
 
-removeCritterFromGrid(x, y) {
-	let grid = Array.prototype.slice.call(this.state.entireGrid);
-	grid[x][y] = '_';
-	this.setState({
-		entireGrid: grid
-	})
-}
-
-
-
 
 // Function for attacking critter
 // Accepts specific critter in state and returns updated 'critters' state object to reflect inflicted damage
@@ -825,10 +815,12 @@ attackCritter(critter) {
 	crittersClone[critter].health = crittersClone[critter].health - damage;
 
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	// Remove critter from grid after death
 	if (crittersClone[critter].health < 0) {
 		let x = crittersClone[critter].x;
 		let y = crittersClone[critter].y;
 		grid[x][y] = '_';
+		delete crittersClone[critter];
 	}
 	this.setState({
 		critters: crittersClone,
@@ -878,7 +870,7 @@ findCritter(x, y) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 1);
+		grid = this.createCritter(grid, 5);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
@@ -946,11 +938,24 @@ findCritter(x, y) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
+
+							// for (let critter in that.state.critters) {
+							// 		if (critter.x == (idx1 + that.state.mapPosition[1]) && critter.y == (idx2 + that.state.mapPosition[0])) {
+							// 			renderRow.push(<Rat direction={critter.direction}/>)
+							// 		}
+							// 	}
 								for (let i = 0; i < Object.keys(that.state.critters).length; i++){
-									var thisCritter = that.state.critters['critter' + i];
-									if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
-										renderRow.push(<Rat direction={thisCritter.direction}/>)
+									// Confirm if critter still exists before rendering to map
+									if (that.state.critters['critter' + i]) {
+										var thisCritter = that.state.critters['critter' + i];
+										if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
+											renderRow.push(<Rat direction={thisCritter.direction}/>)
+										}
 									}
+									else {
+										continue;
+									}
+									
 									// console.log('this critters')
 									// console.log(thisCritter.x, thisCritter.y);
 									// console.log('this map position')
@@ -960,6 +965,8 @@ findCritter(x, y) {
 									
 						
 								}
+								
+								
 							default:
 								break;
 							
