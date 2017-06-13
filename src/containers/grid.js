@@ -1,3 +1,7 @@
+// FEATURES TO IMPLEMENT
+// Critter attack
+// Critter death
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -16,8 +20,6 @@ import Rock from '../../img/rock.jpg';
 // IDEAS
 // Create a random map generated with rocks and grass with collision data stored in objects
 // When spawning character in dungeon, save the center points for each generated room and randomly select from array as initial character spawn point
-
-const renderGrass = <img src={Grass} />
 
 class Grid extends Component {
 	constructor(props) {
@@ -50,6 +52,10 @@ class Grid extends Component {
 					solid: true
 				},
 				RAT: {
+					solid: true
+				},
+				// FIX
+				undefined: {
 					solid: false
 				}
 			}
@@ -74,12 +80,14 @@ class Grid extends Component {
 		// Uncomment below
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
-		 
+		setInterval(() => {
+			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
+		}, 1000)
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
-			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
+			
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 1000)
+		}, 100)
 	}
 
 	_handleKeydown(e) {
@@ -130,19 +138,20 @@ class Grid extends Component {
 		let grid = this.state.entireGrid[X][Y];
 		
 		let tileType = this.state.entireGrid[X][Y];
-		console.log(this.state.objectInformation[tileType].solid)
 		switch(direction) {
 			case 'up':
 			// Local state array corrected for transposition
 				if (cloneMapPosition[1] > 0) {
 					Y--;
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					// console.log(this.state.entireGrid[Y][X])
+					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
 						break;
 					}
-					else {
-						cloneMapPosition[1]--;
-						cloneCharPosition[1]--;
-					}
+
+					cloneMapPosition[1]--;
+					cloneCharPosition[1]--;
+					
 				}
 				this.setState({
 					heroDirection: 'up'
@@ -150,8 +159,10 @@ class Grid extends Component {
 				break;
 			case 'down':
 				if (cloneMapPosition[1] < this.state.mapSize) { // Prevent user from going off grid
-					Y++;			
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					Y++;
+					// console.log(this.state.entireGrid[Y][X])			
+					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
 						break;
 					}
 					cloneMapPosition[1]++;
@@ -164,7 +175,9 @@ class Grid extends Component {
 			case 'left':
 				if (cloneMapPosition[0] > 0) {
 					X--;
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					// console.log(this.state.entireGrid[Y][X])
+					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
 						break;
 					}
 					cloneMapPosition[0]--;
@@ -177,7 +190,9 @@ class Grid extends Component {
 			case 'right':
 				if (cloneMapPosition[0] < this.state.mapSize) {
 					X++;
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					// console.log(this.state.entireGrid[Y][X])
+					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
 						break;
 					}
 					cloneMapPosition[0]++;
@@ -449,7 +464,7 @@ createCritter(grid, total) {
 			x: x,
 			y: y,
 			direction: 'down',
-			aggressive: true,
+			aggressive: true,//Math.random() > 0.5 ? true : false,
 			latest: [],
 			health: 100
 		}
@@ -479,9 +494,7 @@ eachCritter(critters, fn1) {
 		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		// }
 	}
-	// Update state for each critter here
-	console.log('STATE')
-	console.log(this.state)
+	
 	this.setState({
 		critters: updatedCritters
 	})
@@ -537,7 +550,7 @@ moveCritter = (critter) => {
 			function latestQueue(item) {
 				console.log('latest queue working')
 				console.log(critter.latest)
-				if (critter.latest.length > 1) {
+				if (critter.latest.length == 2) {
 					console.log('LATEST 1')
 					critter.latest.shift();
 					critter.latest.push(item);
@@ -600,27 +613,26 @@ moveCritter = (critter) => {
 						let dy = dir.y
 					
 						// that.state.objectInformation[that.state.entireGrid[dx][dy]].solid
-						if (that.state.entireGrid[dx][dy] == 'R' || dx == hx && dy == hy) {
+						// FIX
+						if (that.state.entireGrid[dx][dy] !== '_' || dx == hx && dy == hy) {
 							continue;
 						}
 						// Implement at a later time - dead lock critter
 						// Feature: critter will permanently target hero until it dies regardless proximity to hero on map
-						// if (critter.latest.length > 1) {
+						if (critter.latest.length > 1) {
 						
-						// 	// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
-						// 	if (dx == critter.latest[0][0] && dy == critter.latest[0][1]) {
-						// 		continue;
-						// 	}
-						// }
+							// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
+							if (dx == critter.latest[0][0] && dy == critter.latest[0][1]) {
+								continue;
+							}
+						}
 						// If critter is trapped and all potential directions are exhausted; do nothing
-						
-						else {
-							dir.move();
+						// FIX TOOK OUT ELSE
+						dir.move();
 							critter.x = dx;
 							critter.y = dy;
 							latestQueue([dx, dy])
 							break;
-						}
 					}	
 				}
 				
@@ -692,22 +704,27 @@ checkCritter = (critter) => {
 heroTargetCritter() {
 	console.log('HEROTARGETCRITTER TESTING')
 	console.log(this.state.charPosition)
+	// FIXED
 	let cx = this.state.charPosition[0];
 	let cy = this.state.charPosition[1];
 	console.log(cx, cy)
 	let surroundingCoordinates = [
-		[cx - 1, cy - 1],
-		[cx    , cy - 1],
-		[cx + 1, cy - 1],
-		[cx - 1, cy    ],
-		[cx + 1, cy    ],
-		[cx - 1, cy + 1],
-		[cx    , cy + 1],
-		[cx + 1, cy + 1]
+		[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
+		[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
+		[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
+		[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
+		[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
+		[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
+		[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
+		[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
 	]
+
 	surroundingCoordinates.forEach((coordinate) => {
-		let x = coordinate[0];
-		let y = coordinate[1];
+		console.log('SURROUNDING COORDINATES');
+
+		let y = coordinate[0];
+		let x = coordinate[1];
+		console.log(this.state.entireGrid[x][y])
 		if (this.state.entireGrid[x][y].includes('RAT')) {
 			console.log('INCLUDES RAT')
 			console.log(this.state.entireGrid[x][y])
@@ -718,11 +735,18 @@ heroTargetCritter() {
 			console.log(this.state)
 		}
 		else {
+			console.log('no target detected')
 			this.setState({
 				target: ''
 			})
 		}
 	})
+}
+
+verifyAliveCritter(allCritters, thisCritter) {
+	let cloneAllCritters = Array.prototype.slice.call(allCritters);
+	// CONTINUE HERE
+	// DELETE PROPERTY FROM ARRAY
 }
 
 // Function for attacking critter
