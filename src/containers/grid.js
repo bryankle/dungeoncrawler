@@ -744,11 +744,7 @@ heroTargetCritter() {
 	})
 }
 
-verifyAliveCritter(allCritters, thisCritter) {
-	let cloneAllCritters = Array.prototype.slice.call(allCritters);
-	// CONTINUE HERE
-	// DELETE PROPERTY FROM ARRAY
-}
+
 
 // Function for attacking critter
 // Accepts specific critter in state and returns updated 'critters' state object to reflect inflicted damage
