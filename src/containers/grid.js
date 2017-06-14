@@ -773,6 +773,14 @@ attackCritter(critter) {
 	})
 }
 
+critterIsAlive(critter) {
+	console.log('critterIsAlive');
+	// If critter is alive, return critter object to state
+	if (critter.health >= 0) {
+		return critter;
+	}
+}
+
 // Function for removing critter from grid
 // 
 
@@ -933,7 +941,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 	render() {
 		// TESTING
 		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
-		console.log(this.props)
+		console.log(this.state.critters);
 		return(
 			<div>
 				<div className="grid">{this.renderGrid(this.cameraGrid(this.state.entireGrid))}</div>
