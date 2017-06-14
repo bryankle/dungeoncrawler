@@ -491,7 +491,10 @@ eachCritter(critters, fn1) {
 	let updatedCritters = {};
 	for (let critter in critters) {
 		console.log(critter)
-		updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		if (critters[critter]) {
+			updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
+		}
+		//updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		// if (critters[critter].health > 0) {
 		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		// }
@@ -723,7 +726,7 @@ heroTargetCritter() {
 
 	surroundingCoordinates.forEach((coordinate) => {
 		console.log('SURROUNDING COORDINATES');
-
+		console.log(this.state)
 		let y = coordinate[0];
 		let x = coordinate[1];
 		console.log(this.state.entireGrid[x][y])
@@ -787,6 +790,7 @@ critterIsAlive = (critter) => {
 		this.setState({
 			entireGrid: grid
 		})
+		return 
 	}
 }
 
