@@ -760,7 +760,7 @@ heroTargetCritter() {
 attackCritter(critter) {
 	console.log('CURRENTLY ATTACKING CRITTER')
 	// Generate damage between 0 - 10
-	let damage = Math.floor(Math.random() * 10);
+	let damage = Math.floor(Math.random() * 20);
 	this.props.storeDamage(damage)
 	// Insert Redux method to take damage and send to store
 	let crittersClone = Object.assign({}, this.state.critters);
@@ -770,11 +770,23 @@ attackCritter(critter) {
 	})
 }
 
-critterIsAlive(critter) {
+critterIsAlive = (critter) => {
 	console.log('critterIsAlive');
 	// If critter is alive, return critter object to state
 	if (critter.health >= 0) {
 		return critter;
+	}
+	else if (critter.health < 0) {
+		console.log('CRITTER JUST DIED')
+		let x = critter.x;
+		let y = critter.y;
+		console.log('CRITTER DIED AT: ' + x + ' ' + y)
+		console.log(this.state)
+		let grid = Array.prototype.slice.call(this.state.entireGrid);
+		grid[x][y] = '_';
+		this.setState({
+			entireGrid: grid
+		})
 	}
 }
 
