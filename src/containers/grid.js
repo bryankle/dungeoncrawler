@@ -710,45 +710,57 @@ checkCritter = (critter) => {
 }
 // Attacking critter mechanism
 heroTargetCritter() {
-	console.log('HEROTARGETCRITTER TESTING')
-	console.log(this.state.charPosition)
-	// FIXED
-	let cx = this.state.charPosition[0];
-	let cy = this.state.charPosition[1];
-	console.log(cx, cy)
-	let surroundingCoordinates = [
-		[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
-		[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
-		[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
-		[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
-		[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
-		[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
-		[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
-		[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
-	]
 
-	surroundingCoordinates.forEach((coordinate) => {
-		console.log('SURROUNDING COORDINATES');
-		console.log(this.state)
-		let y = coordinate[0];
-		let x = coordinate[1];
-		console.log(this.state.entireGrid[x][y])
-		if (this.state.entireGrid[x][y].includes('RAT')) {
-			console.log('INCLUDES RAT')
-			console.log(this.state.entireGrid[x][y])
-			this.attackCritter(this.findCritter(x, y))
-			this.setState({
-				target: this.findCritter(x, y) // Returns specific critter
-			})
+	// If hero currently has a critter targetted, find the coordinates of that specific critter and continue attacking it until it dies
+	// Resume search if critter has been killed
+
+	if (this.state.target !== '') {
+		let thisCritter = this.state.target.slice(0);
+		let x = this.state.critters[thisCritter].x;
+		let y = this.state.critters[thisCritter].y;
+		this.attackCritter(this.findCritter(x, y))
+	}
+	else {
+		console.log('HEROTARGETCRITTER TESTING')
+		console.log(this.state.charPosition)
+		// FIXED
+		let cx = this.state.charPosition[0];
+		let cy = this.state.charPosition[1];
+		console.log(cx, cy)
+		let surroundingCoordinates = [
+			[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
+			[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
+			[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
+			[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
+			[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
+		]
+
+		surroundingCoordinates.forEach((coordinate) => {
+			console.log('SURROUNDING COORDINATES');
 			console.log(this.state)
-		}
-		else {
-			console.log('no target detected')
-			this.setState({
-				target: ''
-			})
-		}
-	})
+			let y = coordinate[0];
+			let x = coordinate[1];
+			console.log(this.state.entireGrid[x][y])
+			if (this.state.entireGrid[x][y].includes('RAT')) {
+				console.log('INCLUDES RAT')
+				console.log(this.state.entireGrid[x][y])
+				this.attackCritter(this.findCritter(x, y))
+				this.setState({
+					target: this.findCritter(x, y) // Returns specific critter
+				})
+				console.log(this.state)
+			}
+			else {
+				console.log('no target detected')
+				this.setState({
+					target: ''
+				})
+			}
+		})
+	}
 }
 
 
