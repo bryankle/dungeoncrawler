@@ -89,7 +89,7 @@ class Grid extends Component {
 			// Scan for critter as long as hero has no current target
 			
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 1000)
+		}, 100)
 	}
 
 	_handleKeydown(e) {
@@ -791,6 +791,7 @@ critterIsAlive = (critter) => {
 		let grid = Array.prototype.slice.call(this.state.entireGrid);
 		grid[x][y] = '_';
 		this.setState({
+			target: '',
 			entireGrid: grid
 		})
 		return 
@@ -839,7 +840,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 5);
+		grid = this.createCritter(grid, 3);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
@@ -908,15 +909,16 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								break;
 							case 'RAT':
 								let critters = that.state.critters;
+								
 								for (let critter in critters) {
-									console.log('for critters');
-									console.log(critter)
 									if (critters[critter]) {
+											console.log(critters[critter].health)
 										if (critters[critter].x == (idx1 + that.state.mapPosition[1]) && critters[critter].y == (idx2 + that.state.mapPosition[0])) {
 											renderRow.push(<Rat direction={critters[critter].direction}/>)
 										}
 									}
 								}
+								
 
 								// for (let i = 0; i < Object.keys(that.state.critters).length; i++){
 								// 	var thisCritter = that.state.critters['critter' + i];
