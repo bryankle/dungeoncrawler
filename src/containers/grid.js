@@ -89,7 +89,7 @@ class Grid extends Component {
 			// Scan for critter as long as hero has no current target
 			
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 100)
+		}, 1000)
 	}
 
 	_handleKeydown(e) {
@@ -494,6 +494,9 @@ eachCritter(critters, fn1) {
 		if (critters[critter]) {
 			updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		}
+		// else {
+		// 	continue
+		// }
 		//updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
 		// if (critters[critter].health > 0) {
 		// 	updatedCritters[critter] = fn1(critters[critter]) // Returns updated object
@@ -836,7 +839,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 1);
+		grid = this.createCritter(grid, 5);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
@@ -904,22 +907,33 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
-								for (let i = 0; i < Object.keys(that.state.critters).length; i++){
-									var thisCritter = that.state.critters['critter' + i];
-									if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
-										renderRow.push(<Rat direction={thisCritter.direction}/>)
+								let critters = that.state.critters;
+								for (let critter in critters) {
+									console.log('for critters');
+									console.log(critter)
+									if (critters[critter]) {
+										if (critters[critter].x == (idx1 + that.state.mapPosition[1]) && critters[critter].y == (idx2 + that.state.mapPosition[0])) {
+											renderRow.push(<Rat direction={critters[critter].direction}/>)
+										}
 									}
-									console.log('this critters')
-									console.log(thisCritter.x, thisCritter.y);
-									console.log('this map position')
-									console.log(that.state.mapPosition)
-									console.log('this index');
-									console.log(idx1, idx2)
-									
-									// (function(num) {
-									// 	renderRow.push(<Rat direction={that.state.critters['critter' + num].direction}/>)
-									// })(i)
 								}
+
+								// for (let i = 0; i < Object.keys(that.state.critters).length; i++){
+								// 	var thisCritter = that.state.critters['critter' + i];
+								// 	if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
+								// 		renderRow.push(<Rat direction={thisCritter.direction}/>)
+								// 	}
+								// 	console.log('this critters')
+								// 	console.log(thisCritter.x, thisCritter.y);
+								// 	console.log('this map position')
+								// 	console.log(that.state.mapPosition)
+								// 	console.log('this index');
+								// 	console.log(idx1, idx2)
+									
+								// 	// (function(num) {
+								// 	// 	renderRow.push(<Rat direction={that.state.critters['critter' + num].direction}/>)
+								// 	// })(i)
+								// }
 							default:
 								break;
 							
