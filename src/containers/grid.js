@@ -83,6 +83,7 @@ class Grid extends Component {
 		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
+			this.eachCritter(this.state.critters, this.critterIsAlive)
 		}, 1000)
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
