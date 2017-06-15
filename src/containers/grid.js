@@ -708,11 +708,6 @@ moveCritter = (critter) => {
 	return critter
 }
 
-checkCritter = (critter) => {
-	if (critter.health == 0) {
-
-	}
-}
 // Attacking critter mechanism
 heroTargetCritter() {
 
