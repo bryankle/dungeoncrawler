@@ -291,6 +291,11 @@ class Grid extends Component {
 				}
 			
 			}
+			grid[8][10] = 'R';
+			grid[8][11] = 'R'
+			grid[8][12] = 'R'
+			grid[8][13] = 'R'
+			grid[7][13] = 'R'
 		}
 
 		for (let i = 0; i < rooms; i++) {
@@ -711,6 +716,26 @@ checkCritter = (critter) => {
 // Attacking critter mechanism
 heroTargetCritter() {
 
+	let surroundingCoordinates = [
+			[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
+			[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
+			[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
+			[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
+			[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
+			[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
+		];
+
+		function checkSurrounding() {
+			for (let i = 0; i < surroundingCoordinates.length; i++) {
+				if (surroundingCoordinates[i].includes('RAT')) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 	// If hero currently has a critter targetted, find the coordinates of that specific critter and continue attacking it until it dies
 	// Resume search if critter has been killed
 
@@ -727,16 +752,16 @@ heroTargetCritter() {
 		let cx = this.state.charPosition[0];
 		let cy = this.state.charPosition[1];
 		console.log(cx, cy)
-		let surroundingCoordinates = [
-			[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
-			[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
-			[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
-			[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
-			[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
-		]
+		// let surroundingCoordinates = [
+		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
+		// 	[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
+		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
+		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
+		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
+		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
+		// 	[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
+		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
+		// ]
 
 		surroundingCoordinates.forEach((coordinate) => {
 			console.log('SURROUNDING COORDINATES');
@@ -852,7 +877,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 3);
+		grid = this.createCritter(grid, 5);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
