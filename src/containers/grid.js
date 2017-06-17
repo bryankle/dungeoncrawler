@@ -33,6 +33,7 @@ class Grid extends Component {
 			mapSize: 150, // Adjust all references to mapSize to height & width later and delete
 			height: 150,
 			width: 150,
+			health: 100,
 			cameraSize: 15,
 			heroDirection: '',
 			critterCount: 0,
@@ -842,6 +843,9 @@ searchForHero = (critter) => {
 
 attackHero() {
 	let damage = Math.floor(Math.random() * 5);
+	this.setState({
+		health: this.state.health - damage
+	})
 }
 
 
