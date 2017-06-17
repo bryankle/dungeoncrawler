@@ -29,9 +29,11 @@ class Rat extends Component {
 	render() {
 		return(
 		
-		<img
+		<div className="critter-container">
+			<img
 			className='whiteKnight' 
 			src={this.ratDirection(this.props.direction)} />
+		</div>
 		)
 	}
 }

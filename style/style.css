@@ -3,6 +3,13 @@ img {
 	width: 30px;
 }
 
+.critter-container {
+	height: 30px;
+	width: 30px;
+	display: inline-block;
+	position: absolute;
+}
+
 .whiteKnight {
 	position: absolute
 }
