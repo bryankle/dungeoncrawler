@@ -90,7 +90,7 @@ class Grid extends Component {
 			// Scan for critter as long as hero has no current target
 			
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 100)
+		}, 1000)
 	}
 
 	_handleKeydown(e) {
@@ -492,7 +492,7 @@ createCritter(grid, total) {
 	return grid;
 }
 // Take in copy of critters in state and apply callback function
-eachCritter(critters, fn1) {
+eachCritter = (critters, fn1) => {
 	console.log('eachCritter...')
 	let updatedCritters = {};
 	for (let critter in critters) {
@@ -788,12 +788,12 @@ heroTargetCritter() {
 // Will be initiated in componentDidMount in setInterval by function 'eachCritter'
 // Accepts critter argument
 // Extract x and y coordinates from critter object and conduct a perimeter scan (4 directions) for hero, if true, then attack, if false, then do nothing
-attackHero(critter) {
-	// console.log('Attacking hero....')
+attackHero = (critter) => {
+	console.log('Attacking hero....');
+	console.log(this)
 	// let damage = Math.floor(Math.random() * 5); // Deals random damage from 0 - 5
 	// let x = critter.x;
 	// let y = critter.y;
-	
 	// How to record previous critter coordinate?
 	// Creating another property in each individual critter's object in state information
 	let heroNearby = false;
@@ -801,19 +801,41 @@ attackHero(critter) {
 	// Run scan on surrounding coordinates to search for hero
 	
 	// Using previously created 'latest' property in critter object to determine if critter moved (latest was used in path finding algorthm to avoid repetitive steps)
-	let x0 = critter.latest[1].x;
-	let y0 = critter.latest[1].y;
 
+	// Previous coordinates 
+
+
+	let xp = critter.latest[0][0];
+	let yp = critter.latest[0][1];
+	// Current coordinates
+	let xc = critter.latest[0][0];
+	let yc = critter.latest[0][1];
+	console.log('LATEST CRITTER ARRAY TEST');
+	console.log('previous coordinates: ' + xp, yp)
+	console.log('current coordinates: ' + xc, yc)
 	let surroundingCoordinates = [
-			[this.state.critter[0] - 1, this.state.critter[1] - 1],
-			[this.state.critter[0]    , this.state.critter[1] - 1],
-			[this.state.critter[0] + 1, this.state.critter[1] - 1],
-			[this.state.critter[0] - 1, this.state.critter[1]    ],
-			[this.state.critter[0] + 1, this.state.critter[1]    ],
-			[this.state.critter[0] - 1, this.state.critter[1] + 1],
-			[this.state.critter[0]    , this.state.critter[1] + 1],
-			[this.state.critter[0] + 1, this.state.critter[1] + 1]
+			[critter.x - 1, critter.y - 1],
+			[critter.x    , critter.y - 1],
+			[critter.x + 1, critter.y - 1],
+			[critter.x - 1, critter.y    ],
+			[critter.x + 1, critter.y    ],
+			[critter.x - 1, critter.y + 1],
+			[critter.x    , critter.y + 1],
+			[critter.x + 1, critter.y + 1]
 		];
+	console.log('surroundingCoordinates')
+	console.log(surroundingCoordinates)
+	// Why can't 'this' be scoped here?
+	surroundingCoordinates.forEach((direction) => {
+		console.log(this)
+		console.log('LEWL')
+		console.log(direction)
+		let x = direction[0];
+		let y = direction[1];
+		if (x == that.state.charPosition[0] && y == that.state.charPosition[1]) {
+			console.log('Hero detected')
+		}
+	})
 	// Methods of detecting presence of hero
 	// 1. Constantly scanning perimeter for presence of hero
 	// 2. Detect lack of critter movement and assume that critter has found the hero
