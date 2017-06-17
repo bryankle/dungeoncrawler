@@ -84,13 +84,13 @@ class Grid extends Component {
 		setInterval(() => {
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
 			this.eachCritter(this.state.critters, this.critterIsAlive);
-			this.eachCritter(this.state.critters, this.attackHero);
+			this.eachCritter(this.state.critters, this.searchForHero);
 		}, 1000)
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
 			
 			this.eachCritter(this.state.critters, this.moveCritter)
-		}, 1000)
+		}, 100)
 	}
 
 	_handleKeydown(e) {
@@ -788,7 +788,7 @@ heroTargetCritter() {
 // Will be initiated in componentDidMount in setInterval by function 'eachCritter'
 // Accepts critter argument
 // Extract x and y coordinates from critter object and conduct a perimeter scan (4 directions) for hero, if true, then attack, if false, then do nothing
-attackHero = (critter) => {
+searchForHero = (critter) => {
 	console.log('Attacking hero....');
 	console.log(this)
 	// let damage = Math.floor(Math.random() * 5); // Deals random damage from 0 - 5
@@ -796,23 +796,14 @@ attackHero = (critter) => {
 	// let y = critter.y;
 	// How to record previous critter coordinate?
 	// Creating another property in each individual critter's object in state information
-	let heroNearby = false;
 	// If critter has stopped moving
 	// Run scan on surrounding coordinates to search for hero
 	
 	// Using previously created 'latest' property in critter object to determine if critter moved (latest was used in path finding algorthm to avoid repetitive steps)
 
-	// Previous coordinates 
 
-
-	let xp = critter.latest[0][0];
-	let yp = critter.latest[0][1];
-	// Current coordinates
-	let xc = critter.latest[0][0];
-	let yc = critter.latest[0][1];
 	console.log('LATEST CRITTER ARRAY TEST');
-	console.log('previous coordinates: ' + xp, yp)
-	console.log('current coordinates: ' + xc, yc)
+
 	let surroundingCoordinates = [
 			[critter.x - 1, critter.y - 1],
 			[critter.x    , critter.y - 1],
@@ -832,8 +823,9 @@ attackHero = (critter) => {
 		console.log(direction)
 		let x = direction[0];
 		let y = direction[1];
-		if (x == that.state.charPosition[0] && y == that.state.charPosition[1]) {
+		if (x == this.state.charPosition[1] && y == this.state.charPosition[0]) {
 			console.log('Hero detected')
+			attackHero();
 		}
 	})
 	// Methods of detecting presence of hero
@@ -846,7 +838,10 @@ attackHero = (critter) => {
 	console.log('Attacking hero...')
 	console.log(critter)
 	return critter;
+}
 
+attackHero() {
+	let damage = Math.floor(Math.random() * 5);
 }
 
 
