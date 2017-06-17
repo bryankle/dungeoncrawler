@@ -83,7 +83,8 @@ class Grid extends Component {
 		// Uncomment this and begin transferring behavior into grid render
 		setInterval(() => {
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
-			this.eachCritter(this.state.critters, this.critterIsAlive)
+			this.eachCritter(this.state.critters, this.critterIsAlive);
+			this.eachCritter(this.state.critters, this.attackHero);
 		}, 1000)
 		setInterval(() => {
 			// Scan for critter as long as hero has no current target
@@ -783,6 +784,19 @@ heroTargetCritter() {
 	}
 }
 
+// Critter dealing damage to hero
+// Will be initiated in componentDidMount in setInterval by function 'eachCritter'
+// Accepts critter argument
+// Extract x and y coordinates from critter object and conduct a perimeter scan (4 directions) for hero, if true, then attack, if false, then do nothing
+attackHero(critter) {
+	// console.log('Attacking hero....')
+	// let damage = Math.floor(Math.random() * 5); // Deals random damage from 0 - 5
+	// let x = critter.x;
+	// let y = critter.y;
+	return critter;
+
+}
+
 
 
 // Function for attacking critter
@@ -799,7 +813,7 @@ attackCritter(critter) {
 	console.log('CURRENTLY ATTACKING CRITTER')
 	// Generate damage between 0 - 10
 	let damage = Math.floor(Math.random() * 20);
-	this.props.storeDamage(damage)
+	this.props.storeDamage(damage) // Sends most recent inflicted damage to Redux store for display
 	// Insert Redux method to take damage and send to store
 	let crittersClone = Object.assign({}, this.state.critters);
 	crittersClone[critter].health = crittersClone[critter].health - damage;
