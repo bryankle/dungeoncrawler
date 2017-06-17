@@ -800,6 +800,10 @@ attackHero(critter) {
 	// If critter has stopped moving
 	// Run scan on surrounding coordinates to search for hero
 	
+	// Using previously created 'latest' property in critter object to determine if critter moved (latest was used in path finding algorthm to avoid repetitive steps)
+	let x0 = critter.latest[1].x;
+	let y0 = critter.latest[1].y;
+
 	let surroundingCoordinates = [
 			[this.state.critter[0] - 1, this.state.critter[1] - 1],
 			[this.state.critter[0]    , this.state.critter[1] - 1],
