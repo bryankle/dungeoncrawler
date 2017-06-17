@@ -793,6 +793,32 @@ attackHero(critter) {
 	// let damage = Math.floor(Math.random() * 5); // Deals random damage from 0 - 5
 	// let x = critter.x;
 	// let y = critter.y;
+	
+	// How to record previous critter coordinate?
+	// Creating another property in each individual critter's object in state information
+	let heroNearby = false;
+	// If critter has stopped moving
+	// Run scan on surrounding coordinates to search for hero
+	
+	let surroundingCoordinates = [
+			[this.state.critter[0] - 1, this.state.critter[1] - 1],
+			[this.state.critter[0]    , this.state.critter[1] - 1],
+			[this.state.critter[0] + 1, this.state.critter[1] - 1],
+			[this.state.critter[0] - 1, this.state.critter[1]    ],
+			[this.state.critter[0] + 1, this.state.critter[1]    ],
+			[this.state.critter[0] - 1, this.state.critter[1] + 1],
+			[this.state.critter[0]    , this.state.critter[1] + 1],
+			[this.state.critter[0] + 1, this.state.critter[1] + 1]
+		];
+	// Methods of detecting presence of hero
+	// 1. Constantly scanning perimeter for presence of hero
+	// 2. Detect lack of critter movement and assume that critter has found the hero
+	// OR
+	// 3. If critter has ceased movement, perform a single scan to see if hero is in vicinity before attacking
+	
+
+	console.log('Attacking hero...')
+	console.log(critter)
 	return critter;
 
 }
