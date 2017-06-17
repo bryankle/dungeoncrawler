@@ -826,7 +826,7 @@ searchForHero = (critter) => {
 		let y = direction[1];
 		if (x == this.state.charPosition[1] && y == this.state.charPosition[0]) {
 			console.log('Hero detected')
-			attackHero();
+			this.attackHero();
 		}
 	})
 	// Methods of detecting presence of hero
