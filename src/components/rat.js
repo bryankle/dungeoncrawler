@@ -27,16 +27,42 @@ class Rat extends Component {
 	// PUSH EMPTY PNG FOR '_' to create second layer
 
 	render() {
-		return(
+
+		const critterContainer = {
+				height: 30,
+				width: 30,
+				display: 'inline-block',
+				position: 'absolute'
+			}
+
+			let healthBar = {
+				width: this.props.health + '%',
+				height: 2,
+				backgroundColor: 'red'
+			}
+
+		return (
 		
-		<div className="critter-container">
-			<img
-			className='whiteKnight' 
-			src={this.ratDirection(this.props.direction)} />
-		</div>
+			
+			<div style={critterContainer}>
+				<div style={healthBar}></div>
+				<img
+				className='whiteKnight' 
+				src={this.ratDirection(this.props.direction)} />
+			</div>
 		)
 	}
 }
 
 export default Rat;
 
+// .critter-container {
+// 	height: 30px;
+// 	width: 30px;
+// 	display: inline-block;
+// 	position: absolute;
+// }
+
+// .whiteKnight {
+// 	position: absolute
+// }

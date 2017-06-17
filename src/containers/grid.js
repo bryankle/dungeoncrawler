@@ -1011,7 +1011,12 @@ renderCritter(critter, prevCoordinates, prevTile) {
 									if (critters[critter]) {
 											console.log(critters[critter].health)
 										if (critters[critter].x == (idx1 + that.state.mapPosition[1]) && critters[critter].y == (idx2 + that.state.mapPosition[0])) {
-											renderRow.push(<Rat direction={critters[critter].direction}/>)
+											renderRow.push(
+												<Rat 
+													direction={critters[critter].direction}
+													health={critters[critter].health}
+												/>
+											)
 										}
 									}
 								}
