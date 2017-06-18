@@ -831,6 +831,13 @@ searchForHero = (critter) => {
 			this.attackHero();
 		}
 	})
+	
+
+	// Ignore hero if hero is dead
+	if (this.state.health < 0) {
+		critter.aggressive = false;
+	}
+
 	// Methods of detecting presence of hero
 	// 1. Constantly scanning perimeter for presence of hero
 	// 2. Detect lack of critter movement and assume that critter has found the hero
