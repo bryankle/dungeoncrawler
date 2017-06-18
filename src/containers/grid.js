@@ -870,16 +870,18 @@ attackHero() {
 // }
 
 attackCritter(critter) {
-	console.log('CURRENTLY ATTACKING CRITTER')
-	// Generate damage between 0 - 10
-	let damage = Math.floor(Math.random() * 20);
-	this.props.storeDamage(damage) // Sends most recent inflicted damage to Redux store for display
-	// Insert Redux method to take damage and send to store
-	let crittersClone = Object.assign({}, this.state.critters);
-	crittersClone[critter].health = crittersClone[critter].health - damage;
-	this.setState({
-		critters: crittersClone
-	})
+	if (this.state.health > 0) {
+		console.log('CURRENTLY ATTACKING CRITTER')
+		// Generate damage between 0 - 10
+		let damage = Math.floor(Math.random() * 20);
+		this.props.storeDamage(damage) // Sends most recent inflicted damage to Redux store for display
+		// Insert Redux method to take damage and send to store
+		let crittersClone = Object.assign({}, this.state.critters);
+		crittersClone[critter].health = crittersClone[critter].health - damage;
+		this.setState({
+			critters: crittersClone
+		})
+	}
 }
 
 critterIsAlive = (critter) => {
