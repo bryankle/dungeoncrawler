@@ -95,21 +95,23 @@ class Grid extends Component {
 	}
 
 	_handleKeydown(e) {
-		if (e.keyCode == 37) {
+		if (this.state.health > 0) {
+			if (e.keyCode == 37) {
 			console.log('Going left...')
 			this._moveCharPosition('left');
-		}
-		else if (e.keyCode == 38) {
-			console.log('Going up...');
-			this._moveCharPosition('up');
-		}
-		else if (e.keyCode == 39) {
-			console.log('Going right...');
-			this._moveCharPosition('right');			
-		}
-		else if (e.keyCode == 40) {
-			console.log('Going down...');
-			this._moveCharPosition('down');			
+			}
+			else if (e.keyCode == 38) {
+				console.log('Going up...');
+				this._moveCharPosition('up');
+			}
+			else if (e.keyCode == 39) {
+				console.log('Going right...');
+				this._moveCharPosition('right');			
+			}
+			else if (e.keyCode == 40) {
+				console.log('Going down...');
+				this._moveCharPosition('down');			
+			}
 		}
 	}
 
