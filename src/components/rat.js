@@ -28,28 +28,29 @@ class Rat extends Component {
 
 	render() {
 
-		const critterContainer = {
+		const tileContainer = {
 				height: 30,
 				width: 30,
 				display: 'inline-block',
 				position: 'absolute'
 			}
 
-			let healthBar = {
-				width: this.props.health + '%',
-				height: 2,
-				backgroundColor: 'red'
-			}
+		let healthBar = {
+			width: this.props.health + '%',
+			height: 2,
+			backgroundColor: 'red'
+		}
 
 		return (
 		
 			
-			<div style={critterContainer}>
+			<div style={tileContainer}>
 				<div style={healthBar}></div>
 				<img
 				className='whiteKnight' 
 				src={this.ratDirection(this.props.direction)} />
 			</div>
+
 		)
 	}
 }

@@ -999,7 +999,11 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								renderRow.push(<img src={Grass} />)
 								break;
 							case 'KNIGHT':
-								renderRow.push(<Hero direction={that.state.heroDirection ? that.state.heroDirection : 'down'}/>) // Default position front facing on initial load
+								renderRow.push(
+									<Hero 
+										direction={that.state.heroDirection ? that.state.heroDirection : 'down'}
+										health={that.state.health}
+									/>) // Default position front facing on initial load
 								break;
 							case 'R':
 								renderRow.push(<img src={Rock} />)
