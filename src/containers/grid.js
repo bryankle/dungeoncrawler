@@ -85,6 +85,10 @@ class Grid extends Component {
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
 		this.heroSpawnPoint();
+		console.log(this.state.roomCenterPoints)
+		
+		this._createCritter()
+		
 		setInterval(() => {
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
 			this.eachCritter(this.state.critters, this.critterIsAlive);
@@ -515,6 +519,43 @@ createCritter(grid, total) {
 		critters: crittersClone
 	})
 	return grid;
+}
+
+_createCritter() {
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	let totalCritters = 0;
+		let crittersClone = Object.assign({}, this.state.critters);
+	for (let centerPoint in this.state.roomCenterPoints) {
+		for (let i = 0; i < 3; i++) {
+			helper('RAT', this.state.roomCenterPoints[centerPoint].start[0] + i, this.state.roomCenterPoints[centerPoint].start[1], i);
+		}
+	}
+	console.log('_CREATECRITTER')
+
+	function helper(type, x, y, i) {
+		let critter = {
+			type: type,
+			x: x,
+			y: y,
+			direction: 'down',
+			aggressive: true,//Math.random() > 0.5 ? true : false,
+			latest: [],
+			health: 100
+		}
+		crittersClone['critter' + totalCritters] = critter;
+		totalCritters++;
+		let tileUnderCritter = grid[x][y];
+		grid[x][y] = ['RAT', tileUnderCritter]
+	}
+
+	
+	// if (!x && !y) --> generateRandomCoordinates within dungeon
+	this.setState({
+		critterCount: totalCritters,
+		critters: crittersClone,
+		entireGrid: grid
+	})
+	//return grid;
 }
 // Take in copy of critters in state and apply callback function
 eachCritter = (critters, fn1) => {
@@ -970,7 +1011,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		grid = this._generateRooms(grid, 13)
 		// Set initial critters here
 		// Reasoning for placing critter creation here: when placing in componentWillMount, grid updates on state later than critter creation
-		grid = this.createCritter(grid, 5);
+		//grid = this.createCritter(grid, 5);
 		// function critterWrapper() {
 		// 	this.createCritter(grid, 'rat', 8, 8);
 		// }
