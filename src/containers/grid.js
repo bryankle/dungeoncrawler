@@ -51,7 +51,7 @@ class Grid extends Component {
 				},
 				R: { // Rock
 					// Switched to false for testing
-					solid: true
+					solid: false
 				},
 				RAT: {
 					solid: true
@@ -236,7 +236,7 @@ class Grid extends Component {
 					// Adjust to generate random obstacles for testing
 					// Randomly generate grass or rock on tile
 					//tile = random > 0.4 ? '_' : 'R';
-					tile = '_'
+					tile = 'R'
 				}
 				row.push(tile)
 			}
@@ -277,10 +277,10 @@ class Grid extends Component {
 			
 			if (x + width > that.state.width - 1 || // Added -1 to width and height to determine if generateRoom error still occurs
 				y + height > that.state.height - 1 ||// Added -1 to width and height to determine if generateRoom error still occurs
-				grid[x][y] !== '_' ||
-				grid[x][y + height] !== '_' ||
-				grid[x + width][y] !== '_' ||
-				grid[y + width][y + height] !== '_'
+				grid[x][y] !== 'R' ||
+				grid[x][y + height] !== 'R' ||
+				grid[x + width][y] !== 'R' ||
+				grid[y + width][y + height] !== 'R'
 				) {
 				generateRoom();
 			}
@@ -290,7 +290,7 @@ class Grid extends Component {
 				
 				for (let i = x; i < x + width; i++) {
 					for (let j = y; j < y + height; j++) {
-						grid[i][j] = 'R';
+						grid[i][j] = '_';
 					}
 				}
 			
@@ -407,7 +407,7 @@ class Grid extends Component {
 				let x = coordinate[0];
 				let y = coordinate[1];
 				if (idx !== 0) {
-					grid[x][y] = 'R' // Changed from X to R for testing
+					grid[x][y] = '_' // Changed from X to R for testing
 				}
 			})
 			return grid;

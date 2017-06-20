@@ -52,10 +52,14 @@ class Hero extends Component {
 			backgroundColor: '#7CFC00'
 		}
 
+		let healthBarDisable = {
+
+		}
+
 		return (
 
 			<div style={tileContainer}>
-				<div style={healthBar}></div>
+				<div style={this.props.health > 0 ? healthBar : healthBarDisable}></div>
 				<img
 				className='whiteKnight' 
 				src={
