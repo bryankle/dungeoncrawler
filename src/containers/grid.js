@@ -27,8 +27,8 @@ class Grid extends Component {
 		super(props)
 		this.state = {
 			// charPosition is alwayds mapPosition + 7
-			charPosition: [17, 17], // Switch over to charPosition later
-			mapPosition: [10, 10],
+			charPosition: [7, 7], // Switch over to charPosition later
+			mapPosition: [0,0],
 			entireGrid: [], // Can be as large as neccessary
 			visibleGrid: [], // Only 15 x 15 is visible in camera view
 			mapSize: 150, // Adjust all references to mapSize to height & width later and delete
@@ -480,7 +480,8 @@ heroSpawnPoint() {
 	console.log(room1.x, room1.y)
 	
 	this.setState({
-		mapPosition: [room1.x - 7, room1.y - 7]
+		mapPosition: [room1.x - 7, room1.y - 7],
+		charPosition: [room1.x, room1.y]
 	})
 }
 
@@ -1056,8 +1057,6 @@ renderCritter(critter, prevCoordinates, prevTile) {
 										}
 									}
 								}
-								
-
 								// for (let i = 0; i < Object.keys(that.state.critters).length; i++){
 								// 	var thisCritter = that.state.critters['critter' + i];
 								// 	if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
@@ -1117,6 +1116,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		)
 	}
 }
+
 function mapStateToProps(state) {
     return {
         grid: state.grid,
