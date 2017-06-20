@@ -26,8 +26,9 @@ class Grid extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			charPosition: [7, 7], // Switch over to charPosition later
-			mapPosition: [0, 0],
+			// charPosition is alwayds mapPosition + 7
+			charPosition: [17, 17], // Switch over to charPosition later
+			mapPosition: [10, 10],
 			entireGrid: [], // Can be as large as neccessary
 			visibleGrid: [], // Only 15 x 15 is visible in camera view
 			mapSize: 150, // Adjust all references to mapSize to height & width later and delete
@@ -71,6 +72,7 @@ class Grid extends Component {
 		this.setState({ // Removed this._helperTranspose; add in later if needed
 			entireGrid: this.buildMap() //this._createGrid('_', this.state.mapSize, this.state.mapSize)
 		})
+		
 		//this.createCritter(this.state.entireGrid, 'rat', 10, 10);
 		// Set critter movement here
 	}
@@ -82,6 +84,7 @@ class Grid extends Component {
 		// Uncomment below
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
+		this.heroSpawnPoint();
 		setInterval(() => {
 			this.heroTargetCritter(); // Intermittent scans area surrounding critter to target
 			this.eachCritter(this.state.critters, this.critterIsAlive);
@@ -322,6 +325,11 @@ class Grid extends Component {
 				let ey = end[1];
 				grid = curriedDrawPath(sx, sy, ex, ey)
 			}
+
+		this.setState({
+			roomCenterPoints: paths
+		})
+		
 		return grid;
 	}
 
@@ -463,6 +471,19 @@ class Grid extends Component {
 	// End of while loop 
 	return links;
 }
+
+heroSpawnPoint() {
+
+	let room1 = {};
+	room1.x = this.state.roomCenterPoints.link0.start[1]
+	room1.y = this.state.roomCenterPoints.link0.start[0];
+	console.log(room1.x, room1.y)
+	
+	this.setState({
+		mapPosition: [room1.x - 7, room1.y - 7]
+	})
+}
+
 // setInterval to alter direction of critter and setState to update all critter locations. This will force a rerender
 
 // Spawn critter at (10, 10) for now
@@ -1086,6 +1107,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 
 	render() {
 		// TESTING
+		
 		console.log("TESTING!!!!!!!!!!!!!!!!!!!!!!!")
 		console.log(this.state.critters);
 		return(
