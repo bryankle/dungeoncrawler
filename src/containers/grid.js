@@ -15,6 +15,7 @@ import Rat from '../components/rat';
 import Grass from '../../img/grass.jpg';
 import whiteKnight from '../../img/knight-front.png';
 import Rock from '../../img/rock.jpg';
+import Food from '../../img/food.png';
 //import critter from '../../img/pikachu.png';
 
 
@@ -488,6 +489,19 @@ heroSpawnPoint() {
 		charPosition: [room1.x, room1.y]
 	})
 }
+// When rat dies, 30% drop rate
+_setPotion(x, y) {
+	let dropRate = Math.random();
+	if (dropRate  < 0.3) {
+		// drop
+	}
+	let grid = Array.prototype.slice.call(this.state.entireGrid);
+	
+	grid[x][y] = ['POTION', '_'];
+	this.setState({
+		entireGrid: grid
+	})
+}
 
 // setInterval to alter direction of critter and setState to update all critter locations. This will force a rerender
 
@@ -526,7 +540,7 @@ _createCritter() {
 	let totalCritters = 0;
 		let crittersClone = Object.assign({}, this.state.critters);
 	for (let centerPoint in this.state.roomCenterPoints) {
-		for (let i = 0; i < 3; i++) {
+		for (let i = 0; i < 1; i++) {
 			helper('RAT', this.state.roomCenterPoints[centerPoint].start[0] + i, this.state.roomCenterPoints[centerPoint].start[1], i);
 		}
 	}
@@ -961,6 +975,11 @@ critterIsAlive = (critter) => {
 		console.log(this.state)
 		let grid = Array.prototype.slice.call(this.state.entireGrid);
 		grid[x][y] = '_';
+		// Insert potion spawn
+		// Feed in x and y into potion spawn function
+		if (this.critter.health < 0) {
+		//	this._setPotion(critter.x, critter.y)
+		}
 		this.setState({
 			target: '',
 			entireGrid: grid
@@ -1098,6 +1117,12 @@ renderCritter(critter, prevCoordinates, prevTile) {
 										}
 									}
 								}
+								break;
+								case 'POTION':
+									renderRow.push(<img
+									className='whiteKnight' 
+									src={Food} />)
+								break;
 								// for (let i = 0; i < Object.keys(that.state.critters).length; i++){
 								// 	var thisCritter = that.state.critters['critter' + i];
 								// 	if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
