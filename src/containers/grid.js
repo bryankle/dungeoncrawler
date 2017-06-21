@@ -148,8 +148,8 @@ class Grid extends Component {
 		// Create copy of map position and char position before manipulating and updating back into state
 		let cloneMapPosition = Array.prototype.slice.call(this.state.mapPosition);
 		let cloneCharPosition = Array.prototype.slice.call(this.state.charPosition);
-		let Y = cloneCharPosition[0];
-		let X = cloneCharPosition[1];
+		let X = cloneCharPosition[0];
+		let Y = cloneCharPosition[1];
 		let grid = this.state.entireGrid[X][Y];
 		
 		let tileType = this.state.entireGrid[X][Y];
@@ -162,7 +162,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
 						break;
 					}
 
@@ -181,7 +181,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
 						break;
 					}
 					cloneMapPosition[1]++;
@@ -198,7 +198,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
 						break;
 					}
 					cloneMapPosition[0]--;
@@ -215,7 +215,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
+					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
 						break;
 					}
 					cloneMapPosition[0]++;
@@ -236,9 +236,7 @@ class Grid extends Component {
 		})
 	}
 
-	_isTileSolid() {
-
-	}
+	_isTileSolid() {}
 
 	// Creates initial grid - initiated during componentWillMount
 	_createGrid (type, cols, rows) {
