@@ -162,7 +162,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
 
@@ -181,7 +181,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
 					cloneMapPosition[1]++;
@@ -198,7 +198,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
 					cloneMapPosition[0]--;
@@ -215,7 +215,7 @@ class Grid extends Component {
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
 					console.log('_HANDLEKEYDOWN')
 			console.log(this.state.entireGrid[Y][X])
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid) {
+					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
 					cloneMapPosition[0]++;
@@ -236,7 +236,11 @@ class Grid extends Component {
 		})
 	}
 
-	_isTileSolid() {}
+	_isTileSolid(tileInformation) {
+		if (tileInformation.length == 1) {
+			return Boolean(this.state.objectInformation[tileInformation].solid)
+		}
+	}
 
 	// Creates initial grid - initiated during componentWillMount
 	_createGrid (type, cols, rows) {
