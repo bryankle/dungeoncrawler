@@ -104,6 +104,7 @@ class Grid extends Component {
 
 	_handleKeydown(e) {
 		if (this.state.health > 0) {
+			
 			if (e.keyCode == 37) {
 			console.log('Going left...')
 			this._moveCharPosition('left');
@@ -147,8 +148,8 @@ class Grid extends Component {
 		// Create copy of map position and char position before manipulating and updating back into state
 		let cloneMapPosition = Array.prototype.slice.call(this.state.mapPosition);
 		let cloneCharPosition = Array.prototype.slice.call(this.state.charPosition);
-		let X = cloneCharPosition[0];
-		let Y = cloneCharPosition[1];
+		let Y = cloneCharPosition[0];
+		let X = cloneCharPosition[1];
 		let grid = this.state.entireGrid[X][Y];
 		
 		let tileType = this.state.entireGrid[X][Y];
@@ -159,7 +160,9 @@ class Grid extends Component {
 					Y--;
 					// console.log(this.state.entireGrid[Y][X])
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
+					console.log('_HANDLEKEYDOWN')
+			console.log(this.state.entireGrid[Y][X])
+					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
 						break;
 					}
 
@@ -176,7 +179,9 @@ class Grid extends Component {
 					Y++;
 					// console.log(this.state.entireGrid[Y][X])			
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
+					console.log('_HANDLEKEYDOWN')
+			console.log(this.state.entireGrid[Y][X])
+					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
 						break;
 					}
 					cloneMapPosition[1]++;
@@ -191,7 +196,9 @@ class Grid extends Component {
 					X--;
 					// console.log(this.state.entireGrid[Y][X])
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
+					console.log('_HANDLEKEYDOWN')
+			console.log(this.state.entireGrid[Y][X])
+					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
 						break;
 					}
 					cloneMapPosition[0]--;
@@ -206,7 +213,9 @@ class Grid extends Component {
 					X++;
 					// console.log(this.state.entireGrid[Y][X])
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					if (this.state.objectInformation[this.state.entireGrid[Y][X]].solid || this.state.entireGrid[Y][X] == undefined) {
+					console.log('_HANDLEKEYDOWN')
+			console.log(this.state.entireGrid[Y][X])
+					if (this.state.objectInformation[this.state.entireGrid[X][Y]].solid) {
 						break;
 					}
 					cloneMapPosition[0]++;
@@ -225,6 +234,10 @@ class Grid extends Component {
 			mapPosition: cloneMapPosition,
 			charPosition: cloneCharPosition
 		})
+	}
+
+	_isTileSolid() {
+
 	}
 
 	// Creates initial grid - initiated during componentWillMount
@@ -977,9 +990,10 @@ critterIsAlive = (critter) => {
 		grid[x][y] = '_';
 		// Insert potion spawn
 		// Feed in x and y into potion spawn function
-		if (this.critter.health < 0) {
-		//	this._setPotion(critter.x, critter.y)
-		}
+		// if (this.critter.health < 0) {
+		// //	this._setPotion(critter.x, critter.y)
+		// }
+		this._setPotion(critter.x, critter.y)
 		this.setState({
 			target: '',
 			entireGrid: grid
