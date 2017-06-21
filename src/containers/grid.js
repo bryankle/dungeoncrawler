@@ -61,6 +61,9 @@ class Grid extends Component {
 				// FIX
 				undefined: {
 					solid: false
+				},
+				POTION: {
+					solid: false
 				}
 			}
 		}
@@ -238,7 +241,12 @@ class Grid extends Component {
 
 	_isTileSolid(tileInformation) {
 		if (tileInformation.length == 1) {
-			return Boolean(this.state.objectInformation[tileInformation].solid)
+			return this.state.objectInformation[tileInformation].solid
+		}
+		else {
+			if (tileInformation.includes('POTION')) {
+				return false;
+			}
 		}
 	}
 
