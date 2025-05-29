@@ -1,0 +1,40 @@
+- [x] **Set up Vite Build System**
+  - [x] Remove Webpack and related dependencies (`webpack`, `webpack-dev-server`, `babel-loader`, `url-loader`, `file-loader`)
+  - [x] Remove Babel-specific dependencies (`babel-core`, `babel-preset-es2015`, `babel-preset-react`, `babel-preset-stage-1`)
+  - [x] Add Vite and Vite React plugin (`vite`, `@vitejs/plugin-react`)
+  - [x] Create `vite.config.js` with basic React plugin configuration
+- [x] **Update Core Libraries (Minimally)**
+  - [x] Update React to v17 (`react`, `react-dom`)
+  - [x] Update React-Redux to v7 (`react-redux`)
+  - [x] (Optional) Update Redux to v4 (`redux`)
+- [x] **Adjust Project Structure for Vite**
+  - [x] Ensure `index.html` is at the project root
+  - [x] Update script tag in `index.html` to `<script type="module" src="/src/index.js"></script>`
+- [x] **Address Critical Code Issues for React 17 & Runtime**
+  - [x] Rename `componentWillMount()` to `UNSAFE_componentWillMount()` in `src/containers/grid.js` (and any other components using it)
+  - [x] Fix JSX parsing errors in Vite/esbuild
+  - [x] Resolve "Maximum call stack size exceeded" in `_calculatePath`
+  - [x] Fix character walking through walls (collision detection)
+  - [ ] Review and address any other immediate warnings/errors from React 17 (Mark as likely complete if app runs well)
+- [x] **Update `package.json` Scripts**
+  - [x] Change `start` script to `dev`
+  - [x] Add `build` script: `vite build`
+- [x] **Testing and Iteration**
+  - [x] Run `npm install --legacy-peer-deps` (due to `react-router@2.x` incompatibility with React 17)
+  - [x] Run `npm run dev` (or `yarn dev`) and open in browser
+  - [x] Debug JSX errors
+  - [x] Debug runtime errors (e.g., recursion, collisions)
+  - [ ] Fix CSS spacing issues for grid cells (Assumed fixed based on prior steps, verify)
+- [ ] **Deployment**
+  - [ ] Run `npm run build` (or `yarn build`) locally to ensure it completes.
+  - [ ] Choose a static hosting provider (e.g., Netlify, Vercel, GitHub Pages).
+  - [ ] Push latest code to a Git repository (GitHub, GitLab, Bitbucket).
+  - [ ] Connect Git repository to the chosen hosting provider.
+  - [ ] Configure build command (`npm run build`) and publish directory (`dist`) in the hosting provider's settings.
+  - [ ] Trigger deployment and test the live site.
+- [ ] **Post-Deployment Considerations (Future Work)**
+  - [ ] Properly refactor `UNSAFE_componentWillMount` to `componentDidMount` or `constructor`
+  - [ ] Upgrade React Router from v2 to a React 17+ compatible version (e.g., `react-router-dom@5` or `@6`)
+  - [ ] Consider further React upgrades (e.g., to v18 and `createRoot`)
+  - [ ] Evaluate state management (Redux) for more modern patterns (e.g., Redux Toolkit)
+  - [ ] Improve testing setup (current tests are likely broken due to Babel/Webpack removal)

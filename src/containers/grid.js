@@ -1,4 +1,3 @@
-
 // FEATURES TO IMPLEMENT
 // Critter attack
 // Critter death
@@ -53,7 +52,7 @@ class Grid extends Component {
 				},
 				R: { // Rock
 					// Switched to false for testing
-					solid: false
+					solid: true
 				},
 				RAT: {
 					solid: true
@@ -69,7 +68,7 @@ class Grid extends Component {
 		}
 	}
 
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		// Listen to arrow keys for character movement
 		document.addEventListener('keydown', this._handleKeydown.bind(this))
 
@@ -376,76 +375,83 @@ class Grid extends Component {
 	// Path finding algorithm utilized in calculating path from origin to destination
 	// Adapted to link rooms together
 	_calculatePath(x0, y0, x1, y1) {
-		const that = this;
-		let arr = [];
-		let start = {
-			x: x0,
-			y: y0
-		}
-		let end = {
-			x: x1,
-			y: y1
-		}		
-		function helper(x, y) {
-			arr.push([x, y]);
+		const that = this; // 'this' from Grid component
 
-			let setEndPoint = that._distance(end.x, end.y);
-			let D1 = {
-				x: x + 1,
-				y: y,
-				distance: setEndPoint(x + 1, y)
+		// Visited set for the *entire* pathfinding call to avoid cycles across different branches.
+		// Stores coordinates as "x,y" strings.
+		const visitedOverall = new Set();
+
+		function helper(currentX, currentY, currentPath) {
+			const currentPathKey = `${currentX},${currentY}`;
+
+			// Base case: Out of bounds
+			if (!(currentX >= 0 && currentX < that.state.width && currentY >= 0 && currentY < that.state.height)) {
+				return null;
 			}
-			let D2 = {
-				x: x,
-				y: y + 1,
-				distance: setEndPoint(x, y + 1)
+
+			// Base case: Already visited this node in this overall search
+			if (visitedOverall.has(currentPathKey)) {
+				return null;
 			}
-			let D3 = {
-				x: x - 1,
-				y: y,
-				distance: setEndPoint(x - 1, y)
+			visitedOverall.add(currentPathKey);
+
+			// Add current node to a new path copy
+			const newPath = [...currentPath, [currentX, currentY]];
+
+			// Base case: Target reached
+			if (currentX === x1 && currentY === y1) {
+				return newPath;
 			}
-			let D4 = {
-				x: x,
-				y: y - 1,
-				distance: setEndPoint(x, y - 1)
-			}
-			// Array of objects for 4 directions
-			let directions = [D1, D2, D3, D4];
-			// Sort directions by closest distance to furthest distance
-			directions.sort(function(a, b) {
-				return a.distance > b.distance;
-			});
-			// Loop through all 4 directions subject to conditions and decides on final direction to take
-			for (let d = 0; d < directions.length; d++) {
-				let dir = directions[d];
-			// Ensures projected coordinates stay on grid
-				if (dir.x >= that.width || dir.y >= that.length) {
-					continue;
+
+			let setEndPoint = that._distance(x1, y1); // Creates a function to calculate distance to end
+			let directions = [
+				{ x: currentX + 1, y: currentY }, // Right
+				{ x: currentX - 1, y: currentY }, // Left
+				{ x: currentX, y: currentY + 1 }, // Down
+				{ x: currentX, y: currentY - 1 }  // Up
+			]
+			// Add distance to each potential direction
+			.map(d => ({ ...d, distance: setEndPoint(d.x, d.y) }))
+			// Sort directions by distance (closest first)
+			.sort((a, b) => a.distance - b.distance);
+
+			for (const dir of directions) {
+				// Recursive call for each valid direction
+				const result = helper(dir.x, dir.y, newPath); // Pass the newPath (copy including current node)
+				if (result) { // If a path was found by the recursive call
+					return result; // Propagate the found path upwards
 				}
-				else if (dir.x == end.x && dir.y == end.y) {
-					return arr;
-				}
-				helper (dir.x, dir.y);
-				break;
+				// If result is null, this branch was a dead end or loop, try next direction.
 			}
+			// If the loop completes, no path was found from currentX, currentY with the current sub-path.
+			// We don't remove from visitedOverall here because for this specific call of _calculatePath,
+			// this node (currentX,currentY) truly led to no solution via any of its children.
+			return null; // No path from this node
 		}
-		helper(start.x, start.y);
-		
-		return arr;
+
+		// Initial call to the helper function
+		const resultPath = helper(x0, y0, []);
+		return resultPath || []; // Return the found path, or an empty array if no path was found
 	}
 	// Helper function for generateRoms; draws paths between each room generated
 	_drawPath(grid) {
-		var that = this;
-		
+		var that = this; // 'this' from Grid component
 		return function(x0, y0, x1, y1) {
-			that._calculatePath(x0, y0, x1, y1).forEach(function(coordinate, idx) {
-				let x = coordinate[0];
-				let y = coordinate[1];
-				if (idx !== 0) {
-					grid[x][y] = '_' // Changed from X to R for testing
-				}
-			})
+			const pathCoordinates = that._calculatePath(x0, y0, x1, y1);
+
+			if (pathCoordinates.length > 0) { // Check if path is valid and has coordinates
+				pathCoordinates.forEach(function(coordinate, idx) {
+					let x = coordinate[0];
+					let y = coordinate[1];
+					// Only draw the "corridor" part of the path, not the start/end points themselves
+					if (idx > 0 && idx < pathCoordinates.length - 1) {
+					   // Ensure we are within bounds before drawing
+					   if (x >= 0 && x < that.state.width && y >= 0 && y < that.state.height) {
+							grid[x][y] = '_'; // Path tile
+					   }
+					}
+				});
+			}
 			return grid;
 		}
 	}
