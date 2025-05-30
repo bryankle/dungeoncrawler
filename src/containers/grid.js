@@ -88,7 +88,6 @@ class Grid extends Component {
 		// CONTINUE HERE
 		// Uncomment this and begin transferring behavior into grid render
 		this.heroSpawnPoint();
-		console.log(this.state.roomCenterPoints)
 		
 		this._createCritter()
 		
@@ -108,19 +107,19 @@ class Grid extends Component {
 		if (this.state.health > 0) {
 			
 			if (e.keyCode == 37) {
-			console.log('Going left...')
+			// console.log('Going left...')
 			this._moveCharPosition('left');
 			}
 			else if (e.keyCode == 38) {
-				console.log('Going up...');
+				// console.log('Going up...');
 				this._moveCharPosition('up');
 			}
 			else if (e.keyCode == 39) {
-				console.log('Going right...');
+				// console.log('Going right...');
 				this._moveCharPosition('right');			
 			}
 			else if (e.keyCode == 40) {
-				console.log('Going down...');
+				// console.log('Going down...');
 				this._moveCharPosition('down');			
 			}
 		}
@@ -198,8 +197,8 @@ class Grid extends Component {
 					X--;
 					// console.log(this.state.entireGrid[Y][X])
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					console.log('_HANDLEKEYDOWN')
-			console.log(this.state.entireGrid[Y][X])
+					// console.log('_HANDLEKEYDOWN')
+			// console.log(this.state.entireGrid[Y][X])
 					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
@@ -213,10 +212,10 @@ class Grid extends Component {
 			case 'right':
 				if (cloneMapPosition[0] < this.state.mapSize) {
 					X++;
-					// console.log(this.state.entireGrid[Y][X])
+					console.log(this.state.entireGrid[Y][X])
 					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					console.log('_HANDLEKEYDOWN')
-			console.log(this.state.entireGrid[Y][X])
+					// console.log('_HANDLEKEYDOWN')
+			// console.log(this.state.entireGrid[Y][X])
 					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
 						break;
 					}
@@ -294,28 +293,33 @@ class Grid extends Component {
 			return [Math.floor(x + w / 2), Math.floor(y + h / 2)]
 		}
 		function generateRoom() {
-			// console.log('Log generateRoom activity'); // Recursion count
+			console.log('Log generateRoom activity'); // Recursion count
 			let randomPosition = helperGeneratePosition();
 			let randomSize = helperGenerateRoomSize();
-			console.log('randomPosition:' + randomPosition);
-			console.log('randomSize: ' + randomSize);
+			// console.log('randomPosition:' + randomPosition);
+			// console.log('randomSize: ' + randomSize);
 			let x = randomPosition[0];
 			let y = randomPosition[1];
 			let width = randomSize[0];
 			let height = randomSize[1];
 
-			
-			if (x + width > that.state.width - 1 || // Added -1 to width and height to determine if generateRoom error still occurs
-				y + height > that.state.height - 1 ||// Added -1 to width and height to determine if generateRoom error still occurs
-				grid[x][y] !== 'R' ||
-				grid[x][y + height] !== 'R' ||
-				grid[x + width][y] !== 'R' ||
-				grid[y + width][y + height] !== 'R'
-				) {
+			// Check if the room fits and if corner points are clear (still 'R')
+			// grid is accessed as grid[row_index][column_index]
+			// that.state.width is total columns, that.state.height is total rows.
+			if (x + width > that.state.width ||      // Room's right edge (exclusive) is beyond total columns
+				y + height > that.state.height ||     // Room's bottom edge (exclusive) is beyond total rows
+				// Top-left corner of the room to be placed
+				grid[y][x] !== 'R' ||
+				// Bottom-left corner
+				grid[y + height - 1][x] !== 'R' ||
+				// Top-right corner
+				grid[y][x + width - 1] !== 'R' ||
+				// Bottom-right corner
+				grid[y + height - 1][x + width - 1] !== 'R'
+			) {
 				generateRoom();
 			}
 			else {
-
 				roomCenterPoints.push(helperFindCenterOfRoom(x, y, width, height))
 				
 				for (let i = x; i < x + width; i++) {
@@ -626,39 +630,39 @@ eachCritter = (critters, fn1) => {
 // Takes arguments from this.eachCritter1
 moveCritter = (critter) => {
 	const that = this;
-	console.log('moveCritter...');
-	console.log('charposition');
-	console.log(this.state.charPosition)
+	// console.log('moveCritter...');
+	// console.log('charposition');
+	// console.log(this.state.charPosition)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	let cx = critter.x;
 	let cy = critter.y;
-	console.log('cx, cy');
-	console.log(cx, cy)
+	// console.log('cx, cy');
+	// console.log(cx, cy)
 	let hy = that.state.charPosition[0];
 	let hx = that.state.charPosition[1];
-	console.log('hx, hy');
-	console.log(hx, hy)
+	// console.log('hx, hy');
+	// console.log(hx, hy)
 
 	let coordinateCache = [cx, cy];
 	let tileCache = grid[cx][cy][1];
 	// Sprite and directions do not correlate
 	function _moveRight() {
-		console.log('_moveRight')
+		// console.log('_moveRight')
 		cx++;
 		critter.direction = 'down';
 	}
 	function _moveLeft() {
-		console.log('_moveLeft')
+		// console.log('_moveLeft')
 		cx--;
 		critter.direction = 'up';
 	}
 	function _moveUp() {
-		console.log('_moveUp')
+		// console.log('_moveUp')
 		cy--;
 		critter.direction = 'right';
 	}
 	function _moveDown() {
-		console.log('_moveDown')
+		// console.log('_moveDown')
 		cy++;
 		critter.direction = 'left';
 	}
@@ -668,23 +672,23 @@ moveCritter = (critter) => {
 		function _generateCoordinateChase() {
 			// Critter will avoid taking the same way back if initial path calculation does not work
 			// let latest = [];
-			// console.log('latest')
-			// console.log(latest)
+			console.log('latest')
+			console.log(latest)
 			function latestQueue(item) {
-				console.log('latest queue working')
-				console.log(critter.latest)
+				// console.log('latest queue working')
+				// console.log(critter.latest)
 				if (critter.latest.length == 2) {
-					console.log('LATEST 1')
+					// console.log('LATEST 1')
 					critter.latest.shift();
 					critter.latest.push(item);
 				}
 				else {
-					console.log('LATEST 2')
+					// console.log('LATEST 2')
 					critter.latest.push(item);
 				}
 			}
 
-			console.log('_generateCoordinateChase WORKING')
+			// console.log('_generateCoordinateChase WORKING')
 			function helper(x, y) { // Accepts critter current location
 				let distanceToHero = that._distance(hx, hy);
 				let D1 = {
@@ -712,7 +716,7 @@ moveCritter = (critter) => {
 					distance: distanceToHero(x, y - 1)
 				}
 				let directions = [D1, D2, D3, D4];
-				console.log(directions)
+				// console.log(directions)
 				directions.sort(function(a, b) {
 					return a.distance > b.distance;
 				})
@@ -767,34 +771,34 @@ moveCritter = (critter) => {
 			let random = Math.floor(Math.random() * 4);
 			// Tests to ensure direction generated from variable 'random' will not collide with any solid objects
 			// Collision avoidance to avoid solid objects and hero
-			console.log('direction');
+			// console.log('direction');
 			// If critter moves up and object north of critter is solid, generate another random direction
 			// If going up
 			if (random === 2 && (that.state.objectInformation[that.state.entireGrid[cx][cy - 1]].solid || (cx == hx && cy - 1 == hy))) {
-				console.log('random: 2')
-				console.log(cx, cy - 1)
+				// console.log('random: 2')
+				// console.log(cx, cy - 1)
 				_generateCoordinateRandom();
 			}
 			// If critter moves down and object south of critter is solid, generate another random direction
 			// If going down
 			else if (random === 3 && (that.state.objectInformation[that.state.entireGrid[cx][cy + 1]].solid || (cx == hx && cy + 1 == hy))) {
-				console.log('random: 3')
-				console.log(cx, cy + 1)
+				// console.log('random: 3')
+				// console.log(cx, cy + 1)
 		
 				_generateCoordinateRandom();
 			}
 			// If critter moves left and object west of critter is solid, generate another random direction
 			// If going left
 			else if (random === 1 && (that.state.objectInformation[that.state.entireGrid[cx - 1][cy]].solid || (cx - 1 == hx && cy == hy))) {
-				console.log('random: 1')
-				console.log(cx - 1, cy)
+				// console.log('random: 1')
+				// console.log(cx - 1, cy)
 				_generateCoordinateRandom();
 			}
 			// If critter moves right and object right of critter is solid, generate another random direction
 			// If going right
 			else if (random === 0 && (that.state.objectInformation[that.state.entireGrid[cx + 1][cy]].solid || (cx + 1 == hx && cy == hy))) {
-				console.log('random: 0')
-				console.log(cx + 1, cy)
+				// console.log('random: 0')
+				// console.log(cx + 1, cy)
 			
 				_generateCoordinateRandom();
 			}
@@ -806,7 +810,7 @@ moveCritter = (critter) => {
 			}
 			critter.x = cx;
 			critter.y = cy;
-			console.log(critter)
+			// console.log(critter)
 	}
 	if (!critter.aggressive) {
 		_generateCoordinateRandom()
@@ -851,12 +855,12 @@ heroTargetCritter() {
 		this.attackCritter(this.findCritter(x, y))
 	}
 	else {
-		console.log('HEROTARGETCRITTER TESTING')
-		console.log(this.state.charPosition)
+		// console.log('HEROTARGETCRITTER TESTING')
+		// console.log(this.state.charPosition)
 		// FIXED
 		let cx = this.state.charPosition[0];
 		let cy = this.state.charPosition[1];
-		console.log(cx, cy)
+		// console.log(cx, cy)
 		// let surroundingCoordinates = [
 		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
 		// 	[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
@@ -869,22 +873,22 @@ heroTargetCritter() {
 		// ]
 
 		surroundingCoordinates.forEach((coordinate) => {
-			console.log('SURROUNDING COORDINATES');
-			console.log(this.state)
+			// console.log('SURROUNDING COORDINATES');
+			// console.log(this.state)
 			let y = coordinate[0];
 			let x = coordinate[1];
-			console.log(this.state.entireGrid[x][y])
+			// console.log(this.state.entireGrid[x][y])
 			if (this.state.entireGrid[x][y].includes('RAT')) {
-				console.log('INCLUDES RAT')
-				console.log(this.state.entireGrid[x][y])
+				// console.log('INCLUDES RAT')
+				// console.log(this.state.entireGrid[x][y])
 				this.attackCritter(this.findCritter(x, y))
 				this.setState({
 					target: this.findCritter(x, y) // Returns specific critter
 				})
-				console.log(this.state)
+				// console.log(this.state)
 			}
 			else {
-				console.log('no target detected')
+				// console.log('no target detected')
 				this.setState({
 					target: ''
 				})
@@ -898,8 +902,8 @@ heroTargetCritter() {
 // Accepts critter argument
 // Extract x and y coordinates from critter object and conduct a perimeter scan (4 directions) for hero, if true, then attack, if false, then do nothing
 searchForHero = (critter) => {
-	console.log('Attacking hero....');
-	console.log(this)
+	// console.log('Attacking hero....');
+	// console.log(this)
 	// let damage = Math.floor(Math.random() * 5); // Deals random damage from 0 - 5
 	// let x = critter.x;
 	// let y = critter.y;
@@ -911,7 +915,7 @@ searchForHero = (critter) => {
 	// Using previously created 'latest' property in critter object to determine if critter moved (latest was used in path finding algorthm to avoid repetitive steps)
 
 
-	console.log('LATEST CRITTER ARRAY TEST');
+	// console.log('LATEST CRITTER ARRAY TEST');
 
 	let surroundingCoordinates = [
 			[critter.x - 1, critter.y - 1],
@@ -923,17 +927,17 @@ searchForHero = (critter) => {
 			[critter.x    , critter.y + 1],
 			[critter.x + 1, critter.y + 1]
 		];
-	console.log('surroundingCoordinates')
-	console.log(surroundingCoordinates)
+	// console.log('surroundingCoordinates')
+	// console.log(surroundingCoordinates)
 	// Why can't 'this' be scoped here?
 	surroundingCoordinates.forEach((direction) => {
-		console.log(this)
-		console.log('LEWL')
-		console.log(direction)
+		// console.log(this)
+		// console.log('LEWL')
+		// console.log(direction)
 		let x = direction[0];
 		let y = direction[1];
 		if (x == this.state.charPosition[1] && y == this.state.charPosition[0]) {
-			console.log('Hero detected')
+			// console.log('Hero detected')
 			this.attackHero();
 		}
 	})
@@ -951,8 +955,8 @@ searchForHero = (critter) => {
 	// 3. If critter has ceased movement, perform a single scan to see if hero is in vicinity before attacking
 	
 
-	console.log('Attacking hero...')
-	console.log(critter)
+	// console.log('Attacking hero...')
+	// console.log(critter)
 	return critter;
 }
 
@@ -977,7 +981,7 @@ attackHero() {
 
 attackCritter(critter) {
 	if (this.state.health > 0) {
-		console.log('CURRENTLY ATTACKING CRITTER')
+		// console.log('CURRENTLY ATTACKING CRITTER')
 		// Generate damage between 0 - 10
 		let damage = Math.floor(Math.random() * 20);
 		this.props.storeDamage(damage) // Sends most recent inflicted damage to Redux store for display
@@ -991,17 +995,17 @@ attackCritter(critter) {
 }
 
 critterIsAlive = (critter) => {
-	console.log('critterIsAlive');
+	// console.log('critterIsAlive');
 	// If critter is alive, return critter object to state
 	if (critter.health >= 0) {
 		return critter;
 	}
 	else if (critter.health < 0) {
-		console.log('CRITTER JUST DIED')
+		// console.log('CRITTER JUST DIED')
 		let x = critter.x;
 		let y = critter.y;
-		console.log('CRITTER DIED AT: ' + x + ' ' + y)
-		console.log(this.state)
+		// console.log('CRITTER DIED AT: ' + x + ' ' + y)
+		// console.log(this.state)
 		let grid = Array.prototype.slice.call(this.state.entireGrid);
 		grid[x][y] = '_';
 		// Insert potion spawn
@@ -1031,15 +1035,15 @@ findCritter(x, y) {
 }
 
 renderCritter(critter, prevCoordinates, prevTile) {
-	// console.log('mapPosition');
-	// console.log(this.state.mapPosition)
+	console.log('mapPosition');
+	console.log(this.state.mapPosition)
 	let px = prevCoordinates[0];
 	let py = prevCoordinates[1];
 	let cx = critter.x;
 	let cy = critter.y;
 	
-	console.log('render critter')
-	console.log(prevTile)
+	// console.log('render critter')
+	// console.log(prevTile)
 	let grid = Array.prototype.slice.call(this.state.entireGrid);
 	// Required to avoid rendering issues when critter is within hero's immediate proximity (8 tiles surrounding hero)
 	if (!(grid[cx][cy].length > 1)) {
@@ -1098,9 +1102,9 @@ renderCritter(critter, prevCoordinates, prevTile) {
 		//gridView[Math.floor(center)][Math.floor(center)] = 'KNIGHT' // ORIGINAL SETTINGS; also go to style.css and remove position: absolute
 		gridView[Math.floor(center)][Math.floor(center)] = ['KNIGHT', tileUnderKnight]//gridView[Math.floor(center)][Math.floor(center)].concat(', KNIGHT')
 		
-		// console.log(gridView[Math.floor(center)])
-		// console.log(Math.floor(center));
-		// console.log(this.state.charPosition[0])
+		console.log(gridView[Math.floor(center)])
+		console.log(Math.floor(center));
+		console.log(this.state.charPosition[0])
 		return gridView;
 	}
 
@@ -1136,7 +1140,7 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								
 								for (let critter in critters) {
 									if (critters[critter]) {
-											console.log(critters[critter].health)
+											// console.log(critters[critter].health)
 										if (critters[critter].x == (idx1 + that.state.mapPosition[1]) && critters[critter].y == (idx2 + that.state.mapPosition[0])) {
 											renderRow.push(
 												<Rat 
@@ -1158,8 +1162,8 @@ renderCritter(critter, prevCoordinates, prevTile) {
 								// 	if (thisCritter.x == (idx1 + that.state.mapPosition[1]) && thisCritter.y == (idx2 + that.state.mapPosition[0])) {
 								// 		renderRow.push(<Rat direction={thisCritter.direction}/>)
 								// 	}
-								// 	console.log('this critters')
-								// 	console.log(thisCritter.x, thisCritter.y);
+									console.log('this critters')
+									console.log(thisCritter.x, thisCritter.y);
 								// 	console.log('this map position')
 								// 	console.log(that.state.mapPosition)
 								// 	console.log('this index');
