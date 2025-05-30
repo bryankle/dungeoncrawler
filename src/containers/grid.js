@@ -146,106 +146,82 @@ class Grid extends Component {
 // Seperate the logic between grid creation and grid display
 	// Create entire grid (whole map) --> determine character camera view of grid --> render view into UI
 	_moveCharPosition(direction) {
-		// Create copy of map position and char position before manipulating and updating back into state
-		let cloneMapPosition = Array.prototype.slice.call(this.state.mapPosition);
-		let cloneCharPosition = Array.prototype.slice.call(this.state.charPosition);
-		let X = cloneCharPosition[0];
-		let Y = cloneCharPosition[1];
-		let grid = this.state.entireGrid[X][Y];
-		
-		let tileType = this.state.entireGrid[X][Y];
-		switch(direction) {
-			case 'up':
-			// Local state array corrected for transposition
-				if (cloneMapPosition[1] > 0) {
-					Y--;
-					// console.log(this.state.entireGrid[Y][X])
-					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					console.log('_HANDLEKEYDOWN')
-			console.log(this.state.entireGrid[Y][X])
-					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
-						break;
-					}
+		const cc = this.state; // current context (state)
+		let heroR = cc.charPosition[0];
+		let heroC = cc.charPosition[1];
+		console.log(`[Move Attempt] Start: charPos=(${heroR},${heroC}) dir=${direction}`);
 
-					cloneMapPosition[1]--;
-					cloneCharPosition[1]--;
-					
-				}
-				this.setState({
-					heroDirection: 'up'
-				})
-				break;
-			case 'down':
-				if (cloneMapPosition[1] < this.state.mapSize) { // Prevent user from going off grid
-					Y++;
-					// console.log(this.state.entireGrid[Y][X])			
-					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					console.log('_HANDLEKEYDOWN')
-			console.log(this.state.entireGrid[Y][X])
-					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
-						break;
-					}
-					cloneMapPosition[1]++;
-					cloneCharPosition[1]++;
-				}
-				this.setState({
-					heroDirection: 'down'
-				})
-				break;
-			case 'left':
-				if (cloneMapPosition[0] > 0) {
-					X--;
-					// console.log(this.state.entireGrid[Y][X])
-					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					// console.log('_HANDLEKEYDOWN')
-			// console.log(this.state.entireGrid[Y][X])
-					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
-						break;
-					}
-					cloneMapPosition[0]--;
-					cloneCharPosition[0]--;
-				}
-				this.setState({
-					heroDirection: 'left'
-				})
-				break;
-			case 'right':
-				if (cloneMapPosition[0] < this.state.mapSize) {
-					X++;
-					console.log(this.state.entireGrid[Y][X])
-					// FIX TEMP TO AVOID AGGRESSIVE RAT GLITCH
-					// console.log('_HANDLEKEYDOWN')
-			// console.log(this.state.entireGrid[Y][X])
-					if (this._isTileSolid(this.state.entireGrid[Y][X])) {
-						break;
-					}
-					cloneMapPosition[0]++;
-					cloneCharPosition[0]++;
-				}
-				this.setState({
-					heroDirection: 'right'
-				})
-				break;
-			default:
-				break;
+		let nextHeroR = heroR;
+		let nextHeroC = heroC;
+
+		switch(direction) {
+			case 'up':    nextHeroR--; break;
+			case 'down':  nextHeroR++; break;
+			case 'left':  nextHeroC--; break;
+			case 'right': nextHeroC++; break;
+			default: 
+				console.log('[Move Error] Invalid direction:', direction);
+				return; 
+		}
+		console.log(`[Move Attempt] Calculated nextHeroPos=(${nextHeroR},${nextHeroC})`);
+
+		// 1. Boundary check for hero's next position on the entire grid
+		if (nextHeroR < 0 || nextHeroR >= cc.height || nextHeroC < 0 || nextHeroC >= cc.width) {
+			console.log(`[Move Blocked] Off map. Attempted HeroPos: (${nextHeroR},${nextHeroC}), MapDims: (${cc.height}h, ${cc.width}w)`);
+			return; // Can't move off the map
 		}
 
-	//	grid[X][Y] = ['_', 'KNIGHT']
+		// 2. Collision check for hero's next position
+		// entireGrid is [COL_INDEX][ROW_INDEX] due to transpose.
+		// charPosition related vars (heroR, heroC, nextHeroR, nextHeroC) are [ROW, COL].
+		// So, to check grid at (nextHeroColumn, nextHeroRow):
+		const targetTile = cc.entireGrid[nextHeroC][nextHeroR]; // Corrected: [COL_VAL][ROW_VAL]
+		const isSolid = this._isTileSolid(targetTile);
+		console.log(`[Move Check] Target tile for (heroRow ${nextHeroR}, heroCol ${nextHeroC}) is at grid[col ${nextHeroC}][row ${nextHeroR}]:`, targetTile, `IsSolid: ${isSolid}`);
+		if (isSolid) {
+			console.log(`[Move Blocked] Solid tile.`);
+			return; // Can't move into a solid tile
+		}
+
+		// Hero's move to (nextHeroR, nextHeroC) is valid.
+		const halfCamHeight = Math.floor(cc.cameraSize / 2);
+		const halfCamWidth = Math.floor(cc.cameraSize / 2);
+
+		let idealCamTopRow = nextHeroR - halfCamHeight;
+		let idealCamTopCol = nextHeroC - halfCamWidth;
+
+		const finalCamTopRow = Math.max(0, Math.min(idealCamTopRow, cc.height - cc.cameraSize));
+		const finalCamTopCol = Math.max(0, Math.min(idealCamTopCol, cc.width - cc.cameraSize));
+		
+		console.log(`[Move Success] Setting new charPos=(${nextHeroR},${nextHeroC}), new mapPos (col,row)=(${finalCamTopCol},${finalCamTopRow})`);
 		this.setState({
-			mapPosition: cloneMapPosition,
-			charPosition: cloneCharPosition
-		})
+			charPosition: [nextHeroR, nextHeroC],
+			mapPosition: [finalCamTopCol, finalCamTopRow], // mapPosition is [col, row]
+			heroDirection: direction
+		});
 	}
 
 	_isTileSolid(tileInformation) {
-		if (tileInformation.length == 1) {
-			return this.state.objectInformation[tileInformation].solid
-		}
-		else {
+		if (Array.isArray(tileInformation)) {
+			// If any element in the array represents a solid object, the tile is solid.
+			// Exception: Potions are never solid.
 			if (tileInformation.includes('POTION')) {
 				return false;
 			}
+			// Check if any item in the array is a key in objectInformation and is solid
+			return tileInformation.some(item => 
+				this.state.objectInformation[item] && this.state.objectInformation[item].solid
+			);
+		} else if (typeof tileInformation === 'string') {
+			// Handle single string tile types
+			if (tileInformation === 'POTION') { // Potions are not solid
+				return false;
+			}
+			// Check if the string tile type is in objectInformation and is solid
+			return this.state.objectInformation[tileInformation] ? this.state.objectInformation[tileInformation].solid : false;
 		}
+		// Default to not solid if the tileInformation format is unrecognized
+		return false;
 	}
 
 	// Creates initial grid - initiated during componentWillMount
@@ -672,8 +648,14 @@ moveCritter = (critter) => {
 		function _generateCoordinateChase() {
 			// Critter will avoid taking the same way back if initial path calculation does not work
 			// let latest = [];
-			console.log('latest')
-			console.log(latest)
+			// console.log('latest') // This line was causing the error if 'let latest' is commented out
+			// console.log(latest)   // This line was causing the error if 'let latest' is commented out
+
+			const hx_hero = that.state.charPosition[1]; // Hero's X (column on the grid)
+			const hy_hero = that.state.charPosition[0]; // Hero's Y (row on the grid)
+			// cx and cy are local to moveCritter, representing the current critter's x and y
+			console.log(`Critter at (${cx}, ${cy}) chasing hero at (${hx_hero}, ${hy_hero}) for critter:`, critter);
+
 			function latestQueue(item) {
 				// console.log('latest queue working')
 				// console.log(critter.latest)
@@ -739,13 +721,13 @@ moveCritter = (critter) => {
 						let dx = dir.x
 						let dy = dir.y
 					
-						// that.state.objectInformation[that.state.entireGrid[dx][dy]].solid
-						// FIX
-						if (that.state.entireGrid[dx][dy] !== '_' || dx == hx && dy == hy) {
-							continue;
+						// Collision Check for critter's move:
+						let targetTileInfo = that.state.entireGrid[dx][dy];
+						if (that._isTileSolid(targetTileInfo) || (dx === hx && dy === hy)) {
+							continue; // Skip if tile is solid OR it's the hero's exact tile
 						}
-						// Implement at a later time - dead lock critter
-						// Feature: critter will permanently target hero until it dies regardless proximity to hero on map
+
+						// Anti-Looping with critter.latest:
 						if (critter.latest.length > 1) {
 						
 							// If the currently projected coordinates matches the previous location, skip coordinates and proceed to next projection
@@ -824,76 +806,56 @@ moveCritter = (critter) => {
 
 // Attacking critter mechanism
 heroTargetCritter() {
+	const heroRow = this.state.charPosition[0];
+	const heroCol = this.state.charPosition[1];
 
-	let surroundingCoordinates = [
-			[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
-			[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
-			[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
-			[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
-			[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
-			[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
-		];
+	const surroundingOffsets = [
+		[-1, -1], [ 0, -1], [ 1, -1], // Top row (y-1, x-1), (y-1, x), (y-1, x+1)
+		[-1,  0],           [ 1,  0], // Middle row (y, x-1),           (y, x+1)
+		[-1,  1], [ 0,  1], [ 1,  1]  // Bottom row (y+1, x-1), (y+1, x), (y+1, x+1)
+	];
 
-		function checkSurrounding() {
-			for (let i = 0; i < surroundingCoordinates.length; i++) {
-				if (surroundingCoordinates[i].includes('RAT')) {
-					return true;
+	let foundTargetName = null;
+
+	for (const offset of surroundingOffsets) {
+		const checkRow = heroRow + offset[0];
+		const checkCol = heroCol + offset[1];
+
+		// Boundary checks for the grid
+		if (checkRow >= 0 && checkRow < this.state.height &&
+			checkCol >= 0 && checkCol < this.state.width) {
+			
+			const tileContent = this.state.entireGrid[checkRow][checkCol]; // Correct: grid[row][col]
+
+			if (Array.isArray(tileContent) && tileContent.includes('RAT')) {
+				// Critter coords are (col, row) for findCritter
+				const targetName = this.findCritter(checkCol, checkRow);
+				if (targetName) {
+					foundTargetName = targetName;
+					break; // Found a target, no need to check other cells
+				}
+			} else if (typeof tileContent === 'string' && tileContent === 'RAT') { // Should not happen with current setup but good for robustness
+				 const targetName = this.findCritter(checkCol, checkRow);
+				 if (targetName) {
+					foundTargetName = targetName;
+					break; 
 				}
 			}
-			return false;
 		}
-
-	// If hero currently has a critter targetted, find the coordinates of that specific critter and continue attacking it until it dies
-	// Resume search if critter has been killed
-
-	if (this.state.target !== '') {
-		let thisCritter = this.state.target.slice(0);
-		let x = this.state.critters[thisCritter].x;
-		let y = this.state.critters[thisCritter].y;
-		this.attackCritter(this.findCritter(x, y))
 	}
-	else {
-		// console.log('HEROTARGETCRITTER TESTING')
-		// console.log(this.state.charPosition)
-		// FIXED
-		let cx = this.state.charPosition[0];
-		let cy = this.state.charPosition[1];
-		// console.log(cx, cy)
-		// let surroundingCoordinates = [
-		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1] - 1],
-		// 	[this.state.charPosition[0]    , this.state.charPosition[1] - 1],
-		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1] - 1],
-		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1]    ],
-		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1]    ],
-		// 	[this.state.charPosition[0] - 1, this.state.charPosition[1] + 1],
-		// 	[this.state.charPosition[0]    , this.state.charPosition[1] + 1],
-		// 	[this.state.charPosition[0] + 1, this.state.charPosition[1] + 1]
-		// ]
 
-		surroundingCoordinates.forEach((coordinate) => {
-			// console.log('SURROUNDING COORDINATES');
-			// console.log(this.state)
-			let y = coordinate[0];
-			let x = coordinate[1];
-			// console.log(this.state.entireGrid[x][y])
-			if (this.state.entireGrid[x][y].includes('RAT')) {
-				// console.log('INCLUDES RAT')
-				// console.log(this.state.entireGrid[x][y])
-				this.attackCritter(this.findCritter(x, y))
-				this.setState({
-					target: this.findCritter(x, y) // Returns specific critter
-				})
-				// console.log(this.state)
-			}
-			else {
-				// console.log('no target detected')
-				this.setState({
-					target: ''
-				})
-			}
-		})
+	if (foundTargetName) {
+		// console.log("Hero attacking adjacent target:", foundTargetName);
+		this.attackCritter(foundTargetName);
+		if (this.state.target !== foundTargetName) { // Only setState if target changes
+			this.setState({ target: foundTargetName });
+		}
+	} else {
+		// No adjacent rat found in this scan
+		if (this.state.target !== '') { // Only setState if target needs to be cleared
+			// console.log("Hero clearing target, none adjacent.");
+			this.setState({ target: '' });
+		}
 	}
 }
 
@@ -1130,24 +1092,32 @@ renderCritter(critter, prevCoordinates, prevTile) {
 									<Hero 
 										direction={that.state.heroDirection ? that.state.heroDirection : 'down'}
 										health={that.state.health}
-									/>) // Default position front facing on initial load
+									/>)
 								break;
 							case 'R':
 								renderRow.push(<img src={Rock} />)
 								break;
 							case 'RAT':
 								let critters = that.state.critters;
-								
-								for (let critter in critters) {
-									if (critters[critter]) {
-											// console.log(critters[critter].health)
-										if (critters[critter].x == (idx1 + that.state.mapPosition[1]) && critters[critter].y == (idx2 + that.state.mapPosition[0])) {
+								// Calculate the absolute on-grid coordinates of the current tile being rendered
+								// mapPosition is [cameraCol, cameraRow]
+								// idx1 is row index within camera, idx2 is col index within camera
+								const currentTileAbsoluteRow = that.state.mapPosition[1] + idx1;
+								const currentTileAbsoluteCol = that.state.mapPosition[0] + idx2;
+
+								for (let critterName in critters) {
+									if (critters[critterName]) {
+										const c = critters[critterName];
+										// Critter positions are: c.y for row, c.x for column
+										if (c.y === currentTileAbsoluteRow && c.x === currentTileAbsoluteCol) {
 											renderRow.push(
 												<Rat 
-													direction={critters[critter].direction}
-													health={critters[critter].health}
+													direction={c.direction}
+													health={c.health}
 												/>
-											)
+											);
+											// Assuming one critter per tile for rendering purposes
+											// If multiple could be, this logic would need to change
 										}
 									}
 								}
